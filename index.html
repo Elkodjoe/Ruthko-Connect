@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ruthko Connect - Business Ecosystem</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body { background: #0a0a0a; color: #fff; }
+    .sidebar { transition: all 0.3s ease; }
+    .module-content { display: none; }
+    .module-content.active { display: block; }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+    .glass-hover { transition: all 0.3s ease; }
+    .glass-hover:hover { background: rgba(255,255,255,0.08); }
+    .gradient-text { background: linear-gradient(to right, #facc15, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .btn-primary { background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%); color: black; }
+    .btn-primary:hover { filter: brightness(1.1); }
+    .btn-secondary { background: rgba(255,255,255,0.1); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.15); }
+    .card-glow { box-shadow: 0 0 20px rgba(250, 204, 21, 0.1); }
+    .card-glow:hover { box-shadow: 0 0 30px rgba(250, 204, 21, 0.2); }
+    .nav-btn.nav-active { background: rgba(255,255,255,0.12); }
+  </style>
+</head>
+<body class="min-h-screen flex overflow-hidden">
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="sidebar w-20 lg:w-64 bg-black border-r border-zinc-800 flex flex-col z-50 fixed h-full">
+
+    <!-- Logo — single wrapper, no nesting -->
+    <div class="p-5 flex items-center gap-3 border-b border-zinc-800">
+      <img
+        src="images/logo.png"
+        alt="Ruthko Logo"
+        class="w-12 h-12 rounded-xl object-cover flex-shrink-0"
+        onerror="this.style.display='none'"
+      >
+      <div class="hidden lg:block">
+        <h1 class="font-bold text-xl gradient-text">Ruthko Connect</h1>
+        <p class="text-xs text-zinc-400">Jobs · Events · Partnerships</p>
+      </div>
+    </div>
+
+    <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <button onclick="navigate('dashboard')" id="nav-dashboard" class="nav-btn nav-active w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition">
+        <i data-lucide="layout-dashboard" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="hidden lg:block font-medium">Dashboard</span>
+      </button>
+      <button onclick="navigate('jobs')" id="nav-jobs" class="nav-btn w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition">
+        <i data-lucide="briefcase" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="hidden lg:block font-medium">Ruthko Jobs</span>
+      </button>
+      <button onclick="navigate('events')" id="nav-events" class="nav-btn w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition">
+        <i data-lucide="calendar" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="hidden lg:block font-medium">Ruthko Events</span>
+      </button>
+      <button onclick="navigate('partners')" id="nav-partners" class="nav-btn w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition">
+        <i data-lucide="users" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="hidden lg:block font-medium">Partners Hub</span>
+      </button>
+      <button onclick="navigate('crm')" id="nav-crm" class="nav-btn w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition">
+        <i data-lucide="database" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="hidden lg:block font-medium">CRM & Sales</span>
+      </button>
+      <button onclick="navigate('ai-studio')" id="nav-ai-studio" class="nav-btn w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition">
+        <i data-lucide="sparkles" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="hidden lg:block font-medium">AI Studio</span>
+      </button>
+      <button onclick="navigate('sponsors')" id="nav-sponsors" class="nav-btn w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition">
+        <i data-lucide="crown" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="hidden lg:block font-medium">Sponsor Portal</span>
+      </button>
+    </nav>
+
+    <div class="p-4 border-t border-zinc-800">
+      <p class="hidden lg:block text-xs text-zinc-500 text-center">© 2026 Ruthko Connect</p>
+    </div>
+  </aside>
+
+  <!-- Main Content — left margin matches sidebar width -->
+  <main class="flex-1 ml-20 lg:ml-64 flex flex-col min-w-0 overflow-hidden relative">
+
+    <!-- Header -->
+    <header class="h-16 border-b border-zinc-800 bg-black/50 backdrop-blur-md flex items-center justify-between px-6 sticky top-0 z-40">
+      <div class="flex items-center gap-4">
+        <h1 id="page-title" class="text-xl font-bold">Dashboard</h1>
+      </div>
+      <div class="flex items-center gap-4">
+        <button class="relative p-2 rounded-lg glass-hover hover:bg-zinc-800">
+          <i data-lucide="bell" class="w-5 h-5 text-zinc-400"></i>
+          <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
+        </button>
+        <div class="flex items-center gap-3">
+          <div class="text-right hidden md:block">
+            <div class="text-sm font-semibold">Ruthko Admin</div>
+            <div class="text-xs text-zinc-400">admin@ruthko.com</div>
+          </div>
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center font-bold">
+            RA
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ─── DASHBOARD ───────────────────────────── -->
+    <div id="view-dashboard" class="module-content active overflow-y-auto h-[calc(100vh-4rem)] p-6">
+      <div class="mb-8">
+        <h1 class="text-4xl font-bold mb-3">Welcome back, Ruthko Admin</h1>
+        <p class="text-zinc-400">Here's what's happening in your business ecosystem today.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="glass p-6 rounded-2xl border border-zinc-800">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-zinc-400 text-sm">Total Revenue</span>
+            <div class="p-2 bg-green-500/10 rounded-lg"><i data-lucide="dollar-sign" class="w-5 h-5 text-green-500"></i></div>
+          </div>
+          <div class="text-3xl font-bold">$248,592</div>
+          <div class="text-green-500 text-sm mt-2">+12.5% from last month</div>
+        </div>
+        <div class="glass p-6 rounded-2xl border border-zinc-800">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-zinc-400 text-sm">Active Jobs</span>
+            <div class="p-2 bg-blue-500/10 rounded-lg"><i data-lucide="briefcase" class="w-5 h-5 text-blue-500"></i></div>
+          </div>
+          <div class="text-3xl font-bold">127</div>
+          <div class="text-blue-500 text-sm mt-2">+8 new this week</div>
+        </div>
+        <div class="glass p-6 rounded-2xl border border-zinc-800">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-zinc-400 text-sm">Upcoming Events</span>
+            <div class="p-2 bg-orange-500/10 rounded-lg"><i data-lucide="calendar" class="w-5 h-5 text-orange-500"></i></div>
+          </div>
+          <div class="text-3xl font-bold">3</div>
+          <div class="text-orange-500 text-sm mt-2">Starting this month</div>
+        </div>
+        <div class="glass p-6 rounded-2xl border border-zinc-800">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-zinc-400 text-sm">Pipeline Value</span>
+            <div class="p-2 bg-purple-500/10 rounded-lg"><i data-lucide="trending-up" class="w-5 h-5 text-purple-500"></i></div>
+          </div>
+          <div class="text-3xl font-bold">$1.2M</div>
+          <div class="text-purple-500 text-sm mt-2">+8.3% this quarter</div>
+        </div>
+      </div>
+
+      <h2 class="text-xl font-bold mb-4">Quick Access Modules</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+        <div onclick="navigate('jobs')" class="cursor-pointer card-glow glass p-6 rounded-3xl border border-zinc-800 hover:border-yellow-500/30 transition">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-900 to-blue-700 flex items-center justify-center">
+              <i data-lucide="briefcase" class="w-6 h-6 text-white"></i>
+            </div>
+            <span class="bg-green-500/20 text-green-500 px-2 py-1 rounded-full text-xs">Active</span>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Ruthko Jobs</h3>
+          <p class="text-zinc-400 text-sm">Visa-friendly jobs, staffing, employer portal, candidate tracking.</p>
+        </div>
+        <div onclick="navigate('events')" class="cursor-pointer card-glow glass p-6 rounded-3xl border border-zinc-800 hover:border-orange-500/30 transition">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-800 to-orange-600 flex items-center justify-center">
+              <i data-lucide="calendar" class="w-6 h-6 text-white"></i>
+            </div>
+            <span class="bg-green-500/20 text-green-500 px-2 py-1 rounded-full text-xs">Active</span>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Ruthko Events</h3>
+          <p class="text-zinc-400 text-sm">Events, summits, speakers, sponsors, tickets, and networking.</p>
+        </div>
+        <div onclick="navigate('partners')" class="cursor-pointer card-glow glass p-6 rounded-3xl border border-zinc-800 hover:border-yellow-500/30 transition">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-700 to-yellow-500 flex items-center justify-center">
+              <i data-lucide="users" class="w-6 h-6 text-white"></i>
+            </div>
+            <span class="bg-green-500/20 text-green-500 px-2 py-1 rounded-full text-xs">Active</span>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Partners Hub</h3>
+          <p class="text-zinc-400 text-sm">Collaborators, embassies, investors, sponsors, and vendors.</p>
+        </div>
+        <div onclick="navigate('crm')" class="cursor-pointer card-glow glass p-6 rounded-3xl border border-zinc-800 hover:border-emerald-500/30 transition">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-800 to-emerald-600 flex items-center justify-center">
+              <i data-lucide="database" class="w-6 h-6 text-white"></i>
+            </div>
+            <span class="bg-green-500/20 text-green-500 px-2 py-1 rounded-full text-xs">Active</span>
+          </div>
+          <h3 class="text-xl font-bold mb-2">CRM & Sales</h3>
+          <p class="text-zinc-400 text-sm">Leads, pipelines, automation, invoices, and follow-ups.</p>
+        </div>
+        <div onclick="navigate('ai-studio')" class="cursor-pointer card-glow glass p-6 rounded-3xl border border-zinc-800 hover:border-purple-500/30 transition">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-800 to-purple-600 flex items-center justify-center">
+              <i data-lucide="sparkles" class="w-6 h-6 text-white"></i>
+            </div>
+            <span class="bg-green-500/20 text-green-500 px-2 py-1 rounded-full text-xs">Active</span>
+          </div>
+          <h3 class="text-xl font-bold mb-2">AI Studio</h3>
+          <p class="text-zinc-400 text-sm">Generate flyers, captions, emails, videos, and campaigns.</p>
+        </div>
+        <div onclick="navigate('sponsors')" class="cursor-pointer card-glow glass p-6 rounded-3xl border border-zinc-800 hover:border-gray-500/30 transition">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-600 flex items-center justify-center">
+              <i data-lucide="crown" class="w-6 h-6 text-white"></i>
+            </div>
+            <span class="bg-green-500/20 text-green-500 px-2 py-1 rounded-full text-xs">Active</span>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Sponsor Portal</h3>
+          <p class="text-zinc-400 text-sm">Sponsor packages, analytics, booths, and reports.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="glass p-6 rounded-2xl border border-zinc-800">
+          <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4"></i> Upcoming Events</h3>
+          <div class="space-y-3">
+            <div class="flex gap-3 p-3 rounded-xl bg-zinc-900/50 border border-zinc-800">
+              <div class="flex flex-col items-center min-w-[40px]">
+                <span class="font-bold text-yellow-500 text-xs">MAY</span>
+                <span class="text-2xl font-bold">13</span>
+              </div>
+              <div>
+                <h4 class="font-semibold text-sm">Cultural Handshake Summit</h4>
+                <p class="text-xs text-zinc-400">Houston, Texas</p>
+              </div>
+            </div>
+            <div class="flex gap-3 p-3 rounded-xl bg-zinc-900/50 border border-zinc-800">
+              <div class="flex flex-col items-center min-w-[40px]">
+                <span class="font-bold text-yellow-500 text-xs">AUG</span>
+                <span class="text-2xl font-bold">20</span>
+              </div>
+              <div>
+                <h4 class="font-semibold text-sm">Global Recruitment Forum</h4>
+                <p class="text-xs text-zinc-400">Virtual Event</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass p-6 rounded-2xl border border-zinc-800">
+          <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><i data-lucide="briefcase" class="w-4 h-4"></i> Featured Jobs</h3>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between p-3 rounded-xl bg-zinc-900/50 border border-zinc-800">
+              <div>
+                <h4 class="font-semibold text-sm">Registered Nurse</h4>
+                <p class="text-xs text-zinc-400">EB-3 Sponsorship Available</p>
+              </div>
+              <button class="text-xs bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded-lg transition">View</button>
+            </div>
+            <div class="flex items-center justify-between p-3 rounded-xl bg-zinc-900/50 border border-zinc-800">
+              <div>
+                <h4 class="font-semibold text-sm">Hospitality Manager</h4>
+                <p class="text-xs text-zinc-400">H-2B Sponsorship Program</p>
+              </div>
+              <button class="text-xs bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded-lg transition">View</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass p-6 rounded-2xl border border-zinc-800">
+          <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4"></i> AI Content Studio</h3>
+          <div class="space-y-2">
+            <button class="w-full text-left p-3 rounded-xl bg-purple-700/20 hover:bg-purple-700/30 border border-purple-500/30 transition flex items-center gap-3 text-sm">
+              <i data-lucide="image" class="w-4 h-4 text-purple-400"></i>
+              Generate Flyer
+            </button>
+            <button class="w-full text-left p-3 rounded-xl bg-purple-700/20 hover:bg-purple-700/30 border border-purple-500/30 transition flex items-center gap-3 text-sm">
+              <i data-lucide="file-text" class="w-4 h-4 text-purple-400"></i>
+              Generate Job Ad
+            </button>
+            <button class="w-full text-left p-3 rounded-xl bg-purple-700/20 hover:bg-purple-700/30 border border-purple-500/30 transition flex items-center gap-3 text-sm">
+              <i data-lucide="user-check" class="w-4 h-4 text-purple-400"></i>
+              Generate Sponsor Proposal
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── RUTHKO JOBS ──────────────────────────── -->
+    <div id="view-jobs" class="module-content overflow-y-auto h-[calc(100vh-4rem)] p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold">Ruthko Jobs</h2>
+        <button class="btn-primary px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2">
+          <i data-lucide="plus" class="w-5 h-5"></i>
+          Post New Job
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+        <div class="glass p-4 rounded-2xl border border-zinc-800">
+          <h3 class="text-sm font-bold text-zinc-400 uppercase tracking-wider mb-3">Filter by Status</h3>
+          <div class="space-y-2">
+            <button class="w-full text-left px-3 py-2 rounded-lg bg-yellow-500/10 text-yellow-500 font-medium text-sm">All Jobs (127)</button>
+            <button class="w-full text-left px-3 py-2 rounded-lg hover:bg-zinc-800 text-zinc-300 text-sm">Open (89)</button>
+            <button class="w-full text-left px-3 py-2 rounded-lg hover:bg-zinc-800 text-zinc-300 text-sm">Draft (12)</button>
+            <button class="w-full text-left px-3 py-2 rounded-lg hover:bg-zinc-800 text-zinc-300 text-sm">Closed (26)</button>
+          </div>
+        </div>
+        <div class="glass p-4 rounded-2xl border border-zinc-800 lg:col-span-3">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex-1 relative">
+              <i data-lucide="search" class="absolute left-3 top-3 w-4 h-4 text-zinc-400"></i>
+              <input type="text" placeholder="Search jobs..." class="w-full bg-black border border-zinc-800 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:border-yellow-500/50 focus:outline-none">
+            </div>
+            <select class="bg-black border border-zinc-800 rounded-xl px-4 py-2.5 text-sm focus:border-yellow-500/50 focus:outline-none">
+              <option>Sort by Date</option>
+              <option>Sort by Applications</option>
+              <option>Sort by Salary</option>
+            </select>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between p-4 rounded-2xl bg-zinc-900/30 border border-zinc-800 hover:border-zinc-700 transition">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                  <i data-lucide="heart-pulse" class="w-5 h-5 text-blue-500"></i>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-sm">Registered Nurse - EB-3</h4>
+                  <p class="text-xs text-zinc-400">Texas Medical Center · Houston, TX</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-4">
+                <span class="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded-full">Open</span>
+                <span class="text-sm text-zinc-400">24 applications</span>
+                <button class="px-3 py-1.5 rounded-lg border border-zinc-700 text-xs font-medium hover:bg-zinc-800">Edit</button>
+              </div>
+            </div>
+            <div class="flex items-center justify-between p-4 rounded-2xl bg-zinc-900/30 border border-zinc-800 hover:border-zinc-700 transition">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center">
+                  <i data-lucide="building" class="w-5 h-5 text-orange-500"></i>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-sm">Hospitality Manager - H-2B</h4>
+                  <p class="text-xs text-zinc-400">Resort & Spa · Austin, TX</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-4">
+                <span class="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded-full">Open</span>
+                <span class="text-sm text-zinc-400">18 applications</span>
+                <button class="px-3 py-1.5 rounded-lg border border-zinc-700 text-xs font-medium hover:bg-zinc-800">Edit</button>
+              </div>
+            </div>
+            <div class="flex items-center justify-between p-4 rounded-2xl bg-zinc-900/30 border border-zinc-800 hover:border-zinc-700 transition">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                  <i data-lucide="code" class="w-5 h-5 text-purple-500"></i>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-sm">Software Developer - EB-2</h4>
+                  <p class="text-xs text-zinc-400">Tech Park · Dallas, TX</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-4">
+                <span class="text-xs bg-red-500/20 text-red-500 px-2 py-1 rounded-full">Closed</span>
+                <span class="text-sm text-zinc-400">45 applications</span>
+                <button class="px-3 py-1.5 rounded-lg border border-zinc-700 text-xs font-medium hover:bg-zinc-800">Edit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Partner With Us Form -->
+      <form action="https://formspree.io/f/xzdooekg" method="POST" class="glass p-6 rounded-2xl border border-zinc-800 mb-8 space-y-4">
+        <h3 class="text-xl font-bold text-yellow-400">Partner With Us — Staffing Request</h3>
+        <input type="text" name="company" placeholder="Company Name" required class="w-full bg-black border border-zinc-800 rounded-xl p-3 text-sm focus:outline-none focus:border-yellow-500/50">
+        <input type="text" name="contact_person" placeholder="Contact Person" required class="w-full bg-black border border-zinc-800 rounded-xl p-3 text-sm focus:outline-none focus:border-yellow-500/50">
+        <input type="email" name="email" placeholder="Business Email" required class="w-full bg-black border border-zinc-800 rounded-xl p-3 text-sm focus:outline-none focus:border-yellow-500/50">
+        <input type="tel" name="phone" placeholder="Phone Number" class="w-full bg-black border border-zinc-800 rounded-xl p-3 text-sm focus:outline-none focus:border-yellow-500/50">
+        <textarea name="staffing_need" placeholder="Tell us what workers you need" required class="w-full bg-black border border-zinc-800 rounded-xl p-3 text-sm h-32 focus:outline-none focus:border-yellow-500/50 resize-none"></textarea>
+        <button type="submit" class="btn-primary px-6 py-3 rounded-xl font-bold">Submit Staffing Request</button>
+      </form>
+    </div>
+
+    <!-- ─── RUTHKO EVENTS ────────────────────────── -->
+    <div id="view-events" class="module-content overflow-y-auto h-[calc(100vh-4rem)] p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold">Ruthko Events</h2>
+        <button class="btn-primary px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2">
+          <i data-lucide="plus" class="w-5 h-5"></i>
+          Create Event
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div class="glass p-4 rounded-2xl border border-zinc-800">
+          <h3 class="text-sm font-bold text-zinc-400 uppercase tracking-wider mb-3">Filter by Type</h3>
+          <div class="space-y-2">
+            <button class="w-full text-left px-3 py-2 rounded-lg bg-yellow-500/10 text-yellow-500 font-medium text-sm">All Events (12)</button>
+            <button class="w-full text-left px-3 py-2 rounded-lg hover:bg-zinc-800 text-zinc-300 text-sm">Summit (4)</button>
+            <button class="w-full text-left px-3 py-2 rounded-lg hover:bg-zinc-800 text-zinc-300 text-sm">Conference (3)</button>
+            <button class="w-full text-left px-3 py-2 rounded-lg hover:bg-zinc-800 text-zinc-300 text-sm">Workshop (5)</button>
+          </div>
+        </div>
+        <div class="lg:col-span-2">
+          <div class="space-y-4">
+            <div class="glass p-5 rounded-2xl border border-zinc-800 hover:border-zinc-700 transition">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center">
+                    <i data-lucide="users" class="w-5 h-5 text-orange-500"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-bold">Cultural Handshake Summit 2026</h4>
+                    <p class="text-sm text-zinc-400">May 13-15, 2026 · Houston, Texas</p>
+                  </div>
+                </div>
+                <span class="bg-green-500/20 text-green-500 px-3 py-1 rounded-full text-xs font-medium">Registration Open</span>
+              </div>
+              <div class="grid grid-cols-3 gap-4 mt-4">
+                <div><div class="text-xs text-zinc-400">Tickets Sold</div><div class="font-bold text-xl">156/200</div></div>
+                <div><div class="text-xs text-zinc-400">Revenue</div><div class="font-bold text-xl">$39,000</div></div>
+                <div><div class="text-xs text-zinc-400">Sponsors</div><div class="font-bold text-xl">8</div></div>
+              </div>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-zinc-800 hover:border-zinc-700 transition">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                    <i data-lucide="globe" class="w-5 h-5 text-blue-500"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-bold">Global Recruitment Forum</h4>
+                    <p class="text-sm text-zinc-400">August 2026 · Virtual Event</p>
+                  </div>
+                </div>
+                <span class="bg-yellow-500/20 text-yellow-500 px-3 py-1 rounded-full text-xs font-medium">Planning Phase</span>
+              </div>
+              <div class="grid grid-cols-3 gap-4 mt-4">
+                <div><div class="text-xs text-zinc-400">Speakers</div><div class="font-bold text-xl">12</div></div>
+                <div><div class="text-xs text-zinc-400">Organizers</div><div class="font-bold text-xl">4</div></div>
+                <div><div class="text-xs text-zinc-400">RSVPs</div><div class="font-bold text-xl">892</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="glass p-6 rounded-2xl border border-zinc-800">
+          <h3 class="text-lg font-bold mb-4">Event Analytics</h3>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-sm mb-1"><span class="text-zinc-400">Attendance Rate</span><span class="text-yellow-500">78%</span></div>
+              <div class="h-2 bg-zinc-800 rounded-full overflow-hidden"><div class="h-full bg-yellow-500 w-[78%]"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-sm mb-1"><span class="text-zinc-400">Sponsorship Goal</span><span class="text-blue-500">65%</span></div>
+              <div class="h-2 bg-zinc-800 rounded-full overflow-hidden"><div class="h-full bg-blue-500 w-[65%]"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="glass p-6 rounded-2xl border border-zinc-800">
+          <h3 class="text-lg font-bold mb-4">Top Speakers</h3>
+          <div class="space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center text-xs">MJ</div>
+              <div class="flex-1"><div class="text-sm font-medium">Maria Johnson</div><div class="text-xs text-zinc-400">Immigration Attorney</div></div>
+              <div class="text-xs text-zinc-400">4.9★</div>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center text-xs">TK</div>
+              <div class="flex-1"><div class="text-sm font-medium">Thomas Kim</div><div class="text-xs text-zinc-400">HR Director</div></div>
+              <div class="text-xs text-zinc-400">4.8★</div>
+            </div>
+          </div>
+        </div>
+        <div class="glass p-6 rounded-2xl border border-zinc-800">
+          <h3 class="text-lg font-bold mb-4">Sponsor Packages</h3>
+          <div class="space-y-3">
+            <div class="p-3 rounded-xl bg-orange-500/10 border border-orange-500/30"><div class="font-bold text-sm">Gold Sponsor</div><div class="text-xs text-zinc-400">$5,000 · 15 booths</div></div>
+            <div class="p-3 rounded-xl bg-blue-500/10 border border-blue-500/30"><div class="font-bold text-sm">Silver Sponsor</div><div class="text-xs text-zinc-400">$2,500 · 8 booths</div></div>
+            <div class="p-3 rounded-xl bg-green-500/10 border border-green-500/30"><div class="font-bold text-sm">Bronze Sponsor</div><div class="text-xs text-zinc-400">$1,000 · 5 booths</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── PARTNERS HUB ──────────────────────────── -->
+    <div id="view-partners" class="module-content overflow-y-auto h-[calc(100vh-4rem)] p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold">Partners Hub</h2>
+        <button class="btn-primary px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2">
+          <i data-lucide="plus" class="w-5 h-5"></i>
+          Add Partner
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="glass p-5 rounded-2xl border border-zinc-800 hover:border-zinc-700 transition">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center"><i data-lucide="building-2" class="w-6 h-6 text-blue-500"></i></div>
+            <div><h4 class="font-bold">Global Investment Group</h4><p class="text-sm text-zinc-400">Sponsor · Gold Level</p></div>
+          </div>
+          <div class="space-y-2 text-sm">
+            <div class="flex items-center gap-2 text-zinc-400"><i data-lucide="mail" class="w-3 h-3"></i><span>contact@globalinv.com</span></div>
+            <div class="flex items-center gap-2 text-zinc-400"><i data-lucide="phone" class="w-3 h-3"></i><span>+1 (555) 123-4567</span></div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-zinc-800 flex items-center justify-between">
+            <span class="text-xs text-zinc-400">Total Revenue</span>
+            <span class="font-bold text-green-500">$125,000</span>
+          </div>
+        </div>
+
+        <div class="glass p-5 rounded-2xl border border-zinc-800 hover:border-zinc-700 transition">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center"><i data-lucide="flag" class="w-6 h-6 text-purple-500"></i></div>
+            <div><h4 class="font-bold">Nigeria Consulate</h4><p class="text-sm text-zinc-400">Embassy · Partner</p></div>
+          </div>
+          <div class="space-y-2 text-sm">
+            <div class="flex items-center gap-2 text-zinc-400"><i data-lucide="mail" class="w-3 h-3"></i><span>info@nigeriaconsulate.org</span></div>
+            <div class="flex items-center gap-2 text-zinc-400"><i data-lucide="phone" class="w-3 h-3"></i><span>+1 (555) 987-6543</span></div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-zinc-800 flex items-center justify-between">
+            <span class="text-xs text-zinc-400">Active Since</span>
+            <span class="font-bold text-blue-500">Jan 2025</span>
+          </div>
+        </div>
+
+        <div class="glass p-5 rounded-2xl border border-zinc-800 hover:border-zinc-700 transition">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center"><i data-lucide="package" class="w-6 h-6 text-emerald-500"></i></div>
+            <div><h4 class="font-bold">Tech Solutions Inc</h4><p class="text-sm text-zinc-400">Vendor · Platinum</p></div>
+          </div>
+          <div class="space-y-2 text-sm">
+            <div class="flex items-center gap-2 text-zinc-400"><i data-lucide="mail" class="w-3 h-3"></i><span>orders@techsol.com</span></div>
+            <div class="flex items-center gap-2 text-zinc-400"><i data-lucide="phone" class="w-3 h-3"></i><span>+1 (555) 222-3333</span></div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-zinc-800 flex items-center justify-between">
+            <span class="text-xs text-zinc-400">Active Contracts</span>
+            <span class="font-bold text-yellow-500">3</span>
+          </div>
+        </div>
+
+        <div class="glass p-5 rounded-2xl border border-zinc-800 hover:border-zinc-700 transition">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center"><i data-lucide="handshake" class="w-6 h-6 text-orange-500"></i></div>
+            <div><h4 class="font-bold">Texas Business Network</h4><p class="text-sm text-zinc-400">Collaborator · Gold</p></div>
+          </div>
+          <div class="space-y-2 text-sm">
+            <div class="flex items-center gap-2 text-zinc-400"><i data-lucide="mail" class="w-3 h-3"></i><span>events@tbn.org</span></div>
+            <div class="flex items-center gap-2 text-zinc-400"><i data-lucide="phone" class="w-3 h-3"></i><span>+1 (555) 777-8888</span></div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-zinc-800 flex items-center justify-between">
+            <span class="text-xs text-zinc-400">Next Meeting</span>
+            <span class="font-bold text-purple-500">May 20</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── CRM & SALES ───────────────────────────── -->
+    <div id="view-crm" class="module-content overflow-y-auto h-[calc(100vh-4rem)] p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold">CRM & Sales</h2>
+        <div class="flex gap-3">
+          <button class="btn-secondary px-6 py-2.5 rounded-xl font-semibold text-sm">Export Data</button>
+          <button class="btn-primary px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2 text-sm">
+            <i data-lucide="plus" class="w-5 h-5"></i> New Lead
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
+        <div class="xl:col-span-3">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="glass p-4 rounded-2xl border border-zinc-800">
+              <h4 class="font-bold mb-4 flex items-center justify-between text-sm">
+                <span>Qualified Leads</span>
+                <span class="text-xs bg-zinc-700 px-2 py-1 rounded-full">24</span>
+              </h4>
+              <div class="space-y-3">
+                <div class="p-3 rounded-xl bg-zinc-900/50 border border-zinc-800">
+                  <div class="flex items-center justify-between mb-1"><span class="font-semibold text-sm">EB-3 Sponsorship</span><span class="text-xs text-green-500">100%</span></div>
+                  <div class="text-xs text-zinc-400">Global Partners Inc</div>
+                  <div class="text-xs text-zinc-500 mt-1">$75,000 - Closed</div>
+                </div>
+                <div class="p-3 rounded-xl bg-zinc-900/50 border border-zinc-800">
+                  <div class="flex items-center justify-between mb-1"><span class="font-semibold text-sm">H-2B Visa</span><span class="text-xs text-green-500">90%</span></div>
+                  <div class="text-xs text-zinc-400">Resort & Spa Group</div>
+                  <div class="text-xs text-zinc-500 mt-1">$45,000 - Negotiating</div>
+                </div>
+              </div>
+            </div>
+            <div class="glass p-4 rounded-2xl border border-zinc-800">
+              <h4 class="font-bold mb-4 flex items-center justify-between text-sm">
+                <span>In Progress</span>
+                <span class="text-xs bg-zinc-700 px-2 py-1 rounded-full">18</span>
+              </h4>
+              <div class="space-y-3">
+                <div class="p-3 rounded-xl bg-zinc-900/50 border border-zinc-800">
+                  <div class="flex items-center justify-between mb-1"><span class="font-semibold text-sm">Recruitment Drive</span><span class="text-xs text-yellow-500">50%</span></div>
+                  <div class="text-xs text-zinc-400">Tech Solutions Inc</div>
+                  <div class="text-xs text-zinc-500 mt-1">$30,000 - In Progress</div>
+                </div>
+                <div class="p-3 rounded-xl bg-zinc-900/50 border border-zinc-800">
+                  <div class="flex items-center justify-between mb-1"><span class="font-semibold text-sm">Event Sponsorship</span><span class="text-xs text-yellow-500">25%</span></div>
+                  <div class="text-xs text-zinc-400">Global Investment Group</div>
+                  <div class="text-xs text-zinc-500 mt-1">$50,000 - Proposal</div>
+                </div>
+              </div>
+            </div>
+            <div class="glass p-4 rounded-2xl border border-zinc-800">
+              <h4 class="font-bold mb-4 flex items-center justify-between text-sm">
+                <span>Closed Won</span>
+                <span class="text-xs bg-zinc-700 px-2 py-1 rounded-full">36</span>
+              </h4>
+              <div class="space-y-3">
+                <div class="p-3 rounded-xl bg-zinc-900/50 border border-zinc-800">
+                  <div class="flex items-center justify-between mb-1"><span class="font-semibold text-sm">Annual Contract</span><span class="text-xs text-green-500">100%</span></div>
+                  <div class="text-xs text-zinc-400">Medical Center</div>
+                  <div class="text-xs text-zinc-500 mt-1">$150,000 - Closed</div>
+                </div>
+                <div class="p-3 rounded-xl bg-zinc-900/50 border border-zinc-800">
+                  <div class="flex items-center justify-between mb-1"><span class="font-semibold text-sm">Visa Processing</span><span class="text-xs text-green-500">100%</span></div>
+                  <div class="text-xs text-zinc-400">Tech Park Dallas</div>
+                  <div class="text-xs text-zinc-500 mt-1">$25,000 - Closed</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="xl:col-span-1 space-y-6">
+          <div class="glass p-4 rounded-2xl border border-zinc-800">
+            <h3 class="font-bold mb-4 text-sm">Recent Activity</h3>
+            <div class="space-y-4">
+              <div class="flex gap-3"><div class="w-2 h-2 mt-2 rounded-full bg-green-500 flex-shrink-0"></div><div><div class="text-sm font-medium">Lead converted</div><div class="text-xs text-zinc-400">2 hours ago</div></div></div>
+              <div class="flex gap-3"><div class="w-2 h-2 mt-2 rounded-full bg-blue-500 flex-shrink-0"></div><div><div class="text-sm font-medium">Meeting scheduled</div><div class="text-xs text-zinc-400">Yesterday</div></div></div>
+              <div class="flex gap-3"><div class="w-2 h-2 mt-2 rounded-full bg-yellow-500 flex-shrink-0"></div><div><div class="text-sm font-medium">Follow-up sent</div><div class="text-xs text-zinc-400">Yesterday</div></div></div>
+            </div>
+          </div>
+          <div class="glass p-4 rounded-2xl border border-zinc-800">
+            <h3 class="font-bold mb-4 text-sm">Top Opportunities</h3>
+            <div class="space-y-3">
+              <div class="p-3 rounded-xl bg-green-500/10 border border-green-500/30"><div class="text-sm font-bold">Global Partners - EB-3</div><div class="text-xs text-zinc-400 mt-1">$75K · 100%</div></div>
+              <div class="p-3 rounded-xl bg-blue-500/10 border border-blue-500/30"><div class="text-sm font-bold">Resort Group - H-2B</div><div class="text-xs text-zinc-400 mt-1">$45K · 90%</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── AI STUDIO ─────────────────────────────── -->
+    <div id="view-ai-studio" class="module-content overflow-y-auto h-[calc(100vh-4rem)] p-6">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-2xl font-bold">AI Studio</h2>
+          <p class="text-zinc-400 mt-1 text-sm">Generate content, flyers, emails, and campaigns with AI.</p>
+        </div>
+        <button class="bg-purple-600 hover:bg-purple-500 text-white px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2 text-sm">
+          <i data-lucide="sparkles" class="w-5 h-5"></i>
+          New Generation
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div onclick="generateContent('flyer')" class="cursor-pointer glass p-6 rounded-3xl border border-zinc-800 hover:border-purple-500/50 transition group">
+          <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-900 to-purple-700 flex items-center justify-center mb-4 group-hover:scale-110 transition">
+            <i data-lucide="image" class="w-8 h-8 text-white"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Generate Flyer</h3>
+          <p class="text-zinc-400 text-sm">Create stunning event flyers and promotional graphics.</p>
+          <div class="mt-4 text-xs text-purple-500 font-medium flex items-center gap-1"><span>Starts at $50</span><i data-lucide="chevron-right" class="w-3 h-3"></i></div>
+        </div>
+        <div onclick="generateContent('email')" class="cursor-pointer glass p-6 rounded-3xl border border-zinc-800 hover:border-purple-500/50 transition group">
+          <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-900 to-blue-700 flex items-center justify-center mb-4 group-hover:scale-110 transition">
+            <i data-lucide="mail" class="w-8 h-8 text-white"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Generate Email</h3>
+          <p class="text-zinc-400 text-sm">Write professional emails for candidates and sponsors.</p>
+          <div class="mt-4 text-xs text-purple-500 font-medium flex items-center gap-1"><span>Starts at $25</span><i data-lucide="chevron-right" class="w-3 h-3"></i></div>
+        </div>
+        <div onclick="generateContent('ad')" class="cursor-pointer glass p-6 rounded-3xl border border-zinc-800 hover:border-purple-500/50 transition group">
+          <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-900 to-orange-700 flex items-center justify-center mb-4 group-hover:scale-110 transition">
+            <i data-lucide="megaphone" class="w-8 h-8 text-white"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Generate Ad</h3>
+          <p class="text-zinc-400 text-sm">Create job ads and marketing campaigns.</p>
+          <div class="mt-4 text-xs text-purple-500 font-medium flex items-center gap-1"><span>Starts at $35</span><i data-lucide="chevron-right" class="w-3 h-3"></i></div>
+        </div>
+        <div onclick="generateContent('proposal')" class="cursor-pointer glass p-6 rounded-3xl border border-zinc-800 hover:border-purple-500/50 transition group">
+          <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-900 to-emerald-700 flex items-center justify-center mb-4 group-hover:scale-110 transition">
+            <i data-lucide="file-text" class="w-8 h-8 text-white"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Generate Proposal</h3>
+          <p class="text-zinc-400 text-sm">Draft sponsor proposals and business plans.</p>
+          <div class="mt-4 text-xs text-purple-500 font-medium flex items-center gap-1"><span>Starts at $75</span><i data-lucide="chevron-right" class="w-3 h-3"></i></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 glass p-6 rounded-2xl border border-zinc-800">
+          <h3 class="font-bold mb-4">Recent Generations</h3>
+          <div class="space-y-3">
+            <div class="p-4 rounded-xl bg-zinc-900/50 border border-zinc-800 flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center"><i data-lucide="image" class="w-5 h-5 text-purple-500"></i></div>
+                <div><div class="font-medium text-sm">Cultural Handshake Summit Flyer</div><div class="text-xs text-zinc-400">Generated 2 hours ago</div></div>
+              </div>
+              <div class="flex gap-2">
+                <button class="px-3 py-1 text-xs bg-zinc-800 rounded-lg hover:bg-zinc-700">Download</button>
+                <button class="px-3 py-1 text-xs bg-zinc-800 rounded-lg hover:bg-zinc-700">Edit</button>
+              </div>
+            </div>
+            <div class="p-4 rounded-xl bg-zinc-900/50 border border-zinc-800 flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><i data-lucide="mail" class="w-5 h-5 text-blue-500"></i></div>
+                <div><div class="font-medium text-sm">Sponsor Follow-up Email</div><div class="text-xs text-zinc-400">Generated yesterday</div></div>
+              </div>
+              <div class="flex gap-2">
+                <button class="px-3 py-1 text-xs bg-zinc-800 rounded-lg hover:bg-zinc-700">Download</button>
+                <button class="px-3 py-1 text-xs bg-zinc-800 rounded-lg hover:bg-zinc-700">Edit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="glass p-6 rounded-2xl border border-zinc-800">
+          <h3 class="font-bold mb-4">Usage Stats</h3>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-sm mb-1"><span class="text-zinc-400">Flyers Generated</span><span class="text-yellow-500">24</span></div>
+              <div class="h-2 bg-zinc-800 rounded-full overflow-hidden"><div class="h-full bg-purple-500 w-[60%]"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-sm mb-1"><span class="text-zinc-400">Emails Sent</span><span class="text-yellow-500">156</span></div>
+              <div class="h-2 bg-zinc-800 rounded-full overflow-hidden"><div class="h-full bg-purple-500 w-[78%]"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-sm mb-1"><span class="text-zinc-400">Credits Remaining</span><span class="text-yellow-500">12</span></div>
+              <div class="h-2 bg-zinc-800 rounded-full overflow-hidden"><div class="h-full bg-yellow-500 w-[30%]"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SPONSOR PORTAL ─────────────────────────── -->
+    <div id="view-sponsors" class="module-content overflow-y-auto h-[calc(100vh-4rem)] p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold">Sponsor Portal</h2>
+        <button class="btn-primary px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2 text-sm">
+          <i data-lucide="plus" class="w-5 h-5"></i>
+          New Sponsor
+        </button>
+      </div>
+
+      <!-- Sponsor Packages -->
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+
+        <div class="bg-zinc-900 border border-yellow-500 rounded-3xl p-6 shadow-xl">
+          <h3 class="text-2xl font-bold text-yellow-400">Platinum Sponsor</h3>
+          <p class="text-4xl font-bold mt-4">$50,000</p>
+          <ul class="mt-6 space-y-2 text-zinc-300 text-sm">
+            <li>Main stage branding</li>
+            <li>VIP networking access</li>
+            <li>Investor introductions</li>
+            <li>Media visibility</li>
+            <li>Premium booth placement</li>
+          </ul>
+          <button class="mt-6 w-full bg-yellow-500 text-black py-3 rounded-xl font-bold hover:bg-yellow-400 transition">Become Sponsor</button>
+        </div>
+
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 shadow-xl">
+          <h3 class="text-2xl font-bold text-yellow-300">Gold Sponsor</h3>
+          <p class="text-4xl font-bold mt-4">$15,000</p>
+          <ul class="mt-6 space-y-2 text-zinc-300 text-sm">
+            <li>Event branding</li>
+            <li>Website promotion</li>
+            <li>Social media exposure</li>
+            <li>Networking opportunities</li>
+          </ul>
+          <button class="mt-6 w-full bg-yellow-400 text-black py-3 rounded-xl font-bold hover:bg-yellow-300 transition">Become Sponsor</button>
+        </div>
+
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 shadow-xl">
+          <h3 class="text-2xl font-bold text-zinc-200">Silver Sponsor</h3>
+          <p class="text-4xl font-bold mt-4">$5,000</p>
+          <ul class="mt-6 space-y-2 text-zinc-300 text-sm">
+            <li>Logo placement</li>
+            <li>Event mentions</li>
+            <li>Business exposure</li>
+          </ul>
+          <button class="mt-6 w-full bg-zinc-700 text-white py-3 rounded-xl font-bold hover:bg-zinc-600 transition">Become Sponsor</button>
+        </div>
+
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 shadow-xl">
+          <h3 class="text-2xl font-bold text-orange-400">Vendor Booth</h3>
+          <p class="text-4xl font-bold mt-4">$3,500</p>
+          <ul class="mt-6 space-y-2 text-zinc-300 text-sm">
+            <li>Business booth</li>
+            <li>Lead generation</li>
+            <li>Event access</li>
+            <li>Networking exposure</li>
+          </ul>
+          <button class="mt-6 w-full bg-orange-500 text-white py-3 rounded-xl font-bold hover:bg-orange-400 transition">Reserve Booth</button>
+        </div>
+
+      </div>
+
+      <!-- Active Sponsors & Analytics -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="glass p-6 rounded-2xl border border-zinc-800">
+          <h3 class="font-bold mb-4">Active Sponsors</h3>
+          <div class="space-y-3">
+            <div class="p-4 rounded-xl bg-zinc-900/50 border border-zinc-800 flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-lg bg-yellow-500/20 flex items-center justify-center"><i data-lucide="star" class="w-5 h-5 text-yellow-500"></i></div>
+                <div><div class="font-bold text-sm">Tech Solutions Inc</div><div class="text-xs text-zinc-400">Gold · $5,000</div></div>
+              </div>
+              <button class="text-xs bg-zinc-800 px-3 py-1 rounded-lg hover:bg-zinc-700">Manage</button>
+            </div>
+            <div class="p-4 rounded-xl bg-zinc-900/50 border border-zinc-800 flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><i data-lucide="handshake" class="w-5 h-5 text-blue-500"></i></div>
+                <div><div class="font-bold text-sm">Business Network</div><div class="text-xs text-zinc-400">Silver · $2,500</div></div>
+              </div>
+              <button class="text-xs bg-zinc-800 px-3 py-1 rounded-lg hover:bg-zinc-700">Manage</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass p-6 rounded-2xl border border-zinc-800">
+          <h3 class="font-bold mb-4">Sponsor Growth</h3>
+          <div class="h-40 flex items-end justify-between gap-2 mb-2">
+            <div class="w-full bg-purple-500/20 rounded-t-lg" style="height:60%"></div>
+            <div class="w-full bg-purple-500/20 rounded-t-lg" style="height:75%"></div>
+            <div class="w-full bg-purple-500/20 rounded-t-lg" style="height:85%"></div>
+            <div class="w-full bg-purple-500/20 rounded-t-lg" style="height:92%"></div>
+            <div class="w-full bg-purple-500/20 rounded-t-lg" style="height:88%"></div>
+            <div class="w-full bg-yellow-500/40 rounded-t-lg" style="height:100%"></div>
+          </div>
+          <div class="flex justify-between text-xs text-zinc-500">
+            <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+          </div>
+          <div class="mt-4 space-y-2">
+            <div>
+              <div class="flex justify-between text-sm mb-1"><span>Cultural Handshake Summit</span><span class="text-green-500">$125K</span></div>
+              <div class="h-2 bg-zinc-800 rounded-full overflow-hidden"><div class="h-full bg-yellow-500 w-full"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-sm mb-1"><span>Global Recruitment Forum</span><span class="text-green-500">$98K</span></div>
+              <div class="h-2 bg-zinc-800 rounded-full overflow-hidden"><div class="h-full bg-yellow-500 w-[78%]"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- WhatsApp Button — before </body> -->
+  <a
+    href="https://wa.me/17012603908"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Chat on WhatsApp"
+    class="fixed bottom-6 right-6 bg-green-500 hover:bg-green-400 text-white px-5 py-4 rounded-full shadow-2xl z-50 font-bold flex items-center gap-2 transition"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+      <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.12 1.523 5.853L.057 23.215a.75.75 0 00.928.928l5.362-1.466A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.745 9.745 0 01-4.984-1.369l-.356-.213-3.694 1.009 1.009-3.694-.213-.356A9.745 9.745 0 012.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"/>
+    </svg>
+    WhatsApp
+  </a>
+
+  <script>
+    lucide.createIcons();
+
+    function navigate(viewId) {
+      document.querySelectorAll('[id^="view-"]').forEach(function(view) {
+        view.classList.remove('active');
+      });
+
+      var target = document.getElementById('view-' + viewId);
+      if (target) target.classList.add('active');
+
+      document.querySelectorAll('.nav-btn').forEach(function(btn) {
+        btn.classList.remove('nav-active');
+      });
+      var activeNav = document.getElementById('nav-' + viewId);
+      if (activeNav) activeNav.classList.add('nav-active');
+
+      var titles = {
+        'dashboard': 'Dashboard',
+        'jobs': 'Ruthko Jobs',
+        'events': 'Ruthko Events',
+        'partners': 'Partners Hub',
+        'crm': 'CRM & Sales',
+        'ai-studio': 'AI Studio',
+        'sponsors': 'Sponsor Portal'
+      };
+      var title = document.getElementById('page-title');
+      if (title) title.textContent = titles[viewId] || 'Dashboard';
+
+      lucide.createIcons();
+    }
+
+    function generateContent(type) {
+      var labels = { flyer: 'Flyer Generator', email: 'Email Generator', ad: 'Ad Generator', proposal: 'Proposal Generator' };
+      alert('Opening ' + (labels[type] || type) + '...\n\nAI generation will be connected in the next build.');
+    }
+  </script>
+
+</body>
+</html>
