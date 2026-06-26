@@ -301,9 +301,10 @@
         // ── Sample mode: simulate success ─────────────────
         if (cfg.sampleMode) {
           await delay(400);
-          // Try to fire email even in sample mode (works with netlify dev)
-          var sampleLead = buildLead(formName, data) || { type: formName, name: data.name || data.full_name || data.company || data.contact_person || "Sample Lead", source: "sample-mode" };
-          notifyAdmin(sampleLead); // fire-and-forget
+          // Try to fire emails even in sample mode (works with netlify dev)
+          var sampleLead = buildLead(formName, data) || { type: formName, name: data.name || data.full_name || data.company || data.contact_person || "Sample Lead", email: data.email || "", source: "sample-mode" };
+          notifyAdmin(sampleLead);               // fire-and-forget
+          sendAutoReply(sampleLead, data);       // fire-and-forget
           toast("✓ Saved to CRM (sample mode) — redirecting…");
           await delay(1200);
           window.location.href = THANK_YOU;
@@ -330,8 +331,10 @@
             raw_data:  data
           }]);
 
-          // 4. Fire admin email (non-blocking)
-          notifyAdmin(Object.assign({}, lead, { id: leadId }));
+          // 4. Fire emails (non-blocking)
+          var fullLead = Object.assign({}, lead, { id: leadId });
+          notifyAdmin(fullLead);
+          sendAutoReply(fullLead, data);
 
           toast("✓ Submitted! We'll be in touch within 48 hours.");
           await delay(1200);
@@ -349,8 +352,6 @@
   }
 
   // ── Admin email notification ──────────────────────────────
-  // Calls the Netlify function. Fails silently so the form
-  // submission is never blocked by email issues.
   async function notifyAdmin(lead) {
     try {
       var res = await fetch("/.netlify/functions/notify-lead", {
@@ -363,8 +364,45 @@
         console.warn("notify-lead returned", res.status, body);
       }
     } catch (err) {
-      // Not available in python server mode — that's fine
       console.info("notify-lead not reachable (python server mode?):", err.message);
+    }
+  }
+
+  // ── Auto-reply to submitter ───────────────────────────────
+  // Sends a tailored confirmation email to the person who
+  // submitted the form. Fails silently — never blocks redirect.
+  async function sendAutoReply(lead, formData) {
+    var email = lead.email || formData.email;
+    if (!email || !email.includes("@")) return; // no email, skip
+
+    var payload = Object.assign({}, lead, {
+      // merge form-specific fields the function needs for copy
+      business_name: formData.business_name,
+      booth_count:   formData.booth_count,
+      event:         formData.event,
+      role:          formData.role,
+      attendees:     formData.attendees,
+      profession:    formData.profession,
+      experience:    formData.experience,
+      country:       formData.country,
+      visa_status:   formData.visa_status,
+      industry:      formData.industry,
+      visa_type:     formData.visa_type,
+      worker_count:  formData.worker_count
+    });
+
+    try {
+      var res = await fetch("/.netlify/functions/send-auto-reply", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify(payload)
+      });
+      if (!res.ok) {
+        var body = await res.json().catch(function(){ return {}; });
+        console.warn("send-auto-reply returned", res.status, body);
+      }
+    } catch (err) {
+      console.info("send-auto-reply not reachable (python server mode?):", err.message);
     }
   }
 
