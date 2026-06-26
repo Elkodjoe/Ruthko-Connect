@@ -4,7 +4,9 @@
 //
 // Intercepts all intake form submissions.
 // - sampleMode: true  → shows success toast, redirects to thank-you.html
-// - sampleMode: false → writes lead + detail row to Supabase, then redirects
+// - sampleMode: false → writes lead + detail row to Supabase,
+//                       fires admin email via notify-lead function,
+//                       then redirects
 // ============================================================
 
 (function () {
@@ -298,7 +300,10 @@
 
         // ── Sample mode: simulate success ─────────────────
         if (cfg.sampleMode) {
-          await delay(600);
+          await delay(400);
+          // Try to fire email even in sample mode (works with netlify dev)
+          var sampleLead = buildLead(formName, data) || { type: formName, name: data.name || data.full_name || data.company || data.contact_person || "Sample Lead", source: "sample-mode" };
+          notifyAdmin(sampleLead); // fire-and-forget
           toast("✓ Saved to CRM (sample mode) — redirecting…");
           await delay(1200);
           window.location.href = THANK_YOU;
@@ -325,6 +330,9 @@
             raw_data:  data
           }]);
 
+          // 4. Fire admin email (non-blocking)
+          notifyAdmin(Object.assign({}, lead, { id: leadId }));
+
           toast("✓ Submitted! We'll be in touch within 48 hours.");
           await delay(1200);
           window.location.href = THANK_YOU;
@@ -338,6 +346,26 @@
         }
       });
     });
+  }
+
+  // ── Admin email notification ──────────────────────────────
+  // Calls the Netlify function. Fails silently so the form
+  // submission is never blocked by email issues.
+  async function notifyAdmin(lead) {
+    try {
+      var res = await fetch("/.netlify/functions/notify-lead", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify(lead)
+      });
+      if (!res.ok) {
+        var body = await res.json().catch(function(){ return {}; });
+        console.warn("notify-lead returned", res.status, body);
+      }
+    } catch (err) {
+      // Not available in python server mode — that's fine
+      console.info("notify-lead not reachable (python server mode?):", err.message);
+    }
   }
 
   function delay(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
