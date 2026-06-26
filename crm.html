@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ruthko Connect — CRM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Supabase JS (only used when sampleMode: false) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body { background: #0a0a0a; color: #fff; }
+    .gradient-text { background: linear-gradient(to right, #facc15, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(10px); }
+    .field { width: 100%; background: #111; border: 1px solid #27272a; border-radius: 10px; padding: 10px 14px; color: #fff; font-size: 14px; outline: none; transition: border-color 0.2s; }
+    .field:focus { border-color: rgba(250,204,21,0.5); }
+    .field::placeholder { color: #71717a; }
+    select.field option { background: #111; }
+    #crm-toast { display: none; }
+    #detail-panel { transition: transform 0.25s ease; }
+    #lead-modal { backdrop-filter: blur(4px); }
+    .scrollbar-thin::-webkit-scrollbar { width: 4px; }
+    .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+    .scrollbar-thin::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="border-b border-zinc-800 bg-black/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-full px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <img src="images/logo.png" alt="Ruthko Logo" class="w-9 h-9 rounded-xl object-cover" onerror="this.style.display='none'">
+        <div>
+          <h1 class="font-bold text-lg gradient-text leading-tight">Ruthko Connect</h1>
+          <p class="text-xs text-zinc-500 leading-tight">CRM — Lead Management</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span id="sample-badge" class="text-xs bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 px-3 py-1 rounded-full font-medium">Sample Mode</span>
+        <a href="payments.html" class="hidden md:block text-sm text-zinc-400 hover:text-white px-3 py-2 rounded-lg border border-zinc-800 hover:border-zinc-600 transition">Payments</a>
+        <a href="intake.html"   class="hidden md:block text-sm text-zinc-400 hover:text-white px-3 py-2 rounded-lg border border-zinc-800 hover:border-zinc-600 transition">Intake</a>
+        <a href="index.html"    class="text-sm text-zinc-400 hover:text-white px-3 py-2 rounded-lg border border-zinc-800 hover:border-zinc-600 transition">← Dashboard</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Stats bar -->
+  <div class="border-b border-zinc-800 bg-zinc-950">
+    <div class="max-w-full px-6 py-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="glass rounded-xl p-4 border border-zinc-800">
+        <div class="text-xs text-zinc-500 mb-1">Total Leads</div>
+        <div id="stat-total" class="text-2xl font-bold">—</div>
+      </div>
+      <div class="glass rounded-xl p-4 border border-zinc-800">
+        <div class="text-xs text-zinc-500 mb-1">Pipeline Value</div>
+        <div id="stat-pipeline" class="text-2xl font-bold text-green-400">—</div>
+      </div>
+      <div class="glass rounded-xl p-4 border border-zinc-800">
+        <div class="text-xs text-zinc-500 mb-1">Converted</div>
+        <div id="stat-converted" class="text-2xl font-bold text-blue-400">—</div>
+      </div>
+      <div class="glass rounded-xl p-4 border border-zinc-800">
+        <div class="text-xs text-zinc-500 mb-1">High Priority</div>
+        <div id="stat-high-pri" class="text-2xl font-bold text-red-400">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="border-b border-zinc-800 bg-black/30 px-6 py-3 flex flex-wrap items-center gap-3">
+    <input id="crm-search" type="search" placeholder="Search name, email, org…" class="field max-w-xs">
+    <select id="filter-type" class="field w-auto">
+      <option value="all">All Types</option>
+      <option value="employer">Employer</option>
+      <option value="candidate">Candidate</option>
+      <option value="sponsor">Sponsor</option>
+      <option value="vendor">Vendor</option>
+      <option value="event">Event RSVP</option>
+      <option value="invoice">Invoice</option>
+    </select>
+    <select id="filter-status" class="field w-auto">
+      <option value="all">All Statuses</option>
+      <option value="new">New</option>
+      <option value="contacted">Contacted</option>
+      <option value="qualified">Qualified</option>
+      <option value="converted">Converted</option>
+      <option value="lost">Lost</option>
+    </select>
+    <span id="crm-count" class="text-sm text-zinc-500 ml-auto"></span>
+    <button id="btn-refresh" class="px-4 py-2 text-sm bg-zinc-800 hover:bg-zinc-700 rounded-lg transition font-medium">↻ Refresh</button>
+    <button id="btn-export"  class="px-4 py-2 text-sm bg-zinc-800 hover:bg-zinc-700 rounded-lg transition font-medium">⬇ Export CSV</button>
+    <button id="btn-add"     class="px-4 py-2 text-sm font-bold text-black rounded-lg transition" style="background:linear-gradient(135deg,#facc15,#f59e0b)">+ Add Lead</button>
+  </div>
+
+  <!-- Table area -->
+  <div class="flex-1 overflow-hidden relative flex">
+
+    <!-- Main table -->
+    <div class="flex-1 overflow-auto scrollbar-thin">
+      <div id="crm-loading" class="hidden px-6 py-8 text-center text-zinc-500 text-sm">Loading leads…</div>
+      <table class="w-full text-sm min-w-[900px]">
+        <thead class="bg-zinc-950 border-b border-zinc-800 sticky top-0 z-10">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs text-zinc-400 font-semibold uppercase tracking-wider">Name / Org</th>
+            <th class="px-4 py-3 text-left text-xs text-zinc-400 font-semibold uppercase tracking-wider">Type</th>
+            <th class="px-4 py-3 text-left text-xs text-zinc-400 font-semibold uppercase tracking-wider">Status</th>
+            <th class="px-4 py-3 text-left text-xs text-zinc-400 font-semibold uppercase tracking-wider">Priority</th>
+            <th class="px-4 py-3 text-left text-xs text-zinc-400 font-semibold uppercase tracking-wider">Value</th>
+            <th class="px-4 py-3 text-left text-xs text-zinc-400 font-semibold uppercase tracking-wider">Package</th>
+            <th class="px-4 py-3 text-left text-xs text-zinc-400 font-semibold uppercase tracking-wider">Date</th>
+            <th class="px-4 py-3 text-left text-xs text-zinc-400 font-semibold uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="crm-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- Detail slide-in panel -->
+    <div id="detail-panel" class="hidden w-80 border-l border-zinc-800 bg-zinc-950 overflow-y-auto scrollbar-thin flex-shrink-0 p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="font-bold text-lg">Lead Detail</h3>
+        <div class="flex gap-2">
+          <button id="detail-edit"  class="px-3 py-1.5 text-xs bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 transition">Edit</button>
+          <button id="detail-close" class="px-3 py-1.5 text-xs bg-zinc-800 hover:bg-zinc-700 rounded-lg transition">✕</button>
+        </div>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <h4 id="detail-name" class="text-xl font-bold"></h4>
+          <div class="flex gap-2 mt-1">
+            <span id="detail-type"   class="text-xs bg-zinc-800 px-2 py-0.5 rounded-full"></span>
+            <span id="detail-status" class="text-xs bg-zinc-800 px-2 py-0.5 rounded-full"></span>
+          </div>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between py-1 border-b border-zinc-800"><span class="text-zinc-400">Email</span><span id="detail-email" class="text-right max-w-[160px] truncate"></span></div>
+          <div class="flex justify-between py-1 border-b border-zinc-800"><span class="text-zinc-400">Phone</span><span id="detail-phone"></span></div>
+          <div class="flex justify-between py-1 border-b border-zinc-800"><span class="text-zinc-400">Organization</span><span id="detail-org" class="text-right max-w-[160px] truncate"></span></div>
+          <div class="flex justify-between py-1 border-b border-zinc-800"><span class="text-zinc-400">Deal Value</span><span id="detail-value" class="text-green-400 font-semibold"></span></div>
+          <div class="flex justify-between py-1 border-b border-zinc-800"><span class="text-zinc-400">Package</span><span id="detail-package" class="text-right max-w-[160px] truncate"></span></div>
+          <div class="flex justify-between py-1 border-b border-zinc-800"><span class="text-zinc-400">Source</span><span id="detail-source"></span></div>
+          <div class="flex justify-between py-1 border-b border-zinc-800"><span class="text-zinc-400">Follow-up</span><span id="detail-followup" class="text-yellow-400"></span></div>
+          <div class="flex justify-between py-1 border-b border-zinc-800"><span class="text-zinc-400">Created</span><span id="detail-created"></span></div>
+        </div>
+        <div>
+          <p class="text-xs text-zinc-500 uppercase tracking-wider mb-2">Notes</p>
+          <p id="detail-notes" class="text-sm text-zinc-300 leading-relaxed"></p>
+        </div>
+        <div>
+          <p class="text-xs text-zinc-500 uppercase tracking-wider mb-2">Details</p>
+          <div id="detail-extra"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Add / Edit Modal ─────────────────────────────────── -->
+  <div id="lead-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+    <div class="bg-zinc-900 border border-zinc-700 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto scrollbar-thin p-8">
+      <div class="flex items-center justify-between mb-6">
+        <h3 id="modal-title" class="text-xl font-bold">Add New Lead</h3>
+        <button id="modal-close" class="text-zinc-400 hover:text-white text-2xl leading-none">✕</button>
+      </div>
+      <form id="lead-form" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs text-zinc-400 mb-1">Full Name *</label>
+            <input id="f-name" type="text" required class="field" placeholder="Name">
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-400 mb-1">Organization</label>
+            <input id="f-org" type="text" class="field" placeholder="Company / Entity">
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs text-zinc-400 mb-1">Email</label>
+            <input id="f-email" type="email" class="field" placeholder="email@example.com">
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-400 mb-1">Phone</label>
+            <input id="f-phone" type="tel" class="field" placeholder="+1 (555) 000-0000">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div>
+            <label class="block text-xs text-zinc-400 mb-1">Type *</label>
+            <select id="f-type" required class="field">
+              <option value="employer">Employer</option>
+              <option value="candidate">Candidate</option>
+              <option value="sponsor">Sponsor</option>
+              <option value="vendor">Vendor</option>
+              <option value="event">Event RSVP</option>
+              <option value="invoice">Invoice</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-400 mb-1">Status *</label>
+            <select id="f-status" required class="field">
+              <option value="new">New</option>
+              <option value="contacted">Contacted</option>
+              <option value="qualified">Qualified</option>
+              <option value="converted">Converted</option>
+              <option value="lost">Lost</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-400 mb-1">Priority *</label>
+            <select id="f-priority" required class="field">
+              <option value="high">High</option>
+              <option value="medium" selected>Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-400 mb-1">Deal Value ($)</label>
+            <input id="f-value" type="number" min="0" step="0.01" class="field" placeholder="0">
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs text-zinc-400 mb-1">Package</label>
+            <input id="f-package" type="text" class="field" placeholder="e.g. Gold — $15,000">
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-400 mb-1">Source</label>
+            <select id="f-source" class="field">
+              <option value="intake-form">Intake Form</option>
+              <option value="invoice-form">Invoice Form</option>
+              <option value="manual">Manual Entry</option>
+              <option value="referral">Referral</option>
+              <option value="whatsapp">WhatsApp</option>
+              <option value="event">Event</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-400 mb-1">Next Follow-up Date</label>
+          <input id="f-followup" type="date" class="field">
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-400 mb-1">Notes</label>
+          <textarea id="f-notes" rows="3" class="field resize-none" placeholder="Any notes about this lead…"></textarea>
+        </div>
+        <div class="flex gap-3 pt-2">
+          <button type="submit" class="flex-1 py-3 rounded-xl font-bold text-black" style="background:linear-gradient(135deg,#facc15,#f59e0b)">Save Lead</button>
+          <button type="button" id="modal-close-2" onclick="document.getElementById('lead-modal').classList.add('hidden')" class="px-6 py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-sm font-medium transition">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="crm-toast"></div>
+
+  <!-- Sample mode banner -->
+  <script>
+    var cfg = null;
+  </script>
+  <script src="js/supabase-config.js"></script>
+  <script>
+    // Hide sample badge when live
+    if (window.RUTHKO_CONFIG && !window.RUTHKO_CONFIG.sampleMode) {
+      var badge = document.getElementById("sample-badge");
+      if (badge) badge.style.display = "none";
+    }
+  </script>
+  <script src="js/ruthko-crm.js"></script>
+
+</body>
+</html>
