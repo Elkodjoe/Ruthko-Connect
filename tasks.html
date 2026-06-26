@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ruthko Connect — Tasks</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body { background: #0a0a0a; color: #fff; }
+    .gradient-text { background: linear-gradient(to right, #facc15, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(10px); }
+    .field { width: 100%; background: #111; border: 1px solid #27272a; border-radius: 10px; padding: 10px 14px; color: #fff; font-size: 14px; outline: none; transition: border-color 0.2s; }
+    .field:focus { border-color: rgba(250,204,21,0.5); }
+    .field::placeholder { color: #71717a; }
+    select.field option { background: #111; }
+    .active-tab { background: rgba(250,204,21,0.15); color: #facc15; border-color: rgba(250,204,21,0.4); }
+    #tasks-toast { display: none; }
+    .scrollbar-thin::-webkit-scrollbar { width: 4px; }
+    .scrollbar-thin::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="border-b border-zinc-800 bg-black/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <img src="images/logo.png" alt="Ruthko" class="w-9 h-9 rounded-xl object-cover" onerror="this.style.display='none'">
+        <div>
+          <h1 class="font-bold text-lg gradient-text leading-tight">Ruthko Connect</h1>
+          <p class="text-xs text-zinc-500 leading-tight">Follow-up Tasks</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span id="sample-badge" class="text-xs bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 px-3 py-1 rounded-full">Sample Mode</span>
+        <a href="crm.html"   class="hidden md:block text-sm text-zinc-400 hover:text-white px-3 py-2 rounded-lg border border-zinc-800 hover:border-zinc-600 transition">CRM</a>
+        <a href="index.html" class="text-sm text-zinc-400 hover:text-white px-3 py-2 rounded-lg border border-zinc-800 hover:border-zinc-600 transition">← Dashboard</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Stats -->
+  <div class="border-b border-zinc-800 bg-zinc-950">
+    <div class="max-w-5xl mx-auto px-6 py-4 grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div class="glass rounded-xl p-4 border border-zinc-800">
+        <div class="text-xs text-zinc-500 mb-1">Total</div>
+        <div id="stat-total" class="text-2xl font-bold">—</div>
+      </div>
+      <div class="glass rounded-xl p-4 border border-zinc-800">
+        <div class="text-xs text-zinc-500 mb-1">Pending</div>
+        <div id="stat-pending" class="text-2xl font-bold text-yellow-400">—</div>
+      </div>
+      <div class="glass rounded-xl p-4 border border-zinc-800">
+        <div class="text-xs text-zinc-500 mb-1">Overdue</div>
+        <div id="stat-overdue" class="text-2xl font-bold text-red-400">—</div>
+      </div>
+      <div class="glass rounded-xl p-4 border border-zinc-800">
+        <div class="text-xs text-zinc-500 mb-1">Due Today</div>
+        <div id="stat-today" class="text-2xl font-bold text-blue-400">—</div>
+      </div>
+      <div class="glass rounded-xl p-4 border border-zinc-800">
+        <div class="text-xs text-zinc-500 mb-1">Completed</div>
+        <div id="stat-completed" class="text-2xl font-bold text-green-400">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="border-b border-zinc-800 bg-black/30">
+    <div class="max-w-5xl mx-auto px-6 py-3 flex flex-wrap items-center gap-3">
+      <!-- View tabs -->
+      <div class="flex gap-1">
+        <button data-view="pending"   class="active-tab px-3 py-1.5 rounded-lg text-sm font-medium border border-zinc-800 transition">Pending</button>
+        <button data-view="overdue"   class="px-3 py-1.5 rounded-lg text-sm font-medium border border-zinc-800 text-zinc-400 hover:text-white transition">Overdue</button>
+        <button data-view="today"     class="px-3 py-1.5 rounded-lg text-sm font-medium border border-zinc-800 text-zinc-400 hover:text-white transition">Due Today</button>
+        <button data-view="completed" class="px-3 py-1.5 rounded-lg text-sm font-medium border border-zinc-800 text-zinc-400 hover:text-white transition">Completed</button>
+        <button data-view="all"       class="px-3 py-1.5 rounded-lg text-sm font-medium border border-zinc-800 text-zinc-400 hover:text-white transition">All</button>
+      </div>
+
+      <select id="filter-priority" class="field w-auto">
+        <option value="all">All Priorities</option>
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+      </select>
+
+      <span id="tasks-count" class="text-sm text-zinc-500 ml-auto"></span>
+      <button id="btn-refresh"  class="px-4 py-2 text-sm bg-zinc-800 hover:bg-zinc-700 rounded-lg transition">↻ Refresh</button>
+      <button id="btn-add-task" class="px-4 py-2 text-sm font-bold text-black rounded-lg" style="background:linear-gradient(135deg,#facc15,#f59e0b)">+ Add Task</button>
+    </div>
+  </div>
+
+  <!-- Task list -->
+  <div class="flex-1 max-w-5xl w-full mx-auto px-6 py-6">
+    <div id="tasks-loading" class="hidden text-center text-zinc-500 text-sm py-8">Loading tasks…</div>
+    <div id="task-list" class="space-y-2"></div>
+  </div>
+
+  <!-- Add Task Modal -->
+  <div id="add-task-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+    <div class="bg-zinc-900 border border-zinc-700 rounded-3xl w-full max-w-md p-8">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold">Add Task</h3>
+        <button id="modal-close" class="text-zinc-400 hover:text-white text-2xl leading-none">✕</button>
+      </div>
+      <form id="add-task-form" class="space-y-4">
+        <div>
+          <label class="block text-xs text-zinc-400 mb-1">Task Title *</label>
+          <input id="f-title" type="text" required class="field" placeholder="e.g. Send proposal to client">
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs text-zinc-400 mb-1">Due Date</label>
+            <input id="f-due" type="date" class="field">
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-400 mb-1">Priority</label>
+            <select id="f-priority" class="field">
+              <option value="high">High</option>
+              <option value="medium" selected>Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-400 mb-1">Notes</label>
+          <textarea id="f-notes" rows="2" class="field resize-none" placeholder="Optional notes…"></textarea>
+        </div>
+        <div class="flex gap-3">
+          <button type="submit" class="flex-1 py-3 rounded-xl font-bold text-black" style="background:linear-gradient(135deg,#facc15,#f59e0b)">Save Task</button>
+          <button type="button" id="modal-cancel" class="px-5 py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-sm font-medium transition">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="tasks-toast"></div>
+
+  <script src="js/supabase-config.js"></script>
+  <script src="js/ruthko-auth.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () { RuthkoAuth.guard(); });
+    if (window.RUTHKO_CONFIG && !window.RUTHKO_CONFIG.sampleMode) {
+      var b = document.getElementById("sample-badge");
+      if (b) b.style.display = "none";
+    }
+  </script>
+  <script src="js/ruthko-tasks.js"></script>
+
+</body>
+</html>

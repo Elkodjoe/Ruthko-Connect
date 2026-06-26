@@ -303,8 +303,9 @@
           await delay(400);
           // Try to fire emails even in sample mode (works with netlify dev)
           var sampleLead = buildLead(formName, data) || { type: formName, name: data.name || data.full_name || data.company || data.contact_person || "Sample Lead", email: data.email || "", source: "sample-mode" };
-          notifyAdmin(sampleLead);               // fire-and-forget
-          sendAutoReply(sampleLead, data);       // fire-and-forget
+          createAutoTasks(null, null, sampleLead.type); // logs only in sample mode
+          notifyAdmin(sampleLead);
+          sendAutoReply(sampleLead, data);
           toast("✓ Saved to CRM (sample mode) — redirecting…");
           await delay(1200);
           window.location.href = THANK_YOU;
@@ -331,7 +332,10 @@
             raw_data:  data
           }]);
 
-          // 4. Fire emails (non-blocking)
+          // 4. Create follow-up tasks
+          await createAutoTasks(client, leadId, lead.type);
+
+          // 5. Fire emails (non-blocking)
           var fullLead = Object.assign({}, lead, { id: leadId });
           notifyAdmin(fullLead);
           sendAutoReply(fullLead, data);
@@ -349,6 +353,67 @@
         }
       });
     });
+  }
+
+  // ── Auto-task creation ────────────────────────────────────
+  var TASK_TEMPLATES = {
+    employer:  [
+      { title: "Call to discuss staffing needs",    days: 1, priority: "high"   },
+      { title: "Send candidate shortlist",           days: 5, priority: "high"   },
+      { title: "Confirm visa type & worker count",  days: 2, priority: "medium" }
+    ],
+    candidate: [
+      { title: "Request resume / CV",               days: 2, priority: "medium" },
+      { title: "Verify credentials and experience", days: 3, priority: "medium" },
+      { title: "Match to open employer listings",   days: 5, priority: "high"   }
+    ],
+    sponsor: [
+      { title: "Send sponsorship proposal",         days: 1, priority: "high"   },
+      { title: "Schedule intro call",               days: 3, priority: "high"   },
+      { title: "Follow up if no response",          days: 7, priority: "medium" }
+    ],
+    vendor: [
+      { title: "Confirm booth assignment",          days: 1, priority: "high"   },
+      { title: "Send booth invoice",                days: 2, priority: "high"   },
+      { title: "Send event day setup instructions", days: 7, priority: "medium" }
+    ],
+    event: [
+      { title: "Add to attendee list",              days: 1, priority: "medium" },
+      { title: "Send ticket and event details",     days: 2, priority: "medium" }
+    ],
+    invoice: [
+      { title: "Prepare and send invoice",          days: 1, priority: "high"   },
+      { title: "Confirm payment received",          days: 5, priority: "high"   }
+    ]
+  };
+
+  async function createAutoTasks(client, leadId, formType) {
+    var templates = TASK_TEMPLATES[formType];
+    if (!templates || !templates.length) return;
+
+    var tasks = templates.map(function (t) {
+      var due = new Date();
+      due.setDate(due.getDate() + t.days);
+      return {
+        lead_id:  leadId,
+        title:    t.title,
+        due_date: due.toISOString().slice(0, 10),
+        priority: t.priority,
+        done:     false
+      };
+    });
+
+    try {
+      if (client) {
+        var { error } = await client.from("tasks").insert(tasks);
+        if (error) console.warn("Auto-task insert warning:", error.message);
+      } else {
+        // Sample mode — log only
+        console.info("Auto-tasks (sample mode):", tasks.map(function(t){ return t.title; }).join(", "));
+      }
+    } catch (err) {
+      console.warn("createAutoTasks error:", err.message);
+    }
   }
 
   // ── Admin email notification ──────────────────────────────
