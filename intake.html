@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ruthko Connect — Partner Intake</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body { background: #0a0a0a; color: #fff; }
+    .gradient-text { background: linear-gradient(to right, #facc15, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(10px); }
+    .tab-btn { transition: all 0.2s ease; }
+    .tab-btn.active { background: linear-gradient(135deg, #facc15, #f59e0b); color: black; }
+    .field { width: 100%; background: #111; border: 1px solid #27272a; border-radius: 12px; padding: 12px 16px; color: #fff; font-size: 14px; outline: none; transition: border-color 0.2s; }
+    .field:focus { border-color: rgba(250,204,21,0.5); }
+    .field::placeholder { color: #71717a; }
+    select.field option { background: #111; color: #fff; }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- Header -->
+  <header class="border-b border-zinc-800 bg-black/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="images/logo.png" alt="Ruthko Logo" class="w-10 h-10 rounded-xl object-cover" onerror="this.style.display='none'">
+        <div>
+          <h1 class="font-bold text-lg gradient-text">Ruthko Connect</h1>
+          <p class="text-xs text-zinc-500">Partner Intake Portal</p>
+        </div>
+      </div>
+      <a href="index.html" class="text-sm text-zinc-400 hover:text-white border border-zinc-700 hover:border-zinc-500 px-4 py-2 rounded-lg transition">
+        ← Dashboard
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="max-w-5xl mx-auto px-6 py-14 text-center">
+    <h2 class="text-4xl md:text-5xl font-bold mb-4">Work With Ruthko</h2>
+    <p class="text-zinc-400 text-lg max-w-2xl mx-auto">Whether you're hiring, job-seeking, sponsoring an event, or booking a vendor booth — start here. We'll be in touch within 48 hours.</p>
+  </section>
+
+  <!-- Tab Navigation -->
+  <div class="max-w-5xl mx-auto px-6 mb-10">
+    <div class="flex flex-wrap gap-2 justify-center">
+      <button onclick="showTab('employer')"   id="tab-employer"   class="tab-btn active px-5 py-2.5 rounded-xl text-sm font-semibold border border-zinc-800">Employer / Staffing</button>
+      <button onclick="showTab('candidate')"  id="tab-candidate"  class="tab-btn px-5 py-2.5 rounded-xl text-sm font-semibold border border-zinc-800 text-zinc-300">Job Candidate</button>
+      <button onclick="showTab('sponsor')"    id="tab-sponsor"    class="tab-btn px-5 py-2.5 rounded-xl text-sm font-semibold border border-zinc-800 text-zinc-300">Sponsor</button>
+      <button onclick="showTab('vendor')"     id="tab-vendor"     class="tab-btn px-5 py-2.5 rounded-xl text-sm font-semibold border border-zinc-800 text-zinc-300">Vendor Booth</button>
+      <button onclick="showTab('rsvp')"       id="tab-rsvp"       class="tab-btn px-5 py-2.5 rounded-xl text-sm font-semibold border border-zinc-800 text-zinc-300">Event RSVP</button>
+    </div>
+  </div>
+
+  <!-- Forms -->
+  <div class="max-w-2xl mx-auto px-6 pb-24">
+
+    <!-- Employer Staffing Request -->
+    <div id="form-employer" class="tab-form">
+      <div class="glass border border-zinc-800 rounded-3xl p-8">
+        <h3 class="text-2xl font-bold mb-2">Employer Staffing Request</h3>
+        <p class="text-zinc-400 text-sm mb-8">Tell us what workers you need. We specialize in EB-3, H-2B, and direct-hire placements.</p>
+        <form name="employer-staffing" method="POST" action="/thank-you.html" data-netlify="true" netlify-honeypot="bot-field" class="space-y-4">
+          <input type="hidden" name="form-name" value="employer-staffing">
+          <input type="hidden" name="bot-field" class="hidden">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Company Name *</label>
+              <input type="text" name="company" required class="field" placeholder="Acme Corp">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Contact Person *</label>
+              <input type="text" name="contact_person" required class="field" placeholder="Jane Smith">
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Business Email *</label>
+              <input type="email" name="email" required class="field" placeholder="jane@company.com">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Phone Number</label>
+              <input type="tel" name="phone" class="field" placeholder="+1 (555) 000-0000">
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Industry / Sector *</label>
+              <select name="industry" required class="field">
+                <option value="" disabled selected>Select industry</option>
+                <option>Healthcare</option>
+                <option>Hospitality</option>
+                <option>Construction</option>
+                <option>Agriculture</option>
+                <option>Technology</option>
+                <option>Manufacturing</option>
+                <option>Retail</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Visa Type Needed</label>
+              <select name="visa_type" class="field">
+                <option value="" disabled selected>Select visa type</option>
+                <option>EB-3 (Permanent)</option>
+                <option>H-2B (Seasonal)</option>
+                <option>H-1B (Specialty)</option>
+                <option>Direct Hire (No sponsorship)</option>
+                <option>Not sure — need guidance</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-zinc-400 mb-1">Number of Workers Needed</label>
+            <input type="number" name="worker_count" min="1" class="field" placeholder="e.g. 5">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-zinc-400 mb-1">Job Description / Requirements *</label>
+            <textarea name="job_description" required rows="4" class="field resize-none" placeholder="Describe the roles, skills required, start date, location..."></textarea>
+          </div>
+          <button type="submit" class="w-full py-3.5 rounded-xl font-bold text-black" style="background: linear-gradient(135deg,#facc15,#f59e0b)">Submit Staffing Request</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Job Candidate -->
+    <div id="form-candidate" class="tab-form hidden">
+      <div class="glass border border-zinc-800 rounded-3xl p-8">
+        <h3 class="text-2xl font-bold mb-2">Job Candidate Interest</h3>
+        <p class="text-zinc-400 text-sm mb-8">Looking for a visa-sponsored job in the USA? Register your interest and our team will match you to open roles.</p>
+        <form name="candidate-interest" method="POST" action="/thank-you.html" data-netlify="true" netlify-honeypot="bot-field" class="space-y-4">
+          <input type="hidden" name="form-name" value="candidate-interest">
+          <input type="hidden" name="bot-field" class="hidden">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Full Name *</label>
+              <input type="text" name="full_name" required class="field" placeholder="John Doe">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Email *</label>
+              <input type="email" name="email" required class="field" placeholder="you@email.com">
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Phone / WhatsApp</label>
+              <input type="tel" name="phone" class="field" placeholder="+1 or country code">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Country of Residence *</label>
+              <input type="text" name="country" required class="field" placeholder="e.g. Ghana">
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Job Field / Profession *</label>
+              <select name="profession" required class="field">
+                <option value="" disabled selected>Select field</option>
+                <option>Nursing / Healthcare</option>
+                <option>Hospitality / Hotel</option>
+                <option>Engineering</option>
+                <option>Construction / Labor</option>
+                <option>Agriculture / Farming</option>
+                <option>Technology / IT</option>
+                <option>Accounting / Finance</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Years of Experience</label>
+              <select name="experience" class="field">
+                <option value="" disabled selected>Select range</option>
+                <option>Less than 1 year</option>
+                <option>1–3 years</option>
+                <option>3–5 years</option>
+                <option>5–10 years</option>
+                <option>10+ years</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-zinc-400 mb-1">Visa Status</label>
+            <select name="visa_status" class="field">
+              <option value="" disabled selected>Current visa status</option>
+              <option>No US visa (need sponsorship)</option>
+              <option>Tourist / B1-B2 visa</option>
+              <option>Student (F-1)</option>
+              <option>Work visa holder</option>
+              <option>Green card holder</option>
+              <option>US Citizen</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-zinc-400 mb-1">Tell us about yourself</label>
+            <textarea name="about" rows="4" class="field resize-none" placeholder="Briefly describe your background, certifications, and what type of job you're looking for..."></textarea>
+          </div>
+          <button type="submit" class="w-full py-3.5 rounded-xl font-bold text-black" style="background: linear-gradient(135deg,#facc15,#f59e0b)">Submit My Interest</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Sponsor Interest -->
+    <div id="form-sponsor" class="tab-form hidden">
+      <div class="glass border border-zinc-800 rounded-3xl p-8">
+        <h3 class="text-2xl font-bold mb-2">Sponsor Interest Form</h3>
+        <p class="text-zinc-400 text-sm mb-8">Interested in sponsoring a Ruthko Connect event? Choose your package and we'll send a full proposal.</p>
+
+        <!-- Package reminder -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+          <div class="border border-yellow-500 rounded-xl p-3 text-center">
+            <div class="text-yellow-400 font-bold text-xs mb-1">Platinum</div>
+            <div class="text-lg font-bold">$50K</div>
+          </div>
+          <div class="border border-zinc-700 rounded-xl p-3 text-center">
+            <div class="text-yellow-300 font-bold text-xs mb-1">Gold</div>
+            <div class="text-lg font-bold">$15K</div>
+          </div>
+          <div class="border border-zinc-700 rounded-xl p-3 text-center">
+            <div class="text-zinc-300 font-bold text-xs mb-1">Silver</div>
+            <div class="text-lg font-bold">$5K</div>
+          </div>
+          <div class="border border-zinc-700 rounded-xl p-3 text-center">
+            <div class="text-orange-400 font-bold text-xs mb-1">Bronze</div>
+            <div class="text-lg font-bold">$1K</div>
+          </div>
+        </div>
+
+        <form name="sponsor-interest" method="POST" action="/thank-you.html" data-netlify="true" netlify-honeypot="bot-field" class="space-y-4">
+          <input type="hidden" name="form-name" value="sponsor-interest">
+          <input type="hidden" name="bot-field" class="hidden">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Organization Name *</label>
+              <input type="text" name="organization" required class="field" placeholder="Company / Brand">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Contact Name *</label>
+              <input type="text" name="contact_name" required class="field" placeholder="Your name">
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Email *</label>
+              <input type="email" name="email" required class="field" placeholder="you@company.com">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Phone</label>
+              <input type="tel" name="phone" class="field" placeholder="+1 (555) 000-0000">
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-zinc-400 mb-1">Sponsorship Package *</label>
+            <select name="package" required class="field">
+              <option value="" disabled selected>Choose a package</option>
+              <option>Platinum — $50,000</option>
+              <option>Gold — $15,000</option>
+              <option>Silver — $5,000</option>
+              <option>Bronze — $1,000</option>
+              <option>Custom / Not sure yet</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-zinc-400 mb-1">Which event(s) are you interested in?</label>
+            <input type="text" name="event_interest" class="field" placeholder="e.g. Cultural Handshake Summit 2026">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-zinc-400 mb-1">Goals / Message for Us</label>
+            <textarea name="goals" rows="3" class="field resize-none" placeholder="What do you want to achieve through sponsorship?"></textarea>
+          </div>
+          <button type="submit" class="w-full py-3.5 rounded-xl font-bold text-black" style="background: linear-gradient(135deg,#facc15,#f59e0b)">Request Sponsorship Proposal</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Vendor Booth -->
+    <div id="form-vendor" class="tab-form hidden">
+      <div class="glass border border-zinc-800 rounded-3xl p-8">
+        <h3 class="text-2xl font-bold mb-2">Vendor Booth Request</h3>
+        <p class="text-zinc-400 text-sm mb-8">Reserve your booth at our next Ruthko Connect event. Booths start at $3,500 and include event access + lead generation exposure.</p>
+        <form name="vendor-booth" method="POST" action="/thank-you.html" data-netlify="true" netlify-honeypot="bot-field" class="space-y-4">
+          <input type="hidden" name="form-name" value="vendor-booth">
+          <input type="hidden" name="bot-field" class="hidden">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Business Name *</label>
+              <input type="text" name="business_name" required class="field" placeholder="Your business">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Contact Person *</label>
+              <input type="text" name="contact_name" required class="field" placeholder="Your name">
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Email *</label>
+              <input type="email" name="email" required class="field" placeholder="you@business.com">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Phone</label>
+              <input type="tel" name="phone" class="field" placeholder="+1 (555) 000-0000">
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-zinc-400 mb-1">Business Type / Industry *</label>
+            <input type="text" name="business_type" required class="field" placeholder="e.g. Immigration Law, Catering, Financial Services">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-zinc-400 mb-1">Which event? *</label>
+            <select name="event" required class="field">
+              <option value="" disabled selected>Select event</option>
+              <option>Cultural Handshake Summit — Houston, May 2026</option>
+              <option>Global Recruitment Forum — Virtual, Aug 2026</option>
+              <option>Next available event</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-zinc-400 mb-1">Number of Booths Needed</label>
+            <select name="booth_count" class="field">
+              <option value="" disabled selected>Select quantity</option>
+              <option>1 booth — $3,500</option>
+              <option>2 booths — $6,500</option>
+              <option>3+ booths — Contact us for pricing</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-zinc-400 mb-1">What products / services will you display?</label>
+            <textarea name="products" rows="3" class="field resize-none" placeholder="Brief description of what you'll showcase at the booth..."></textarea>
+          </div>
+          <button type="submit" class="w-full py-3.5 rounded-xl font-bold text-black" style="background: linear-gradient(135deg,#facc15,#f59e0b)">Reserve My Booth</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Event RSVP -->
+    <div id="form-rsvp" class="tab-form hidden">
+      <div class="glass border border-zinc-800 rounded-3xl p-8">
+        <h3 class="text-2xl font-bold mb-2">Event RSVP</h3>
+        <p class="text-zinc-400 text-sm mb-8">Register your interest in attending an upcoming Ruthko Connect event. Tickets details will be sent to your email.</p>
+        <form name="event-rsvp" method="POST" action="/thank-you.html" data-netlify="true" netlify-honeypot="bot-field" class="space-y-4">
+          <input type="hidden" name="form-name" value="event-rsvp">
+          <input type="hidden" name="bot-field" class="hidden">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Full Name *</label>
+              <input type="text" name="full_name" required class="field" placeholder="Your name">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Email *</label>
+              <input type="email" name="email" required class="field" placeholder="you@email.com">
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Phone / WhatsApp</label>
+              <input type="tel" name="phone" class="field" placeholder="+1 or international">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-400 mb-1">Organization (optional)</label>
+              <input type="text" name="organization" class="field" placeholder="Company / Embassy / School">
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-zinc-400 mb-1">Which event? *</label>
+            <select name="event" required class="field">
+              <option value="" disabled selected>Select event</option>
+              <option>Cultural Handshake Summit — Houston, May 13-15, 2026</option>
+              <option>Global Recruitment Forum — Virtual, August 2026</option>
+              <option>Notify me of all upcoming events</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-zinc-400 mb-1">Number of Attendees</label>
+            <select name="attendees" class="field">
+              <option value="" disabled selected>How many people?</option>
+              <option>1 (just me)</option>
+              <option>2</option>
+              <option>3–5</option>
+              <option>6–10</option>
+              <option>Group of 10+</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-zinc-400 mb-1">I am attending as a …</label>
+            <select name="role" class="field">
+              <option value="" disabled selected>Select your role</option>
+              <option>Job Seeker</option>
+              <option>Employer / Recruiter</option>
+              <option>Sponsor / Partner</option>
+              <option>Speaker / Panelist</option>
+              <option>General Attendee</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-zinc-400 mb-1">Questions or special requests?</label>
+            <textarea name="notes" rows="3" class="field resize-none" placeholder="Accessibility needs, questions, dietary requirements..."></textarea>
+          </div>
+          <button type="submit" class="w-full py-3.5 rounded-xl font-bold text-black" style="background: linear-gradient(135deg,#facc15,#f59e0b)">RSVP Now</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-zinc-800 py-8 text-center text-zinc-500 text-sm">
+    <p>© 2026 Ruthko Connect · <a href="https://wa.me/17012603908" class="text-green-500 hover:text-green-400">WhatsApp Us</a> · <a href="index.html" class="hover:text-white">Dashboard</a></p>
+  </footer>
+
+  <script>
+    function showTab(name) {
+      document.querySelectorAll('.tab-form').forEach(function(f) { f.classList.add('hidden'); });
+      document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); b.classList.add('text-zinc-300'); });
+
+      document.getElementById('form-' + name).classList.remove('hidden');
+      var btn = document.getElementById('tab-' + name);
+      btn.classList.add('active');
+      btn.classList.remove('text-zinc-300');
+
+      window.scrollTo({ top: 220, behavior: 'smooth' });
+    }
+
+    // Auto-open tab from URL hash  e.g. intake.html#sponsor
+    var hash = location.hash.replace('#', '');
+    if (['employer','candidate','sponsor','vendor','rsvp'].includes(hash)) showTab(hash);
+  </script>
+
+</body>
+</html>
