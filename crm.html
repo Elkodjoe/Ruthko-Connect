@@ -260,6 +260,11 @@
     var cfg = null;
   </script>
   <script src="js/supabase-config.js"></script>
+  <script src="js/ruthko-auth.js"></script>
+  <script>
+    // Guard runs before CRM loads — redirects to login if not authenticated
+    document.addEventListener("DOMContentLoaded", function () { RuthkoAuth.guard(); });
+  </script>
   <script>
     // Hide sample badge when live
     if (window.RUTHKO_CONFIG && !window.RUTHKO_CONFIG.sampleMode) {
