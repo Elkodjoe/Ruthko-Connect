@@ -426,5 +426,10 @@
     if (['employer','candidate','sponsor','vendor','rsvp'].includes(hash)) showTab(hash);
   </script>
 
+  <!-- CRM bridge — intercepts forms and writes to Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/intake-crm.js"></script>
+
 </body>
 </html>
