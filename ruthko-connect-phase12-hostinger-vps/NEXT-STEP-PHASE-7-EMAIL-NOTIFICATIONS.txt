@@ -1,0 +1,19 @@
+NEXT STEP: PHASE 7 EMAIL NOTIFICATIONS
+
+Build next:
+
+1. Send email to Ruthko when a new form comes in.
+2. Send auto-reply to the person who submitted the form.
+3. Route leads by type:
+   Employer to staffing inbox.
+   Candidate to recruitment inbox.
+   Sponsor to events inbox.
+   Vendor to booth coordinator.
+4. Add Netlify Function or Supabase Edge Function.
+5. Add Resend or SendGrid.
+
+Recommended first email provider:
+Resend.
+
+Reason:
+It is simple, developer-friendly, and works well with Netlify Functions.

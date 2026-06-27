@@ -1,0 +1,44 @@
+RUTHKO CONNECT LEAD FLOW MAP
+
+Employer lead flow:
+Employer submits staffing request.
+Netlify captures form.
+Ruthko reviews need.
+Lead moves to CRM.
+Follow-up email goes out.
+Discovery call is scheduled.
+Contract or staffing agreement is sent.
+
+Candidate lead flow:
+Candidate submits interest.
+Ruthko reviews profession, country, and visa interest.
+Candidate is grouped by profession.
+Candidate receives next-step email.
+Candidate uploads resume and credentials later.
+
+Sponsor lead flow:
+Sponsor selects package.
+Ruthko reviews package and goals.
+Sponsor receives proposal.
+Stripe payment link is sent.
+Sponsor is added to sponsor tracker.
+
+Vendor lead flow:
+Vendor submits booth request.
+Ruthko reviews product or service.
+Vendor receives booth package.
+Stripe payment link is sent.
+Vendor is added to booth tracker.
+
+Event lead flow:
+Attendee submits RSVP.
+Ruthko reviews attendee type.
+Attendee receives event details.
+Attendee is added to email list.
+
+Best tools for next automation:
+Netlify Forms for capture.
+Zapier or Make for automation.
+Google Sheets or Airtable for tracking.
+Stripe for payment.
+Resend or Gmail for email confirmation.

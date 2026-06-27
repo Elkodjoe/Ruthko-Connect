@@ -1,0 +1,31 @@
+RUTHKO CONNECT EMAIL FLOW
+
+Visitor submits public form
+
+intake.html
+
+The browser builds the lead record
+
+js/intake-crm.js
+
+The lead saves to Supabase CRM
+
+leads
+employers
+candidates
+sponsors
+vendors
+event_registrations
+intake_submissions
+
+After save, the browser calls Netlify Function
+
+/.netlify/functions/notify-lead
+
+Netlify Function sends email through Resend
+
+Admin receives email alert
+
+Admin opens CRM and follows up
+
+crm.html

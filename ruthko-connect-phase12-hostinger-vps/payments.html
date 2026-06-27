@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ruthko Connect | Payments</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: Inter, sans-serif; }
+    body { background: #0a0a0a; color: #fff; }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+    .gradient-text { background: linear-gradient(to right, #facc15, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .btn-primary { background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%); color: #000; }
+    .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; }
+    .field { width: 100%; background: #000; border: 1px solid #27272a; border-radius: 0.75rem; padding: 0.85rem; color: #fff; }
+    .field:focus { outline: none; border-color: rgba(250, 204, 21, .7); }
+    .highlight { border-color: rgba(250, 204, 21, .95) !important; box-shadow: 0 0 0 3px rgba(250, 204, 21, .15); }
+  </style>
+</head>
+<body class="min-h-screen">
+  <header class="border-b border-zinc-800 bg-black/80 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="images/logo.png" alt="Ruthko Logo" class="w-11 h-11 rounded-xl object-cover" onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';" />
+        <div id="logoFallback" class="hidden w-11 h-11 rounded-xl bg-yellow-500 text-black items-center justify-center font-extrabold">R</div>
+        <div>
+          <h1 class="font-extrabold text-xl gradient-text">Ruthko Connect</h1>
+          <p class="text-xs text-zinc-400">Sponsor, vendor, and event payments</p>
+        </div>
+      </a>
+      <nav class="hidden md:flex items-center gap-4 text-sm text-zinc-300">
+        <a href="index.html" class="hover:text-yellow-400">Dashboard</a>
+        <a href="intake.html" class="hover:text-yellow-400">Intake</a>
+        <a href="thank-you.html" class="hover:text-yellow-400">Thank You</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-5 py-10">
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center mb-10">
+      <div>
+        <p class="text-yellow-400 font-bold uppercase tracking-wide text-sm">Phase 3 Payments</p>
+        <h2 class="text-4xl md:text-5xl font-extrabold mt-3">Collect sponsor, vendor, and event payments online.</h2>
+        <p class="text-zinc-400 mt-5 max-w-2xl">Add your Stripe Payment Links below. Until then, each payment button sends the buyer to the matching Ruthko intake form.</p>
+        <div class="flex flex-wrap gap-3 mt-6">
+          <a href="intake.html#sponsor" class="btn-secondary px-5 py-3 rounded-xl font-bold">Sponsor Form</a>
+          <a href="intake.html#vendor" class="btn-secondary px-5 py-3 rounded-xl font-bold">Vendor Form</a>
+          <a href="intake.html#event" class="btn-primary px-5 py-3 rounded-xl font-bold">Event RSVP</a>
+        </div>
+      </div>
+      <div class="glass border border-zinc-800 rounded-3xl p-6">
+        <h3 class="text-xl font-bold mb-4">Payment Setup Status</h3>
+        <div class="space-y-3 text-sm">
+          <div class="flex items-center gap-3"><i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i><span>Payment page created</span></div>
+          <div class="flex items-center gap-3"><i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i><span>Sponsor and vendor packages added</span></div>
+          <div class="flex items-center gap-3"><i data-lucide="circle-dot" class="w-5 h-5 text-yellow-500"></i><span>Replace placeholder links with your Stripe links</span></div>
+          <div class="flex items-center gap-3"><i data-lucide="circle-dot" class="w-5 h-5 text-yellow-500"></i><span>Deploy to Netlify and test payments</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-10" id="packages">
+      <article id="package-platinum" class="package-card bg-zinc-900 border border-yellow-500 rounded-3xl p-6 shadow-xl" data-package="platinum">
+        <p class="text-xs text-yellow-400 font-bold uppercase">Sponsor</p>
+        <h3 class="text-2xl font-bold text-yellow-400 mt-2">Platinum Sponsor</h3>
+        <p class="text-4xl font-bold mt-4">$50,000</p>
+        <ul class="mt-6 space-y-2 text-zinc-300 text-sm">
+          <li>Main stage branding</li>
+          <li>VIP networking access</li>
+          <li>Investor introductions</li>
+          <li>Media visibility</li>
+          <li>Premium booth placement</li>
+        </ul>
+        <button onclick="checkout('platinum')" class="mt-6 w-full bg-yellow-500 text-black py-3 rounded-xl font-bold">Pay for Platinum</button>
+      </article>
+
+      <article id="package-gold" class="package-card bg-zinc-900 border border-zinc-700 rounded-3xl p-6 shadow-xl" data-package="gold">
+        <p class="text-xs text-yellow-400 font-bold uppercase">Sponsor</p>
+        <h3 class="text-2xl font-bold text-yellow-300 mt-2">Gold Sponsor</h3>
+        <p class="text-4xl font-bold mt-4">$15,000</p>
+        <ul class="mt-6 space-y-2 text-zinc-300 text-sm">
+          <li>Event branding</li>
+          <li>Website promotion</li>
+          <li>Social media exposure</li>
+          <li>Networking opportunities</li>
+        </ul>
+        <button onclick="checkout('gold')" class="mt-6 w-full bg-yellow-400 text-black py-3 rounded-xl font-bold">Pay for Gold</button>
+      </article>
+
+      <article id="package-silver" class="package-card bg-zinc-900 border border-zinc-700 rounded-3xl p-6 shadow-xl" data-package="silver">
+        <p class="text-xs text-zinc-400 font-bold uppercase">Sponsor</p>
+        <h3 class="text-2xl font-bold text-zinc-200 mt-2">Silver Sponsor</h3>
+        <p class="text-4xl font-bold mt-4">$5,000</p>
+        <ul class="mt-6 space-y-2 text-zinc-300 text-sm">
+          <li>Logo placement</li>
+          <li>Event mentions</li>
+          <li>Business exposure</li>
+        </ul>
+        <button onclick="checkout('silver')" class="mt-6 w-full bg-zinc-700 text-white py-3 rounded-xl font-bold">Pay for Silver</button>
+      </article>
+
+      <article id="package-vendor" class="package-card bg-zinc-900 border border-zinc-700 rounded-3xl p-6 shadow-xl" data-package="vendor">
+        <p class="text-xs text-orange-400 font-bold uppercase">Vendor</p>
+        <h3 class="text-2xl font-bold text-orange-400 mt-2">Vendor Booth</h3>
+        <p class="text-4xl font-bold mt-4">$3,500</p>
+        <ul class="mt-6 space-y-2 text-zinc-300 text-sm">
+          <li>Business booth</li>
+          <li>Lead generation</li>
+          <li>Event access</li>
+          <li>Networking exposure</li>
+        </ul>
+        <button onclick="checkout('vendor')" class="mt-6 w-full bg-orange-500 text-white py-3 rounded-xl font-bold">Pay for Vendor Booth</button>
+      </article>
+    </section>
+
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="glass border border-zinc-800 rounded-3xl p-6">
+        <h3 class="text-2xl font-bold mb-3">Event Ticket Payment</h3>
+        <p class="text-zinc-400 mb-5">Use this for Cultural Handshake Summit tickets or future event tickets.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <button onclick="checkout('ticketGeneral')" class="bg-zinc-800 hover:bg-zinc-700 px-5 py-4 rounded-xl text-left"><span class="block text-sm text-zinc-400">General</span><span class="block text-2xl font-bold">$250</span></button>
+          <button onclick="checkout('ticketVip')" class="bg-zinc-800 hover:bg-zinc-700 px-5 py-4 rounded-xl text-left"><span class="block text-sm text-zinc-400">VIP</span><span class="block text-2xl font-bold">$500</span></button>
+          <button onclick="checkout('ticketTable')" class="bg-zinc-800 hover:bg-zinc-700 px-5 py-4 rounded-xl text-left"><span class="block text-sm text-zinc-400">Table</span><span class="block text-2xl font-bold">$2,500</span></button>
+        </div>
+      </div>
+
+      <form name="payment-support" method="POST" data-netlify="true" action="thank-you.html" class="glass border border-zinc-800 rounded-3xl p-6 space-y-4">
+        <input type="hidden" name="form-name" value="payment-support" />
+        <h3 class="text-2xl font-bold">Need an invoice first?</h3>
+        <p class="text-zinc-400 text-sm">Submit this form and Ruthko will follow up with payment instructions.</p>
+        <input class="field" name="organization" placeholder="Organization or buyer name" required />
+        <input class="field" type="email" name="email" placeholder="Email" required />
+        <select class="field" name="payment_interest" required>
+          <option value="">Select payment type</option>
+          <option>Platinum Sponsor, $50,000</option>
+          <option>Gold Sponsor, $15,000</option>
+          <option>Silver Sponsor, $5,000</option>
+          <option>Vendor Booth, $3,500</option>
+          <option>Event Ticket</option>
+          <option>Custom Invoice</option>
+        </select>
+        <textarea class="field h-28" name="message" placeholder="Billing notes, contact person, or questions"></textarea>
+        <button class="btn-primary px-6 py-3 rounded-xl font-bold" type="submit">Request Invoice</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="border-t border-zinc-800 mt-10">
+    <div class="max-w-7xl mx-auto px-5 py-8 text-sm text-zinc-500">© Ruthko Connect. Payments powered by your Stripe links.</div>
+  </footer>
+
+  <script>
+    const paymentLinks = {
+      platinum: '',
+      gold: '',
+      silver: '',
+      vendor: '',
+      ticketGeneral: '',
+      ticketVip: '',
+      ticketTable: ''
+    };
+
+    const fallbackRoutes = {
+      platinum: 'intake.html#sponsor',
+      gold: 'intake.html#sponsor',
+      silver: 'intake.html#sponsor',
+      vendor: 'intake.html#vendor',
+      ticketGeneral: 'intake.html#event',
+      ticketVip: 'intake.html#event',
+      ticketTable: 'intake.html#event'
+    };
+
+    function checkout(packageKey) {
+      const link = paymentLinks[packageKey];
+      if (link && link.startsWith('https://')) {
+        window.location.href = link;
+        return;
+      }
+      alert('Stripe link not added yet. You will be sent to the matching Ruthko form.');
+      window.location.href = fallbackRoutes[packageKey] || 'intake.html';
+    }
+
+    function highlightPackageFromUrl() {
+      const selected = new URLSearchParams(window.location.search).get('package');
+      if (!selected) return;
+      const card = document.querySelector('[data-package="' + selected + '"]');
+      if (card) {
+        card.classList.add('highlight');
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    if (window.lucide) lucide.createIcons();
+    highlightPackageFromUrl();
+  </script>
+</body>
+</html>

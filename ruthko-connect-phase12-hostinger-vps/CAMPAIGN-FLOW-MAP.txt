@@ -1,0 +1,41 @@
+RUTHKO CONNECT CAMPAIGN FLOW MAP
+
+1. User submits a public form.
+
+2. The public form saves a lead to the CRM.
+
+3. If the user checked the email consent box, the lead gets:
+   marketing_consent = true
+   marketing_status = Subscribed
+
+4. Ruthko Admin opens campaigns.html.
+
+5. Admin builds a segment:
+   All contacts
+   Employers
+   Candidates
+   Sponsors
+   Vendors
+   Event guests
+   Partners
+
+6. Admin can filter by lead status:
+   New
+   Qualified
+   Proposal
+   Closed Won
+   Closed Lost
+
+7. Admin writes campaign subject and body.
+
+8. Admin saves a draft.
+
+9. Admin previews the campaign.
+
+10. Admin confirms consent and sends.
+
+11. Netlify Function sends emails through Resend.
+
+12. Campaign record saves to Supabase or browser storage.
+
+13. Each email includes Ruthko contact details and an unsubscribe link when configured.

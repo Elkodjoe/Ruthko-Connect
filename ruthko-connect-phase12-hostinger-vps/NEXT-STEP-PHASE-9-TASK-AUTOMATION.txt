@@ -1,0 +1,21 @@
+NEXT STEP - PHASE 9 TASK AUTOMATION AND CRM WORKFLOWS
+
+The next build should add workflow tracking inside the CRM.
+
+Recommended additions:
+
+1. Auto-create follow-up task for every new lead.
+2. Add task due dates.
+3. Add CRM status changes.
+4. Add lead owner field.
+5. Add buttons for mark contacted, mark qualified, mark won, mark lost.
+6. Add reminder email for overdue follow-ups.
+7. Add dashboard stats for new leads, pending follow-ups, won leads, lost leads, and pipeline value.
+
+Suggested default follow-up timing:
+
+Employer leads: 24 hours
+Candidate leads: 48 hours
+Sponsor leads: 24 hours
+Vendor leads: 48 hours
+Event RSVP leads: 72 hours

@@ -1,0 +1,32 @@
+RUTHKO CONNECT PAYMENT FLOW
+
+Buyer journey:
+1. Visitor opens index.html.
+2. Visitor clicks Sponsor Portal.
+3. Visitor selects a package.
+4. Visitor lands on payments.html.
+5. If Stripe link exists, buyer goes to Stripe checkout.
+6. If Stripe link is blank, buyer goes to intake.html.
+7. Netlify Forms captures the lead.
+8. Ruthko follows up by email, phone, or invoice.
+
+Payment products:
+Platinum Sponsor: $50,000
+Gold Sponsor: $15,000
+Silver Sponsor: $5,000
+Vendor Booth: $3,500
+General Ticket: $250
+VIP Ticket: $500
+Table Ticket: $2,500
+
+Operational workflow:
+1. Collect lead.
+2. Confirm package.
+3. Send sponsor agreement or vendor terms.
+4. Send Stripe payment link.
+5. Confirm payment.
+6. Add sponsor or vendor to CRM.
+7. Deliver benefits.
+
+Phase 4 recommendation:
+Add Supabase tables for leads, sponsors, vendors, payments, events, and tasks.
