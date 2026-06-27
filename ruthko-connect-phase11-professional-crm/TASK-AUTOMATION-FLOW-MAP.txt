@@ -1,0 +1,19 @@
+Phase 9 Task Automation Flow
+
+Employer staffing request
+Form submitted -> Lead saved -> Employer record saved -> Intake record saved -> 2 tasks created -> Admin alert sent -> Employer auto-reply sent -> Thank-you page
+
+Candidate interest
+Form submitted -> Lead saved -> Candidate record saved -> Intake record saved -> 2 tasks created -> Admin alert sent -> Candidate auto-reply sent -> Thank-you page
+
+Sponsor interest
+Form submitted -> Lead saved -> Sponsor record saved -> Intake record saved -> 2 tasks created -> Admin alert sent -> Sponsor auto-reply sent -> Thank-you page
+
+Vendor booth request
+Form submitted -> Lead saved -> Vendor record saved -> Intake record saved -> 2 tasks created -> Admin alert sent -> Vendor auto-reply sent -> Thank-you page
+
+Event RSVP
+Form submitted -> Lead saved -> Event registration saved -> Intake record saved -> 2 tasks created -> Admin alert sent -> Event auto-reply sent -> Thank-you page
+
+Daily admin use
+Login -> Open tasks.html -> Handle overdue -> Handle due today -> Mark done or snooze -> Open CRM lead if more detail is needed

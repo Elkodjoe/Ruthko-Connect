@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ruthko Connect | Business Ecosystem</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: Inter, sans-serif; }
+    body { background: #0a0a0a; color: #fff; }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+    .glass-hover { transition: all 0.25s ease; }
+    .glass-hover:hover { background: rgba(255,255,255,0.08); }
+    .gradient-text { background: linear-gradient(to right, #facc15, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .btn-primary { background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%); color: #000; }
+    .btn-primary:hover { filter: brightness(1.08); }
+    .btn-secondary { background: rgba(255,255,255,0.1); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.15); }
+    .card-glow { box-shadow: 0 0 20px rgba(250, 204, 21, 0.1); }
+    .card-glow:hover { box-shadow: 0 0 30px rgba(250, 204, 21, 0.2); }
+    .nav-active { background: rgba(39,39,42,0.9); color: #facc15; }
+      .auth-checking body { visibility: hidden; }
+  </style>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/auth-guard.js"></script>
+</head>
+<body class="min-h-screen overflow-hidden">
+  <aside id="sidebar" class="fixed left-0 top-0 z-50 h-full w-20 lg:w-64 bg-black border-r border-zinc-800 flex flex-col">
+    <div class="p-4 lg:p-6 flex items-center gap-3 border-b border-zinc-900">
+      <img src="images/logo.png" alt="Ruthko Logo" class="w-12 h-12 rounded-xl object-cover" onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';" />
+      <div id="logoFallback" class="hidden w-12 h-12 rounded-xl bg-yellow-500 text-black items-center justify-center font-extrabold">R</div>
+      <div class="hidden lg:block">
+        <h1 class="font-bold text-xl gradient-text">Ruthko Connect</h1>
+        <p class="text-xs text-zinc-400">Jobs • Events • Partnerships</p>
+      </div>
+    </div>
+
+    <nav class="flex-1 px-3 py-4 space-y-2">
+      <button onclick="navigate('dashboard')" id="nav-dashboard" class="nav-btn w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition">
+        <i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Dashboard</span>
+      </button>
+      <button onclick="navigate('jobs')" id="nav-jobs" class="nav-btn w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition">
+        <i data-lucide="briefcase" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Ruthko Jobs</span>
+      </button>
+      <button onclick="navigate('events')" id="nav-events" class="nav-btn w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition">
+        <i data-lucide="calendar" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Ruthko Events</span>
+      </button>
+      <button onclick="navigate('partners')" id="nav-partners" class="nav-btn w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition">
+        <i data-lucide="users" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Partners Hub</span>
+      </button>
+      <button onclick="navigate('crm')" id="nav-crm" class="nav-btn w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition">
+        <i data-lucide="database" class="w-5 h-5"></i><span class="hidden lg:block font-medium">CRM & Sales</span>
+      </button>
+      <button onclick="navigate('ai-studio')" id="nav-ai-studio" class="nav-btn w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition">
+        <i data-lucide="sparkles" class="w-5 h-5"></i><span class="hidden lg:block font-medium">AI Studio</span>
+      </button>
+      <button onclick="navigate('sponsors')" id="nav-sponsors" class="nav-btn w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition">
+        <i data-lucide="crown" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Sponsor Portal</span>
+      </button>
+    </nav>
+
+    <div class="p-4 border-t border-zinc-800 hidden lg:block">
+      <p class="text-xs text-zinc-500">Ruthko Admin Console</p>
+    </div>
+  </aside>
+
+  <main class="ml-20 lg:ml-64 h-screen flex flex-col overflow-hidden">
+    <header class="h-16 border-b border-zinc-800 bg-black/70 backdrop-blur-md flex items-center justify-between px-6 shrink-0">
+      <h1 id="page-title" class="text-xl font-bold">Dashboard</h1>
+      <div class="flex items-center gap-4">
+        <a href="crm.html" class="hidden sm:inline-flex btn-secondary px-4 py-2 rounded-xl font-bold text-sm">Open CRM</a>
+        <a href="campaigns.html" class="hidden sm:inline-flex btn-secondary px-4 py-2 rounded-xl font-bold text-sm">Campaigns</a>
+        <a href="payments.html" class="hidden sm:inline-flex btn-secondary px-4 py-2 rounded-xl font-bold text-sm">Payments</a>
+        <a href="intake.html" class="hidden sm:inline-flex btn-primary px-4 py-2 rounded-xl font-bold text-sm">Open Intake Page</a>
+        <button class="relative p-2 rounded-lg glass-hover hover:bg-zinc-800">
+          <i data-lucide="bell" class="w-5 h-5 text-zinc-400"></i>
+          <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
+        </button>
+        <div class="hidden md:block text-right">
+          <div class="text-sm font-semibold">Ruthko Admin</div>
+          <div class="text-xs text-zinc-400" data-admin-email>admin@ruthko.com</div>
+        </div>
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-500 to-orange-500 text-black flex items-center justify-center font-bold">RA</div>
+        <button onclick="ruthkoLogout()" class="hidden sm:inline-flex px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-700 font-bold text-sm">Logout</button>
+      </div>
+    </header>
+
+    <section id="view-dashboard" class="module-content overflow-y-auto p-6">
+      <div class="mb-8">
+        <h2 class="text-4xl font-bold mb-3">Welcome back, Ruthko Admin</h2>
+        <p class="text-zinc-400">Manage staffing, events, partnerships, sponsors, and sales from one dashboard.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+        <article class="glass p-6 rounded-2xl border border-zinc-800"><p class="text-zinc-400 text-sm">Total Revenue</p><h3 class="text-3xl font-bold mt-3">$248,592</h3><p class="text-green-500 text-sm mt-2">+12.5% from last month</p></article>
+        <article class="glass p-6 rounded-2xl border border-zinc-800"><p class="text-zinc-400 text-sm">Active Jobs</p><h3 class="text-3xl font-bold mt-3">127</h3><p class="text-blue-500 text-sm mt-2">+8 new this week</p></article>
+        <article class="glass p-6 rounded-2xl border border-zinc-800"><p class="text-zinc-400 text-sm">Upcoming Events</p><h3 class="text-3xl font-bold mt-3">3</h3><p class="text-orange-500 text-sm mt-2">Starting this month</p></article>
+        <article class="glass p-6 rounded-2xl border border-zinc-800"><p class="text-zinc-400 text-sm">Pipeline Value</p><h3 class="text-3xl font-bold mt-3">$1.2M</h3><p class="text-purple-500 text-sm mt-2">+8.3% this quarter</p></article>
+      </div>
+
+      <h3 class="text-xl font-bold mb-4">Quick Access Modules</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+        <article onclick="navigate('jobs')" class="cursor-pointer card-glow glass p-6 rounded-3xl border border-zinc-800"><i data-lucide="briefcase" class="w-8 h-8 text-blue-500 mb-4"></i><h4 class="text-xl font-bold mb-2">Ruthko Jobs</h4><p class="text-zinc-400 text-sm">Visa-friendly jobs, staffing requests, and employer leads.</p></article>
+        <article onclick="navigate('events')" class="cursor-pointer card-glow glass p-6 rounded-3xl border border-zinc-800"><i data-lucide="calendar" class="w-8 h-8 text-orange-500 mb-4"></i><h4 class="text-xl font-bold mb-2">Ruthko Events</h4><p class="text-zinc-400 text-sm">Summits, registration, speakers, tickets, and reports.</p></article>
+        <article onclick="navigate('partners')" class="cursor-pointer card-glow glass p-6 rounded-3xl border border-zinc-800"><i data-lucide="users" class="w-8 h-8 text-yellow-500 mb-4"></i><h4 class="text-xl font-bold mb-2">Partners Hub</h4><p class="text-zinc-400 text-sm">Collaborators, embassies, investors, sponsors, and vendors.</p></article>
+        <article onclick="navigate('crm')" class="cursor-pointer card-glow glass p-6 rounded-3xl border border-zinc-800"><i data-lucide="database" class="w-8 h-8 text-emerald-500 mb-4"></i><h4 class="text-xl font-bold mb-2">CRM & Sales</h4><p class="text-zinc-400 text-sm">Leads, pipelines, invoices, and follow-ups.</p></article>
+        <article onclick="navigate('ai-studio')" class="cursor-pointer card-glow glass p-6 rounded-3xl border border-zinc-800"><i data-lucide="sparkles" class="w-8 h-8 text-purple-500 mb-4"></i><h4 class="text-xl font-bold mb-2">AI Studio</h4><p class="text-zinc-400 text-sm">Flyers, captions, emails, ads, and proposals.</p></article>
+        <article onclick="navigate('sponsors')" class="cursor-pointer card-glow glass p-6 rounded-3xl border border-zinc-800"><i data-lucide="crown" class="w-8 h-8 text-yellow-400 mb-4"></i><h4 class="text-xl font-bold mb-2">Sponsor Portal</h4><p class="text-zinc-400 text-sm">Packages, booths, payments, sponsor tracking, and reports.</p></article>
+      </div>
+
+      <div class="glass p-6 rounded-2xl border border-zinc-800">
+        <h3 class="text-xl font-bold text-yellow-400 mb-4">Partner With Us</h3>
+        <form action="https://formspree.io/f/xzdooekg" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input name="company" placeholder="Company Name" required class="bg-black border border-zinc-800 rounded-xl p-3" />
+          <input name="contact_person" placeholder="Contact Person" required class="bg-black border border-zinc-800 rounded-xl p-3" />
+          <input type="email" name="email" placeholder="Business Email" required class="bg-black border border-zinc-800 rounded-xl p-3" />
+          <input type="tel" name="phone" placeholder="Phone Number" class="bg-black border border-zinc-800 rounded-xl p-3" />
+          <textarea name="staffing_need" placeholder="Tell us what workers you need" required class="md:col-span-2 bg-black border border-zinc-800 rounded-xl p-3 h-32"></textarea>
+          <button type="submit" class="btn-primary px-6 py-3 rounded-xl font-bold md:w-fit">Submit Staffing Request</button>
+        </form>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+        <a href="intake.html#employer" class="glass p-5 rounded-2xl border border-zinc-800 hover:border-yellow-500/40 transition"><p class="text-xs text-zinc-400">Lead Capture</p><h4 class="font-bold mt-2">Employer Form</h4></a>
+        <a href="intake.html#candidate" class="glass p-5 rounded-2xl border border-zinc-800 hover:border-yellow-500/40 transition"><p class="text-xs text-zinc-400">Lead Capture</p><h4 class="font-bold mt-2">Candidate Form</h4></a>
+        <a href="intake.html#sponsor" class="glass p-5 rounded-2xl border border-zinc-800 hover:border-yellow-500/40 transition"><p class="text-xs text-zinc-400">Lead Capture</p><h4 class="font-bold mt-2">Sponsor Form</h4></a>
+        <a href="intake.html#event" class="glass p-5 rounded-2xl border border-zinc-800 hover:border-yellow-500/40 transition"><p class="text-xs text-zinc-400">Lead Capture</p><h4 class="font-bold mt-2">Event RSVP</h4></a>
+      </div>
+    </section>
+
+    <section id="view-jobs" class="module-content hidden overflow-y-auto p-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <h2 class="text-2xl font-bold">Ruthko Jobs</h2>
+        <button onclick="alert('Next build step: connect this button to a job-posting form.')" class="btn-primary px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2 w-fit"><i data-lucide="plus" class="w-5 h-5"></i>Post New Job</button>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+        <aside class="glass p-4 rounded-2xl border border-zinc-800"><h3 class="text-sm font-bold text-zinc-400 uppercase mb-3">Filter by Status</h3><div class="space-y-2"><button class="w-full text-left px-3 py-2 rounded-lg bg-yellow-500/10 text-yellow-500 font-medium">All Jobs (127)</button><button class="w-full text-left px-3 py-2 rounded-lg hover:bg-zinc-800 text-zinc-300">Open (89)</button><button class="w-full text-left px-3 py-2 rounded-lg hover:bg-zinc-800 text-zinc-300">Draft (12)</button><button class="w-full text-left px-3 py-2 rounded-lg hover:bg-zinc-800 text-zinc-300">Closed (26)</button></div></aside>
+        <div class="glass p-4 rounded-2xl border border-zinc-800 lg:col-span-3">
+          <div class="flex flex-col md:flex-row gap-3 mb-6"><input type="text" placeholder="Search jobs..." class="flex-1 bg-black border border-zinc-800 rounded-xl py-2.5 px-4 text-sm" /><select class="bg-black border border-zinc-800 rounded-xl px-4 py-2.5 text-sm"><option>Sort by Date</option><option>Sort by Applications</option></select></div>
+          <div class="space-y-3">
+            <article class="flex flex-col md:flex-row md:items-center justify-between gap-3 p-4 rounded-2xl bg-zinc-900/30 border border-zinc-800"><div><h4 class="font-semibold">Registered Nurse, EB-3</h4><p class="text-sm text-zinc-400">Texas Medical Center, Houston, TX</p></div><div class="flex items-center gap-3"><span class="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded-full">Open</span><span class="text-sm text-zinc-400">24 applications</span></div></article>
+            <article class="flex flex-col md:flex-row md:items-center justify-between gap-3 p-4 rounded-2xl bg-zinc-900/30 border border-zinc-800"><div><h4 class="font-semibold">Hospitality Manager, H-2B</h4><p class="text-sm text-zinc-400">Resort & Spa, Austin, TX</p></div><div class="flex items-center gap-3"><span class="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded-full">Open</span><span class="text-sm text-zinc-400">18 applications</span></div></article>
+            <article class="flex flex-col md:flex-row md:items-center justify-between gap-3 p-4 rounded-2xl bg-zinc-900/30 border border-zinc-800"><div><h4 class="font-semibold">Software Developer, EB-2</h4><p class="text-sm text-zinc-400">Tech Park, Dallas, TX</p></div><div class="flex items-center gap-3"><span class="text-xs bg-red-500/20 text-red-500 px-2 py-1 rounded-full">Closed</span><span class="text-sm text-zinc-400">45 applications</span></div></article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-events" class="module-content hidden overflow-y-auto p-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6"><h2 class="text-2xl font-bold">Ruthko Events</h2><button onclick="alert('Next build step: connect this to event creation.')" class="btn-primary px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2 w-fit"><i data-lucide="plus" class="w-5 h-5"></i>Create Event</button></div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <article class="glass p-6 rounded-2xl border border-zinc-800"><div class="flex items-start justify-between gap-4 mb-4"><div><h3 class="font-bold text-xl">Cultural Handshake Summit 2026</h3><p class="text-sm text-zinc-400">May 13-15, 2026, Houston, Texas</p></div><span class="bg-green-500/20 text-green-500 px-3 py-1 rounded-full text-xs">Registration Open</span></div><div class="grid grid-cols-3 gap-4 mt-6"><div><p class="text-xs text-zinc-400">Tickets Sold</p><p class="font-bold text-xl">156/200</p></div><div><p class="text-xs text-zinc-400">Revenue</p><p class="font-bold text-xl">$39,000</p></div><div><p class="text-xs text-zinc-400">Sponsors</p><p class="font-bold text-xl">8</p></div></div></article>
+        <article class="glass p-6 rounded-2xl border border-zinc-800"><div class="flex items-start justify-between gap-4 mb-4"><div><h3 class="font-bold text-xl">Global Recruitment Forum</h3><p class="text-sm text-zinc-400">August 2026, Virtual Event</p></div><span class="bg-yellow-500/20 text-yellow-500 px-3 py-1 rounded-full text-xs">Planning Phase</span></div><div class="grid grid-cols-3 gap-4 mt-6"><div><p class="text-xs text-zinc-400">Speakers</p><p class="font-bold text-xl">12</p></div><div><p class="text-xs text-zinc-400">Organizers</p><p class="font-bold text-xl">4</p></div><div><p class="text-xs text-zinc-400">RSVPs</p><p class="font-bold text-xl">892</p></div></div></article>
+      </div>
+    </section>
+
+    <section id="view-partners" class="module-content hidden overflow-y-auto p-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6"><h2 class="text-2xl font-bold">Partners Hub</h2><button onclick="alert('Next build step: connect this to partner intake.')" class="btn-primary px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2 w-fit"><i data-lucide="plus" class="w-5 h-5"></i>Add Partner</button></div>
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <article class="glass p-5 rounded-2xl border border-zinc-800"><h3 class="font-bold text-lg">Global Investment Group</h3><p class="text-sm text-zinc-400">Sponsor, Gold Level</p><p class="text-green-500 font-bold mt-4">$125,000</p></article>
+        <article class="glass p-5 rounded-2xl border border-zinc-800"><h3 class="font-bold text-lg">Ghana Business Network</h3><p class="text-sm text-zinc-400">Collaborator</p><p class="text-blue-500 font-bold mt-4">Active</p></article>
+        <article class="glass p-5 rounded-2xl border border-zinc-800"><h3 class="font-bold text-lg">Tech Solutions Inc</h3><p class="text-sm text-zinc-400">Vendor, Platinum</p><p class="text-yellow-500 font-bold mt-4">3 contracts</p></article>
+        <article class="glass p-5 rounded-2xl border border-zinc-800"><h3 class="font-bold text-lg">Texas Business Network</h3><p class="text-sm text-zinc-400">Business Partner</p><p class="text-purple-500 font-bold mt-4">Next meeting May 20</p></article>
+      </div>
+    </section>
+
+    <section id="view-crm" class="module-content hidden overflow-y-auto p-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6"><h2 class="text-2xl font-bold">CRM & Sales</h2><button onclick="window.location.href='crm.html#new-lead'" class="btn-primary px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2 w-fit"><i data-lucide="plus" class="w-5 h-5"></i>New Lead</button></div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <article class="glass p-4 rounded-2xl border border-zinc-800"><h3 class="font-bold mb-4">Qualified Leads <span class="text-xs bg-zinc-700 px-2 py-1 rounded-full">24</span></h3><div class="space-y-3"><div class="p-3 rounded-xl bg-zinc-900/50"><p class="font-semibold text-sm">EB-3 Sponsorship</p><p class="text-xs text-zinc-400">Global Partners Inc</p><p class="text-xs text-zinc-500 mt-1">$75,000, Closed</p></div></div></article>
+        <article class="glass p-4 rounded-2xl border border-zinc-800"><h3 class="font-bold mb-4">In Progress <span class="text-xs bg-zinc-700 px-2 py-1 rounded-full">18</span></h3><div class="space-y-3"><div class="p-3 rounded-xl bg-zinc-900/50"><p class="font-semibold text-sm">Event Sponsorship</p><p class="text-xs text-zinc-400">Global Investment Group</p><p class="text-xs text-zinc-500 mt-1">$50,000, Proposal</p></div></div></article>
+        <article class="glass p-4 rounded-2xl border border-zinc-800"><h3 class="font-bold mb-4">Closed Won <span class="text-xs bg-zinc-700 px-2 py-1 rounded-full">36</span></h3><div class="space-y-3"><div class="p-3 rounded-xl bg-zinc-900/50"><p class="font-semibold text-sm">Annual Contract</p><p class="text-xs text-zinc-400">Medical Center</p><p class="text-xs text-zinc-500 mt-1">$150,000, Closed</p></div></div></article>
+      </div>
+    </section>
+
+    <section id="view-ai-studio" class="module-content hidden overflow-y-auto p-6">
+      <div class="mb-6"><h2 class="text-2xl font-bold">AI Studio</h2><p class="text-zinc-400 mt-2">Generate content, flyers, emails, ads, and proposals.</p></div>
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        <article onclick="generateContent('flyer')" class="cursor-pointer glass p-6 rounded-3xl border border-zinc-800"><i data-lucide="image" class="w-10 h-10 text-purple-500 mb-4"></i><h3 class="text-xl font-bold">Generate Flyer</h3><p class="text-zinc-400 text-sm mt-2">Event flyers and promo graphics.</p></article>
+        <article onclick="generateContent('email')" class="cursor-pointer glass p-6 rounded-3xl border border-zinc-800"><i data-lucide="mail" class="w-10 h-10 text-blue-500 mb-4"></i><h3 class="text-xl font-bold">Generate Email</h3><p class="text-zinc-400 text-sm mt-2">Candidate and sponsor emails.</p></article>
+        <article onclick="generateContent('ad')" class="cursor-pointer glass p-6 rounded-3xl border border-zinc-800"><i data-lucide="megaphone" class="w-10 h-10 text-orange-500 mb-4"></i><h3 class="text-xl font-bold">Generate Ad</h3><p class="text-zinc-400 text-sm mt-2">Job ads and campaigns.</p></article>
+        <article onclick="generateContent('proposal')" class="cursor-pointer glass p-6 rounded-3xl border border-zinc-800"><i data-lucide="file-text" class="w-10 h-10 text-emerald-500 mb-4"></i><h3 class="text-xl font-bold">Generate Proposal</h3><p class="text-zinc-400 text-sm mt-2">Sponsor proposals and business plans.</p></article>
+      </div>
+    </section>
+
+    <section id="view-sponsors" class="module-content hidden overflow-y-auto p-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6"><h2 class="text-2xl font-bold">Sponsor Portal</h2><button onclick="window.location.href='payments.html'" class="btn-primary px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2 w-fit"><i data-lucide="crown" class="w-5 h-5"></i>Open Payments</button></div>
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+        <article class="bg-zinc-900 border border-yellow-500 rounded-3xl p-6 shadow-xl"><h3 class="text-2xl font-bold text-yellow-400">Platinum Sponsor</h3><p class="text-4xl font-bold mt-4">$50,000</p><ul class="mt-6 space-y-2 text-zinc-300 text-sm"><li>Main stage branding</li><li>VIP networking access</li><li>Investor introductions</li><li>Media visibility</li><li>Premium booth placement</li></ul><button onclick="window.location.href='payments.html?package=platinum'" class="mt-6 w-full bg-yellow-500 text-black py-3 rounded-xl font-bold">Become Sponsor</button></article>
+        <article class="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 shadow-xl"><h3 class="text-2xl font-bold text-yellow-300">Gold Sponsor</h3><p class="text-4xl font-bold mt-4">$15,000</p><ul class="mt-6 space-y-2 text-zinc-300 text-sm"><li>Event branding</li><li>Website promotion</li><li>Social media exposure</li><li>Networking opportunities</li></ul><button onclick="window.location.href='payments.html?package=gold'" class="mt-6 w-full bg-yellow-400 text-black py-3 rounded-xl font-bold">Become Sponsor</button></article>
+        <article class="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 shadow-xl"><h3 class="text-2xl font-bold text-zinc-200">Silver Sponsor</h3><p class="text-4xl font-bold mt-4">$5,000</p><ul class="mt-6 space-y-2 text-zinc-300 text-sm"><li>Logo placement</li><li>Event mentions</li><li>Business exposure</li></ul><button onclick="window.location.href='payments.html?package=silver'" class="mt-6 w-full bg-zinc-700 text-white py-3 rounded-xl font-bold">Become Sponsor</button></article>
+        <article class="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 shadow-xl"><h3 class="text-2xl font-bold text-orange-400">Vendor Booth</h3><p class="text-4xl font-bold mt-4">$3,500</p><ul class="mt-6 space-y-2 text-zinc-300 text-sm"><li>Business booth</li><li>Lead generation</li><li>Event access</li><li>Networking exposure</li></ul><button onclick="window.location.href='payments.html?package=vendor'" class="mt-6 w-full bg-orange-500 text-white py-3 rounded-xl font-bold">Reserve Booth</button></article>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <article class="glass p-6 rounded-2xl border border-zinc-800"><h3 class="font-bold mb-4">Sponsor Growth</h3><div class="h-64 flex items-end justify-between gap-2"><div class="w-full bg-purple-500/20 rounded-t-lg" style="height:60%"></div><div class="w-full bg-purple-500/20 rounded-t-lg" style="height:75%"></div><div class="w-full bg-purple-500/20 rounded-t-lg" style="height:85%"></div><div class="w-full bg-purple-500/20 rounded-t-lg" style="height:92%"></div><div class="w-full bg-purple-500/20 rounded-t-lg" style="height:88%"></div><div class="w-full bg-purple-500/20 rounded-t-lg" style="height:100%"></div></div><div class="flex justify-between mt-2 text-xs text-zinc-500"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span></div></article>
+        <article class="glass p-6 rounded-2xl border border-zinc-800"><h3 class="font-bold mb-4">Top Performing Events</h3><div class="space-y-4"><div><div class="flex justify-between text-sm mb-1"><span>Cultural Handshake Summit</span><span class="text-green-500">$125K</span></div><div class="h-2 bg-zinc-800 rounded-full"><div class="h-full bg-yellow-500 rounded-full w-full"></div></div></div><div><div class="flex justify-between text-sm mb-1"><span>Global Recruitment Forum</span><span class="text-green-500">$98K</span></div><div class="h-2 bg-zinc-800 rounded-full"><div class="h-full bg-yellow-500 rounded-full w-[78%]"></div></div></div></div></article>
+      </div>
+    </section>
+  </main>
+
+  <div class="fixed bottom-6 left-24 lg:left-72 z-50">
+    <a href="crm.html" class="bg-zinc-900 border border-yellow-500/40 text-yellow-400 px-4 py-3 rounded-full shadow-2xl font-bold text-sm">Open CRM Database</a>
+  </div>
+
+  <a href="https://wa.me/17012603908" target="_blank" class="fixed bottom-6 right-6 bg-green-500 hover:bg-green-400 text-white px-5 py-4 rounded-full shadow-2xl z-50 font-bold">WhatsApp</a>
+
+  <script>
+    function navigate(viewId) {
+      document.querySelectorAll('.module-content').forEach(view => view.classList.add('hidden'));
+      const selectedView = document.getElementById('view-' + viewId);
+      if (selectedView) selectedView.classList.remove('hidden');
+
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('nav-active'));
+      const activeNav = document.getElementById('nav-' + viewId);
+      if (activeNav) activeNav.classList.add('nav-active');
+
+      const titles = {
+        dashboard: 'Dashboard',
+        jobs: 'Ruthko Jobs',
+        events: 'Ruthko Events',
+        partners: 'Partners Hub',
+        crm: 'CRM & Sales',
+        'ai-studio': 'AI Studio',
+        sponsors: 'Sponsor Portal'
+      };
+      document.getElementById('page-title').textContent = titles[viewId] || 'Dashboard';
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function generateContent(type) {
+      const labels = { flyer: 'Flyer Generator', email: 'Email Generator', ad: 'Ad Generator', proposal: 'Proposal Generator' };
+      alert(labels[type] + ' will connect to your AI content workflow in the next build.');
+    }
+
+    function sponsorInterest(packageName) {
+      const message = encodeURIComponent('Hello Ruthko, I am interested in the ' + packageName + ' package.');
+      window.open('https://wa.me/17012603908?text=' + message, '_blank');
+    }
+
+    navigate('dashboard');
+  </script>
+</body>
+</html>

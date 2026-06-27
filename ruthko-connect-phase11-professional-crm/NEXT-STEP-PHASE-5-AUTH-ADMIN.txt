@@ -1,0 +1,23 @@
+NEXT STEP: PHASE 5 ADMIN LOGIN
+
+Build this next:
+
+1. Supabase Auth login page
+2. Admin-only CRM access
+3. User roles
+4. Protected sponsor and payment records
+5. Logout button
+6. Netlify environment variable setup
+7. Private dashboard pages
+
+Recommended pages
+
+login.html
+admin.html
+settings.html
+
+Recommended folders
+
+js/auth.js
+js/admin.js
+js/protected-route.js

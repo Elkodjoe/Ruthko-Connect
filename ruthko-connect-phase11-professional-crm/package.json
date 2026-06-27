@@ -1,0 +1,14 @@
+{
+  "name": "ruthko-connect",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ruthko Connect dashboard, CRM, forms, payments, admin login, email notifications, tasks, and consent-based campaigns.",
+  "scripts": {
+    "dev": "netlify dev",
+    "start": "netlify dev",
+    "serve": "python -m http.server 5500"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

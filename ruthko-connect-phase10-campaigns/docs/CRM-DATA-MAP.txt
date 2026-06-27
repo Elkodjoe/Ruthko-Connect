@@ -1,0 +1,46 @@
+RUTHKO CONNECT CRM DATA MAP
+
+Lead types
+
+Employer
+Candidate
+Sponsor
+Vendor
+Event
+Partner
+
+Pipeline statuses
+
+New
+Qualified
+Proposal
+Closed Won
+Closed Lost
+
+Core lead fields
+
+lead_type
+name
+contact_person
+email
+phone
+status
+value
+source
+notes
+created_at
+
+Recommended operating flow
+
+1. New form submission enters as New.
+2. Ruthko reviews and changes it to Qualified.
+3. Proposal or invoice goes out.
+4. Payment or signed agreement moves it to Closed Won.
+5. Unqualified or declined leads move to Closed Lost.
+
+High-value follow-up rules
+
+Employer lead over $25,000: follow up within 24 hours.
+Sponsor lead over $5,000: send proposal same day.
+Candidate lead with nurse profession: tag for EB-3 review.
+Vendor booth request: send payment link and booth rules.

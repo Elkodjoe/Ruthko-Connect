@@ -1,0 +1,32 @@
+RUTHKO CONNECT PHASE 3, PAYMENTS
+
+Goal:
+Accept money for sponsor packages, vendor booths, event tickets, and premium services.
+
+Payment items to create in Stripe:
+1. Platinum Sponsor, $50,000
+2. Gold Sponsor, $15,000
+3. Silver Sponsor, $5,000
+4. Vendor Booth, $3,500
+5. Cultural Handshake Summit Ticket
+6. Sponsor Consultation
+7. Employer Staffing Intake Fee, optional
+
+Where to place Stripe links:
+index.html, Sponsor Portal buttons.
+intake.html, sponsor and vendor form thank-you message or follow-up email.
+
+Recommended order:
+1. Create Stripe account.
+2. Create products and payment links.
+3. Copy each payment link.
+4. Replace the sponsor package buttons with Stripe links.
+5. Test with Stripe test mode.
+6. Turn live mode on after the page looks correct.
+
+Suggested sponsor payment button format:
+<a href="YOUR_STRIPE_PAYMENT_LINK" target="_blank">Pay Sponsor Fee</a>
+
+Do not put secret Stripe keys inside this static HTML project.
+Use payment links first.
+Add Stripe API keys only after the project becomes a backend app.
