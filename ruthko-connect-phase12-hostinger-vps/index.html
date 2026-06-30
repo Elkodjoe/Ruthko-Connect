@@ -56,15 +56,25 @@
 </header>
 
 <main>
+  <!-- Phase 21: Announcement Banner -->
+  <div id="ruthkoAnnouncementBanner" class="hidden bg-yellow-400 text-black">
+    <div class="max-w-7xl mx-auto px-5 py-3 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3 flex-1">
+        <span id="ruthkoAnnouncementText" class="font-bold text-sm"></span>
+        <a id="ruthkoAnnouncementLink" href="#" class="hidden underline font-bold text-sm">Learn more →</a>
+      </div>
+      <button onclick="rutkhoDismissAnnouncement()" class="font-black text-xl leading-none shrink-0">×</button>
+    </div>
+  </div>
   <section class="max-w-7xl mx-auto px-5 py-16 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
     <div>
       <p class="text-yellow-400 font-bold uppercase tracking-wide text-sm">Ruthko Connect</p>
-      <h2 class="text-4xl md:text-6xl font-extrabold mt-4 leading-tight" data-i18n="index.headline">Staffing, events, sponsors, vendors, and partnerships in one Ruthko platform.</h2>
-      <p class="text-zinc-400 mt-6 text-lg max-w-2xl" data-i18n="index.sub">Ruthko supports employers, candidates, event guests, sponsors, vendors, and business partners through a clear intake and follow-up system.</p>
+      <h2 class="text-4xl md:text-6xl font-extrabold mt-4 leading-tight" data-i18n="index.headline" data-content="hero.title">Staffing, events, sponsors, vendors, and partnerships in one Ruthko platform.</h2>
+      <p class="text-zinc-400 mt-6 text-lg max-w-2xl" data-i18n="index.sub" data-content="hero.subtitle">Ruthko supports employers, candidates, event guests, sponsors, vendors, and business partners through a clear intake and follow-up system.</p>
       <div class="flex flex-wrap gap-3 mt-8">
-        <a href="intake.html#employer" class="btn-primary px-6 py-3 rounded-xl font-bold" data-i18n="index.btnStaff">Request Staff</a>
-        <a href="events.html" class="btn-secondary px-6 py-3 rounded-xl font-bold" data-i18n="index.btnEvents">View Events</a>
-        <a href="sponsors.html" class="btn-secondary px-6 py-3 rounded-xl font-bold" data-i18n="index.btnSponsor">Sponsor Ruthko</a>
+        <a href="intake.html#employer" class="btn-primary px-6 py-3 rounded-xl font-bold" data-i18n="index.btnStaff" data-content="hero.cta1">Request Staff</a>
+        <a href="events.html" class="btn-secondary px-6 py-3 rounded-xl font-bold" data-i18n="index.btnEvents" data-content="hero.cta2">View Events</a>
+        <a href="sponsors.html" class="btn-secondary px-6 py-3 rounded-xl font-bold" data-i18n="index.btnSponsor" data-content="hero.cta3">Sponsor Ruthko</a>
       </div>
     </div>
     <div class="glass border border-zinc-800 rounded-3xl p-8">
@@ -128,5 +138,6 @@
 <script>if (window.lucide) lucide.createIcons();</script>
   <script src="js/ruthko-knowledge-base.js"></script>
   <script src="js/public-ruthko-assistant.js"></script>
+  <script src="js/admin-data.js"></script>
 </body>
 </html>

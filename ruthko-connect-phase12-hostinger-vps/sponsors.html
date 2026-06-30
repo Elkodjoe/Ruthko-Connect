@@ -53,6 +53,15 @@
   </div>
 </header>
 
+<div id="ruthkoAnnouncementBanner" class="hidden bg-yellow-400 text-black">
+  <div class="max-w-7xl mx-auto px-5 py-3 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3 flex-1">
+      <span id="ruthkoAnnouncementText" class="font-bold text-sm"></span>
+      <a id="ruthkoAnnouncementLink" href="#" class="hidden underline font-bold text-sm">Learn more →</a>
+    </div>
+    <button onclick="rutkhoDismissAnnouncement()" class="font-black text-xl leading-none shrink-0">×</button>
+  </div>
+</div>
 <main class="max-w-7xl mx-auto px-5 py-12">
   <section class="mb-10">
     <p class="text-yellow-400 font-bold uppercase tracking-wide text-sm" data-i18n="sponsors.badge">Sponsor Portal</p>
@@ -119,5 +128,6 @@
 <script>if (window.lucide) lucide.createIcons();</script>
   <script src="js/ruthko-knowledge-base.js"></script>
   <script src="js/public-ruthko-assistant.js"></script>
+  <script src="js/admin-data.js"></script>
 </body>
 </html>

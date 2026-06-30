@@ -92,6 +92,8 @@
       </div>
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <aside class="glass rounded-2xl border border-zinc-800 p-4 h-fit space-y-2">
+          <button data-cms-tab="hero" class="cms-tab w-full text-left px-4 py-3 rounded-xl border border-zinc-800 font-bold">Hero &amp; Brand</button>
+          <button data-cms-tab="announcement" class="cms-tab w-full text-left px-4 py-3 rounded-xl border border-zinc-800 font-bold">Announcement Banner</button>
           <button data-cms-tab="site" class="cms-tab tab-active w-full text-left px-4 py-3 rounded-xl border border-zinc-800 font-bold">Site Contacts</button>
           <button data-cms-tab="event" class="cms-tab w-full text-left px-4 py-3 rounded-xl border border-zinc-800 font-bold">Event Banner</button>
           <button data-cms-tab="flyers" class="cms-tab w-full text-left px-4 py-3 rounded-xl border border-zinc-800 font-bold">Flyers Library</button>
@@ -100,6 +102,103 @@
           <button data-cms-tab="assistant" class="cms-tab w-full text-left px-4 py-3 rounded-xl border border-zinc-800 font-bold">Admin Assistant</button>
         </aside>
         <div class="lg:col-span-3 space-y-6">
+          <!-- Phase 21: Hero & Brand panel -->
+          <section data-cms-panel="hero" class="cms-panel hidden glass rounded-2xl border border-zinc-800 p-6">
+            <h3 class="text-2xl font-bold mb-1">Hero &amp; Brand Content</h3>
+            <p class="text-zinc-400 text-sm mb-5">Edit the headline, subtitle, and call-to-action buttons shown on the public homepage. Changes reflect immediately on save.</p>
+            <div class="flex gap-2 mb-6">
+              <button data-hero-lang="en" class="hero-lang-btn tab-active px-4 py-2 rounded-xl border border-zinc-800 font-bold text-sm">English</button>
+              <button data-hero-lang="fr" class="hero-lang-btn px-4 py-2 rounded-xl border border-zinc-800 font-bold text-sm">Français</button>
+              <button data-hero-lang="es" class="hero-lang-btn px-4 py-2 rounded-xl border border-zinc-800 font-bold text-sm">Español</button>
+            </div>
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              <div class="space-y-4">
+                <label class="text-sm text-zinc-400 block">Hero headline
+                  <textarea id="heroTitle" class="field mt-2 h-24" placeholder="Main headline on the homepage"></textarea>
+                </label>
+                <label class="text-sm text-zinc-400 block">Hero subtitle
+                  <textarea id="heroSubtitle" class="field mt-2 h-28" placeholder="Supporting paragraph under the headline"></textarea>
+                </label>
+                <div class="glass rounded-xl border border-zinc-800 p-4 space-y-3">
+                  <p class="font-bold text-sm">CTA Buttons</p>
+                  <div class="grid grid-cols-2 gap-3">
+                    <label class="text-xs text-zinc-400">Button 1 text<input id="heroCta1Text" class="field mt-1" placeholder="Request Staff" /></label>
+                    <label class="text-xs text-zinc-400">Button 1 link<input id="heroCta1Link" class="field mt-1" placeholder="intake.html#employer" /></label>
+                    <label class="text-xs text-zinc-400">Button 2 text<input id="heroCta2Text" class="field mt-1" placeholder="View Events" /></label>
+                    <label class="text-xs text-zinc-400">Button 2 link<input id="heroCta2Link" class="field mt-1" placeholder="events.html" /></label>
+                    <label class="text-xs text-zinc-400">Button 3 text<input id="heroCta3Text" class="field mt-1" placeholder="Sponsor Ruthko" /></label>
+                    <label class="text-xs text-zinc-400">Button 3 link<input id="heroCta3Link" class="field mt-1" placeholder="sponsors.html" /></label>
+                  </div>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                  <button id="saveHeroBtn" class="btn-primary rounded-xl px-5 py-3 font-bold">Save Hero Content</button>
+                  <button id="resetHeroBtn" class="btn-secondary rounded-xl px-5 py-3 font-bold">Reset to Defaults</button>
+                  <button id="exportContentBtn" class="btn-secondary rounded-xl px-5 py-3 font-bold">Export JSON</button>
+                </div>
+                <p id="heroStatus" class="text-sm text-zinc-400"></p>
+              </div>
+              <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-5">
+                <p class="text-xs text-zinc-500 uppercase tracking-wide font-bold mb-3">Live Preview</p>
+                <h4 id="heroTitlePreview" class="text-2xl font-extrabold leading-tight text-white"></h4>
+                <p id="heroSubtitlePreview" class="text-zinc-400 mt-3 text-sm"></p>
+                <div class="flex flex-wrap gap-2 mt-4">
+                  <span id="heroCta1Preview" class="btn-primary rounded-xl px-4 py-2 font-bold text-sm inline-block cursor-default"></span>
+                  <span id="heroCta2Preview" class="btn-secondary rounded-xl px-4 py-2 font-bold text-sm inline-block cursor-default"></span>
+                  <span id="heroCta3Preview" class="btn-secondary rounded-xl px-4 py-2 font-bold text-sm inline-block cursor-default"></span>
+                </div>
+                <div class="mt-6 pt-4 border-t border-zinc-800">
+                  <p class="text-xs text-zinc-500 mb-2">Import content from exported JSON</p>
+                  <input type="file" id="importContentFile" accept=".json" class="text-xs text-zinc-400" />
+                  <button id="importContentBtn" class="btn-secondary rounded-xl px-4 py-2 font-bold text-sm mt-2 block">Import JSON</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Phase 21: Announcement Banner panel -->
+          <section data-cms-panel="announcement" class="cms-panel hidden glass rounded-2xl border border-zinc-800 p-6">
+            <h3 class="text-2xl font-bold mb-1">Announcement Banner</h3>
+            <p class="text-zinc-400 text-sm mb-5">Display a dismissable banner at the top of every public page. Ideal for upcoming events, deadlines, or important notices.</p>
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              <div class="space-y-4">
+                <div class="flex items-center gap-4 p-4 glass rounded-xl border border-zinc-800">
+                  <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="announcementActive" class="accent-yellow-400 w-5 h-5" />
+                    <span class="font-bold">Banner active (shows on all public pages)</span>
+                  </label>
+                </div>
+                <label class="text-sm text-zinc-400 block">Banner link (optional)<input id="announcementLink" class="field mt-2" placeholder="events.html or https://..." /></label>
+                <label class="text-sm text-zinc-400 block">English text<input id="annTextEn" class="field mt-2" placeholder="e.g. Upcoming: Ruthko Business Summit — Register Now" /></label>
+                <label class="text-sm text-zinc-400 block">French text (FR)<input id="annTextFr" class="field mt-2" placeholder="e.g. À venir: Sommet des affaires Ruthko — Inscrivez-vous maintenant" /></label>
+                <label class="text-sm text-zinc-400 block">Spanish text (ES)<input id="annTextEs" class="field mt-2" placeholder="e.g. Próximamente: Cumbre de negocios Ruthko — Regístrese ahora" /></label>
+                <div class="flex flex-wrap gap-3">
+                  <button id="saveAnnouncementBtn" class="btn-primary rounded-xl px-5 py-3 font-bold">Save Banner</button>
+                  <button id="clearAnnouncementBtn" class="btn-secondary rounded-xl px-5 py-3 font-bold">Clear Banner</button>
+                </div>
+                <p id="announcementStatus" class="text-sm text-zinc-400"></p>
+              </div>
+              <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-5">
+                <p class="text-xs text-zinc-500 uppercase tracking-wide font-bold mb-3">Preview</p>
+                <div id="annPreview" class="hidden rounded-xl overflow-hidden">
+                  <div class="bg-yellow-400 text-black px-4 py-3 flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3 flex-1">
+                      <span id="annPreviewText" class="font-bold text-sm"></span>
+                      <span id="annPreviewLink" class="hidden underline font-bold text-sm">Learn more →</span>
+                    </div>
+                    <span class="font-black text-lg leading-none cursor-default">×</span>
+                  </div>
+                </div>
+                <p id="annPreviewEmpty" class="text-zinc-500 text-sm">Enter text above to preview the banner.</p>
+                <div class="mt-6 pt-4 border-t border-zinc-800 text-xs text-zinc-500">
+                  <p class="font-bold text-zinc-400 mb-1">How it works</p>
+                  <p>• Banner shows at top of index.html, events.html, jobs.html, partners.html, sponsors.html</p>
+                  <p class="mt-1">• Visitors can dismiss it once per browser session</p>
+                  <p class="mt-1">• Changes take effect on next page load (no refresh needed for admin preview)</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
           <section data-cms-panel="site" class="cms-panel glass rounded-2xl border border-zinc-800 p-6">
             <h3 class="text-2xl font-bold mb-4">Public contact details</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -192,5 +291,195 @@
     </section>
   </main>
   <script src="js/content-manager.js"></script>
+  <script src="js/admin-data.js"></script>
+  <script>
+  // Phase 21 — Hero & Announcement admin UI
+  (function () {
+    if (window.lucide) lucide.createIcons();
+    (function () {
+      var page = document.body.getAttribute('data-page');
+      document.querySelectorAll('.nav-link').forEach(function (link) {
+        if (link.getAttribute('data-page') === page) link.classList.add('nav-active');
+      });
+    })();
+
+    var currentHeroLang = 'en';
+
+    function setStatus(id, msg, good) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.className = 'text-sm font-bold mt-2 ' + (good ? 'text-green-400' : 'text-red-400');
+      setTimeout(function () { el.textContent = ''; el.className = 'text-sm text-zinc-400'; }, 3000);
+    }
+
+    function loadHeroFields(lang) {
+      if (typeof window.ruthkoGetContent !== 'function') return;
+      var content = window.ruthkoGetContent();
+      var hero = (content.hero || {})[lang] || {};
+      document.getElementById('heroTitle').value        = hero.title    || '';
+      document.getElementById('heroSubtitle').value     = hero.subtitle || '';
+      document.getElementById('heroCta1Text').value     = hero.cta1Text || '';
+      document.getElementById('heroCta1Link').value     = hero.cta1Link || '';
+      document.getElementById('heroCta2Text').value     = hero.cta2Text || '';
+      document.getElementById('heroCta2Link').value     = hero.cta2Link || '';
+      document.getElementById('heroCta3Text').value     = hero.cta3Text || '';
+      document.getElementById('heroCta3Link').value     = hero.cta3Link || '';
+      updateHeroPreview();
+    }
+
+    function updateHeroPreview() {
+      document.getElementById('heroTitlePreview').textContent    = document.getElementById('heroTitle').value;
+      document.getElementById('heroSubtitlePreview').textContent = document.getElementById('heroSubtitle').value;
+      document.getElementById('heroCta1Preview').textContent     = document.getElementById('heroCta1Text').value;
+      document.getElementById('heroCta2Preview').textContent     = document.getElementById('heroCta2Text').value;
+      document.getElementById('heroCta3Preview').textContent     = document.getElementById('heroCta3Text').value;
+    }
+
+    ['heroTitle','heroSubtitle','heroCta1Text','heroCta1Link','heroCta2Text','heroCta2Link','heroCta3Text','heroCta3Link'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('input', updateHeroPreview);
+    });
+
+    // Hero lang switcher
+    document.querySelectorAll('.hero-lang-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.hero-lang-btn').forEach(function (b) { b.classList.remove('tab-active'); });
+        btn.classList.add('tab-active');
+        currentHeroLang = btn.getAttribute('data-hero-lang');
+        loadHeroFields(currentHeroLang);
+      });
+    });
+
+    // Save hero
+    var saveHeroBtn = document.getElementById('saveHeroBtn');
+    if (saveHeroBtn) {
+      saveHeroBtn.addEventListener('click', function () {
+        if (typeof window.ruthkoSaveContent !== 'function') return;
+        var lang = currentHeroLang;
+        var partial = { hero: {} };
+        partial.hero[lang] = {
+          title:    document.getElementById('heroTitle').value.trim(),
+          subtitle: document.getElementById('heroSubtitle').value.trim(),
+          cta1Text: document.getElementById('heroCta1Text').value.trim(),
+          cta1Link: document.getElementById('heroCta1Link').value.trim(),
+          cta2Text: document.getElementById('heroCta2Text').value.trim(),
+          cta2Link: document.getElementById('heroCta2Link').value.trim(),
+          cta3Text: document.getElementById('heroCta3Text').value.trim(),
+          cta3Link: document.getElementById('heroCta3Link').value.trim()
+        };
+        window.ruthkoSaveContent(partial);
+        setStatus('heroStatus', 'Hero content saved (' + lang.toUpperCase() + ').', true);
+      });
+    }
+
+    // Reset hero
+    var resetHeroBtn = document.getElementById('resetHeroBtn');
+    if (resetHeroBtn) {
+      resetHeroBtn.addEventListener('click', function () {
+        if (typeof window.ruthkoResetContent === 'function') {
+          window.ruthkoResetContent();
+          loadHeroFields(currentHeroLang);
+          setStatus('heroStatus', 'Reset to defaults.', true);
+        }
+      });
+    }
+
+    // Export content JSON
+    var exportContentBtn = document.getElementById('exportContentBtn');
+    if (exportContentBtn) {
+      exportContentBtn.addEventListener('click', function () {
+        if (typeof window.ruthkoExportContent === 'function') window.ruthkoExportContent();
+      });
+    }
+
+    // Import content JSON
+    var importContentBtn = document.getElementById('importContentBtn');
+    if (importContentBtn) {
+      importContentBtn.addEventListener('click', function () {
+        var fileInput = document.getElementById('importContentFile');
+        if (!fileInput || !fileInput.files[0]) { setStatus('heroStatus', 'Choose a JSON file first.', false); return; }
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          var ok = typeof window.ruthkoImportContent === 'function' && window.ruthkoImportContent(e.target.result);
+          if (ok) { loadHeroFields(currentHeroLang); setStatus('heroStatus', 'Content imported successfully.', true); }
+          else { setStatus('heroStatus', 'Import failed. Check the JSON format.', false); }
+        };
+        reader.readAsText(fileInput.files[0]);
+      });
+    }
+
+    // Announcement fields
+    function loadAnnouncementFields() {
+      if (typeof window.ruthkoGetContent !== 'function') return;
+      var ann = (window.ruthkoGetContent().announcement) || {};
+      document.getElementById('announcementActive').checked = !!ann.active;
+      document.getElementById('announcementLink').value  = ann.link || '';
+      document.getElementById('annTextEn').value         = ann.en   || '';
+      document.getElementById('annTextFr').value         = ann.fr   || '';
+      document.getElementById('annTextEs').value         = ann.es   || '';
+      updateAnnPreview();
+    }
+
+    function updateAnnPreview() {
+      var text   = document.getElementById('annTextEn').value.trim();
+      var link   = document.getElementById('announcementLink').value.trim();
+      var active = document.getElementById('announcementActive').checked;
+      var preview = document.getElementById('annPreview');
+      var empty   = document.getElementById('annPreviewEmpty');
+      if (text && active) {
+        document.getElementById('annPreviewText').textContent = text;
+        var linkEl = document.getElementById('annPreviewLink');
+        if (link) { linkEl.classList.remove('hidden'); } else { linkEl.classList.add('hidden'); }
+        preview.classList.remove('hidden');
+        empty.classList.add('hidden');
+      } else {
+        preview.classList.add('hidden');
+        empty.classList.remove('hidden');
+      }
+    }
+
+    ['annTextEn','announcementLink','announcementActive'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('input', updateAnnPreview);
+      if (el) el.addEventListener('change', updateAnnPreview);
+    });
+
+    var saveAnnBtn = document.getElementById('saveAnnouncementBtn');
+    if (saveAnnBtn) {
+      saveAnnBtn.addEventListener('click', function () {
+        if (typeof window.ruthkoSaveContent !== 'function') return;
+        window.ruthkoSaveContent({
+          announcement: {
+            active: document.getElementById('announcementActive').checked,
+            link:   document.getElementById('announcementLink').value.trim(),
+            en:     document.getElementById('annTextEn').value.trim(),
+            fr:     document.getElementById('annTextFr').value.trim(),
+            es:     document.getElementById('annTextEs').value.trim()
+          }
+        });
+        setStatus('announcementStatus', 'Announcement banner saved.', true);
+      });
+    }
+
+    var clearAnnBtn = document.getElementById('clearAnnouncementBtn');
+    if (clearAnnBtn) {
+      clearAnnBtn.addEventListener('click', function () {
+        if (typeof window.ruthkoSaveContent !== 'function') return;
+        window.ruthkoSaveContent({ announcement: { active: false, link: '', en: '', fr: '', es: '' } });
+        loadAnnouncementFields();
+        setStatus('announcementStatus', 'Banner cleared.', true);
+      });
+    }
+
+    // Init when admin-data.js is ready
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(function () {
+        loadHeroFields('en');
+        loadAnnouncementFields();
+      }, 100);
+    });
+  })();
+  </script>
 </body>
 </html>
