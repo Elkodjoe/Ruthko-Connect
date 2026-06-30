@@ -1,0 +1,8 @@
+Phase 19 should remove Tailwind CDN from production and add real media upload.
+
+Goals
+- Build Tailwind CSS locally with the Tailwind CLI.
+- Replace cdn.tailwindcss.com in all HTML files.
+- Add Supabase Storage upload for event banners and flyers.
+- Add image delete and replace tools.
+- Add social publishing integrations later through Meta, LinkedIn, and Google APIs.

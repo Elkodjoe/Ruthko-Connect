@@ -1,0 +1,112 @@
+RUTHKO CONNECT PROJECT FILES MAP
+
+index.html
+Admin dashboard. Protected after Phase 5.
+
+login.html
+Admin login page.
+
+crm.html
+CRM page for leads, employers, candidates, sponsors, vendors, events, payments, and tasks.
+
+intake.html
+Public intake page for employer, candidate, sponsor, vendor, and event forms.
+
+payments.html
+Sponsor, vendor, and event payment page.
+
+thank-you.html
+Confirmation page after form submission.
+
+js/supabase-config.js
+Supabase project URL, anon key, and sample mode control.
+
+js/auth.js
+Admin login and logout logic.
+
+js/auth-guard.js
+Protects admin pages.
+
+js/ruthko-crm.js
+CRM display, search, filters, add lead, and CSV export.
+
+js/intake-crm.js
+Public form database save and email notification trigger.
+
+netlify/functions/notify-lead.js
+Sends admin email alerts through Resend.
+
+supabase/schema.sql
+Main CRM tables.
+
+supabase/auth-admin-policies.sql
+Admin access policies.
+
+supabase/phase6-form-database-extension.sql
+Public intake table extensions.
+
+supabase/phase6-public-form-policies.sql
+Public form insert policies.
+
+netlify.toml
+Netlify hosting, headers, redirects, and function directory.
+
+package.json
+Netlify local development scripts.
+
+
+PHASE 8 AUTO-REPLY FILES
+netlify/functions/send-auto-reply.js - Sends confirmation emails to public form submitters.
+README-PHASE-8-AUTOREPLIES.txt - Auto-reply setup guide.
+AUTO-REPLY-FLOW-MAP.txt - Shows form-to-email flow.
+NEXT-STEP-PHASE-9-TASK-AUTOMATION.txt - Roadmap for next phase.
+
+
+Phase 9 additions
+
+tasks.html - Protected follow-up task dashboard
+js/ruthko-tasks.js - Task board logic and CSV export
+supabase/phase9-task-automation-extension.sql - Task automation database extension
+README-PHASE-9-TASK-AUTOMATION.txt - Phase 9 setup guide
+TASK-AUTOMATION-FLOW-MAP.txt - Follow-up workflow map
+NEXT-STEP-PHASE-10-CAMPAIGNS.txt - Next development phase
+
+PHASE 10 CAMPAIGNS
+campaigns.html - protected campaign dashboard and segment builder
+js/ruthko-campaigns.js - campaign segment, draft, preview, export, and send logic
+netlify/functions/send-campaign.js - sends approved campaign emails through Resend
+netlify/functions/unsubscribe.js - handles unsubscribe links and updates Supabase when service key is configured
+supabase/phase10-campaigns-extension.sql - campaign, send log, suppression, and marketing consent database changes
+README-PHASE-10-CAMPAIGNS.txt - setup guide for campaign system
+CAMPAIGN-FLOW-MAP.txt - campaign workflow map
+NEXT-STEP-PHASE-11-REPORTS-ANALYTICS.txt - next build direction
+
+
+Phase 11 pages added:
+- jobs.html
+- events.html
+- partners.html
+- sponsors.html
+- ai-studio.html
+- js/ai-prompt-generator.js
+- js/pro-crm.js
+- README-PHASE-11-PROFESSIONAL-CRM.txt
+
+PHASE 14 EVENT OPERATIONS
+- event-operations.html: protected event operations dashboard
+- js/event-operations.js: event operations local workspace logic
+- supabase/phase14-event-operations-extension.sql: event operation tables
+
+Phase 15 Reports & Analytics
+- reports.html
+- js/reports-analytics.js
+- supabase/phase15-reports-analytics-extension.sql
+- README-PHASE-15-REPORTS-ANALYTICS.txt
+- REPORTS-ANALYTICS-FLOW-MAP.txt
+- NEXT-STEP-PHASE-16-STRIPE-WEBHOOKS.txt
+
+Phase 16 additions:
+- content-manager.html
+- js/content-manager.js
+- js/site-settings.js
+- supabase/phase16-admin-content-automation-extension.sql

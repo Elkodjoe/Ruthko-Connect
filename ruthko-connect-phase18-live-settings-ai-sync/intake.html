@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ruthko Connect Intake Forms</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: Inter, sans-serif; }
+    body { background: #0a0a0a; color: #fff; }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+    .gradient-text { background: linear-gradient(to right, #facc15, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .btn-primary { background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%); color: #000; }
+    .field { width: 100%; background: #000; border: 1px solid #27272a; border-radius: 0.75rem; padding: 0.85rem; color: #fff; }
+    .field:focus { outline: none; border-color: rgba(250, 204, 21, .7); }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/site-settings.js"></script>
+</head>
+<body class="min-h-screen">
+  <header class="border-b border-zinc-800 bg-black/80 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="images/logo.png" alt="Ruthko Logo" class="w-11 h-11 rounded-xl object-cover" onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';" />
+        <div id="logoFallback" class="hidden w-11 h-11 rounded-xl bg-yellow-500 text-black items-center justify-center font-extrabold">R</div>
+        <div>
+          <h1 class="font-extrabold text-xl gradient-text">Ruthko Connect</h1>
+          <p class="text-xs text-zinc-400">Jobs, Events, Partnerships</p>
+        </div>
+      </a>
+      <nav class="hidden md:flex items-center gap-3 text-sm text-zinc-300">
+        <a href="index.html" class="hover:text-yellow-400">Home</a>
+        <a href="jobs.html" class="hover:text-yellow-400">Jobs</a>
+        <a href="events.html" class="hover:text-yellow-400">Events</a>
+        <a href="sponsors.html" class="hover:text-yellow-400">Sponsors</a>
+        <a href="payments.html" class="hover:text-yellow-400">Payments</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-5 py-10">
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center mb-10">
+      <div>
+        <p class="text-yellow-400 font-bold uppercase tracking-wide text-sm">Lead Capture Center</p>
+        <h2 class="text-4xl md:text-5xl font-extrabold mt-3">Collect every Ruthko opportunity in one place.</h2>
+        <p class="text-zinc-400 mt-5 max-w-2xl">Use this page for staffing requests, candidate interest, sponsor inquiries, vendor booths, and event registration.</p>
+        <p id="databaseStatus" class="text-xs text-yellow-400 mt-3">Checking database connection.</p>
+      </div>
+      <div class="glass border border-zinc-800 rounded-3xl p-6">
+        <h3 class="text-xl font-bold mb-4">Contact Ruthko</h3>
+        <div class="space-y-2 text-zinc-300 text-sm">
+          <p>Website: www.ruthkojobs.com</p>
+          <p>Events: www.ruthkoevents.com</p>
+          <p>Email: info@ruthkojobs.com</p>
+          <p>Phone: +1-701-260-3908</p>
+          <p>Phone: +1-240-486-5002</p>
+        </div>
+        <a href="https://wa.me/17012603908" target="_blank" class="inline-flex mt-6 btn-primary px-5 py-3 rounded-xl font-bold">Chat on WhatsApp</a>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <form id="employer" name="employer-staffing-request" method="POST" data-ruthko-form="employer" class="glass border border-zinc-800 rounded-3xl p-6 space-y-4 scroll-mt-24">
+        <input type="hidden" name="form-name" value="employer-staffing-request" />
+        <div><p class="text-yellow-400 text-sm font-bold">Employer Form</p><h3 class="text-2xl font-bold">Request Staff</h3></div>
+        <input class="field" name="company" placeholder="Company name" required />
+        <input class="field" name="contact_person" placeholder="Contact person" required />
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><input class="field" type="email" name="email" placeholder="Business email" required /><input class="field" name="phone" placeholder="Phone" /></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><input class="field" name="industry" placeholder="Industry" /><input class="field" name="location" placeholder="City and state" /></div>
+        <textarea class="field h-32" name="staffing_need" placeholder="Roles needed, number of workers, timeline, and sponsorship needs" required></textarea>
+        <label class="flex items-start gap-3 text-sm text-zinc-300">
+          <input type="checkbox" name="marketing_consent" value="true" class="mt-1" />
+          <span>Email me Ruthko updates, opportunities, event notices, and follow-up information.</span>
+        </label>
+        <p data-form-message class="text-sm font-bold text-green-400"></p>
+        <button class="btn-primary px-6 py-3 rounded-xl font-bold" type="submit">Submit Staffing Request</button>
+      </form>
+
+      <form id="candidate" name="candidate-interest" method="POST" data-ruthko-form="candidate" class="glass border border-zinc-800 rounded-3xl p-6 space-y-4 scroll-mt-24">
+        <input type="hidden" name="form-name" value="candidate-interest" />
+        <div><p class="text-yellow-400 text-sm font-bold">Candidate Form</p><h3 class="text-2xl font-bold">Apply for Opportunities</h3></div>
+        <input class="field" name="full_name" placeholder="Full name" required />
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><input class="field" type="email" name="email" placeholder="Email" required /><input class="field" name="phone" placeholder="Phone" /></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><input class="field" name="profession" placeholder="Profession or skill" /><input class="field" name="country" placeholder="Country" /></div>
+        <select class="field" name="visa_interest"><option value="">Visa or job interest</option><option>EB-3</option><option>H-2B</option><option>H-2A</option><option>J-1 Teacher</option><option>Local U.S. job</option></select>
+        <textarea class="field h-32" name="experience" placeholder="Work experience, license, education, and availability"></textarea>
+        <label class="flex items-start gap-3 text-sm text-zinc-300">
+          <input type="checkbox" name="marketing_consent" value="true" class="mt-1" />
+          <span>Email me Ruthko updates, opportunities, event notices, and follow-up information.</span>
+        </label>
+        <p data-form-message class="text-sm font-bold text-green-400"></p>
+        <button class="btn-primary px-6 py-3 rounded-xl font-bold" type="submit">Submit Candidate Interest</button>
+      </form>
+
+      <form id="sponsor" name="sponsor-interest" method="POST" data-ruthko-form="sponsor" class="glass border border-zinc-800 rounded-3xl p-6 space-y-4 scroll-mt-24">
+        <input type="hidden" name="form-name" value="sponsor-interest" />
+        <div><p class="text-yellow-400 text-sm font-bold">Sponsor Form</p><h3 class="text-2xl font-bold">Become a Sponsor</h3></div>
+        <input class="field" name="organization" placeholder="Organization name" required />
+        <input class="field" name="contact_person" placeholder="Contact person" required />
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><input class="field" type="email" name="email" placeholder="Email" required /><input class="field" name="phone" placeholder="Phone" /></div>
+        <select class="field" name="package_interest" required><option value="">Select sponsor package</option><option>Platinum Sponsor, $50,000</option><option>Gold Sponsor, $15,000</option><option>Silver Sponsor, $5,000</option><option>Custom Sponsorship</option></select>
+        <textarea class="field h-32" name="goals" placeholder="What visibility, introductions, or event goals do you want?"></textarea>
+        <label class="flex items-start gap-3 text-sm text-zinc-300">
+          <input type="checkbox" name="marketing_consent" value="true" class="mt-1" />
+          <span>Email me Ruthko updates, opportunities, event notices, and follow-up information.</span>
+        </label>
+        <p data-form-message class="text-sm font-bold text-green-400"></p>
+        <button class="btn-primary px-6 py-3 rounded-xl font-bold" type="submit">Submit Sponsor Interest</button>
+      </form>
+
+      <form id="vendor" name="vendor-booth-request" method="POST" data-ruthko-form="vendor" class="glass border border-zinc-800 rounded-3xl p-6 space-y-4 scroll-mt-24">
+        <input type="hidden" name="form-name" value="vendor-booth-request" />
+        <div><p class="text-yellow-400 text-sm font-bold">Vendor Form</p><h3 class="text-2xl font-bold">Reserve a Booth</h3></div>
+        <input class="field" name="business_name" placeholder="Business name" required />
+        <input class="field" name="contact_person" placeholder="Contact person" required />
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><input class="field" type="email" name="email" placeholder="Email" required /><input class="field" name="phone" placeholder="Phone" /></div>
+        <input class="field" name="product_or_service" placeholder="Product or service" />
+        <textarea class="field h-32" name="booth_needs" placeholder="Booth needs, event interest, and setup notes"></textarea>
+        <label class="flex items-start gap-3 text-sm text-zinc-300">
+          <input type="checkbox" name="marketing_consent" value="true" class="mt-1" />
+          <span>Email me Ruthko updates, opportunities, event notices, and follow-up information.</span>
+        </label>
+        <p data-form-message class="text-sm font-bold text-green-400"></p>
+        <button class="btn-primary px-6 py-3 rounded-xl font-bold" type="submit">Submit Vendor Request</button>
+      </form>
+
+      <form id="event" name="event-rsvp" method="POST" data-ruthko-form="event" class="glass border border-zinc-800 rounded-3xl p-6 space-y-4 lg:col-span-2 scroll-mt-24">
+        <input type="hidden" name="form-name" value="event-rsvp" />
+        <div><p class="text-yellow-400 text-sm font-bold">Event Form</p><h3 class="text-2xl font-bold">Register Interest for Ruthko Events</h3></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><input class="field" name="full_name" placeholder="Full name" required /><input class="field" type="email" name="email" placeholder="Email" required /></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><input class="field" name="phone" placeholder="Phone" /><select class="field" name="event_interest"><option>Cultural Handshake Summit</option><option>Global Recruitment Forum</option><option>Future Ruthko Event</option></select></div>
+        <select class="field" name="attendee_type"><option>General attendee</option><option>Speaker</option><option>Sponsor</option><option>Vendor</option><option>Investor</option><option>Employer</option></select>
+        <textarea class="field h-32" name="message" placeholder="Tell us your event interest"></textarea>
+        <label class="flex items-start gap-3 text-sm text-zinc-300">
+          <input type="checkbox" name="marketing_consent" value="true" class="mt-1" />
+          <span>Email me Ruthko updates, opportunities, event notices, and follow-up information.</span>
+        </label>
+        <p data-form-message class="text-sm font-bold text-green-400"></p>
+        <button class="btn-primary px-6 py-3 rounded-xl font-bold" type="submit">Submit Event Interest</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="border-t border-zinc-800 mt-10">
+    <div class="max-w-7xl mx-auto px-5 py-8 text-sm text-zinc-500">© Ruthko Connect. Jobs, Events, Partnerships.</div>
+  </footer>
+
+  <script src="js/supabase-config.js"></script>
+  <script src="js/intake-crm.js"></script>
+  <script>if (window.lucide) lucide.createIcons();</script>
+  <script src="js/ruthko-knowledge-base.js"></script>
+  <script src="js/public-ruthko-assistant.js"></script>
+</body>
+</html>

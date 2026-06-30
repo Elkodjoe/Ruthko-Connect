@@ -1,0 +1,11 @@
+Ruthko Connect Live Settings Flow
+
+Admin opens Content Manager
+Admin changes contact, banner, flyer, email template, or social draft
+Content Manager sends POST to /.netlify/functions/site-settings
+VPS function saves to Supabase when SUPABASE_SERVICE_ROLE_KEY exists
+If Supabase is not configured, VPS saves to data/site-settings.json
+Public pages call /.netlify/functions/site-settings on load
+Public pages apply contact and event settings through data-setting attributes
+Phone and computer display the same information after refresh
+Auto-reply function checks Supabase email_automation_templates before using default email text

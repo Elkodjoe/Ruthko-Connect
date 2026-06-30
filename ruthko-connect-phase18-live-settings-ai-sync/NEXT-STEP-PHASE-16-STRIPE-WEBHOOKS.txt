@@ -1,0 +1,13 @@
+Next Step: Phase 16, Stripe Webhooks and Payment Records
+
+Build real payment confirmation:
+- Stripe checkout links
+- webhook endpoint on VPS
+- payment status update
+- sponsor tier activation
+- vendor booth payment confirmation
+- ticket payment confirmation
+- receipt email
+- payment dashboard
+
+This will move payments from placeholder links into traceable business records.

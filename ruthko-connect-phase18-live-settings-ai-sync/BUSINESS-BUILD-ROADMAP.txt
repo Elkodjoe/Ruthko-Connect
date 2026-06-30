@@ -1,0 +1,67 @@
+RUTHKO CONNECT BUSINESS BUILD ROADMAP
+
+Phase 1: Static launch
+Goal: Put Ruthko Connect online.
+Features:
+- Public dashboard preview
+- Staffing request form
+- Sponsor packages
+- WhatsApp contact
+- Events overview
+
+Phase 2: Lead capture
+Goal: Collect real business leads.
+Features:
+- Employer staffing form
+- Sponsor interest form
+- Vendor booth form
+- Candidate interest form
+- Google Sheets or Airtable tracking
+
+Phase 3: Payments
+Goal: Accept money from sponsors and vendors.
+Features:
+- Stripe payment links
+- Sponsor package checkout
+- Vendor booth checkout
+- Confirmation email
+
+Phase 4: Admin CRM
+Goal: Manage leads and follow-ups.
+Features:
+- Lead status
+- Pipeline stage
+- Follow-up reminders
+- Sponsor status
+- Employer contact history
+
+Phase 5: Full SaaS build
+Goal: Move from static site to login-based platform.
+Recommended stack:
+- React or Next.js frontend
+- Supabase database and authentication
+- Stripe payments
+- Resend email
+- Netlify or Vercel deployment
+
+
+PHASE 3 COMPLETE TARGET
+- Sponsor payment page
+- Vendor booth payment flow
+- Event ticket buttons
+- Invoice request form
+- Stripe Payment Links placeholders
+
+PHASE 4 TARGET
+- Supabase CRM database
+- Admin login
+- Lead status management
+- Sponsor and vendor tracking
+
+
+PHASE 8 - AUTO-REPLY EMAILS
+Status: Added.
+Purpose: Send confirmation emails to employers, candidates, sponsors, vendors, and event guests after public form submission.
+
+PHASE 9 - TASK AUTOMATION
+Next: Add automatic follow-up tasks and CRM workflows.
