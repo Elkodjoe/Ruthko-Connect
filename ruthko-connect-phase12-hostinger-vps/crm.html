@@ -28,6 +28,7 @@
   <script src="js/supabase-config.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/auth-guard.js"></script>
+  <script src="js/crm-intake-service.js"></script>
 </head>
 <body class="min-h-screen bg-black text-white" data-page="crm">
 
@@ -46,6 +47,7 @@
       <a href="event-operations.html" data-page="event-ops" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="calendar-check" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Event Ops</span></a>
       <a href="reports.html" data-page="reports" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="bar-chart-3" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Reports</span></a>
       <a href="crm.html" data-page="crm" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="database" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">CRM & Sales</span></a>
+      <a href="crm.html#intake" data-page="intake-queue" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="inbox" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Intake Queue</span></a>
       <a href="tasks.html" data-page="tasks" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="list-checks" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Tasks</span></a>
       <a href="campaigns.html" data-page="campaigns" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="send" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Campaigns</span></a>
       <a href="jobs.html" data-page="jobs" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="briefcase" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Jobs</span></a>
@@ -85,6 +87,87 @@
         <div><h2 class="text-4xl font-bold mb-3">Professional CRM & Sales</h2><p class="text-zinc-400 max-w-3xl">Pipeline, contacts, deals, tasks, automations, activity notes, exports, and administrative assistance in one workspace.</p></div>
         <div class="flex flex-wrap gap-3"><button onclick="openLeadModal()" class="btn-primary px-5 py-3 rounded-xl font-bold">New Lead</button><button onclick="exportCrmCsv()" class="btn-secondary px-5 py-3 rounded-xl font-bold">Export CSV</button><a href="tasks.html" class="btn-secondary px-5 py-3 rounded-xl font-bold">Tasks</a><a href="campaigns.html" class="btn-secondary px-5 py-3 rounded-xl font-bold">Campaigns</a></div>
       </div>
+      <!-- Phase 26: Intake Queue -->
+      <section id="intake" class="mb-8 scroll-mt-20">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+          <div>
+            <h3 class="text-2xl font-bold">Intake Queue</h3>
+            <p class="text-zinc-400 text-sm mt-1">New submissions from public application forms.</p>
+          </div>
+          <button onclick="ruthkoLoadIntake()" class="btn-secondary px-4 py-2 rounded-xl font-bold text-sm self-start">Refresh</button>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+          <article class="glass p-4 rounded-2xl border border-zinc-800"><p class="text-xs text-zinc-400">Total Intake</p><h4 id="intakeStatTotal" class="text-2xl font-bold mt-1">—</h4></article>
+          <article class="glass p-4 rounded-2xl border border-zinc-800"><p class="text-xs text-zinc-400">New</p><h4 id="intakeStatNew" class="text-2xl font-bold mt-1 text-yellow-400">—</h4></article>
+          <article class="glass p-4 rounded-2xl border border-zinc-800"><p class="text-xs text-zinc-400">Reviewing</p><h4 id="intakeStatReviewing" class="text-2xl font-bold mt-1 text-blue-400">—</h4></article>
+          <article class="glass p-4 rounded-2xl border border-zinc-800"><p class="text-xs text-zinc-400">Converted</p><h4 id="intakeStatConverted" class="text-2xl font-bold mt-1 text-green-400">—</h4></article>
+        </div>
+
+        <div class="glass border border-zinc-800 rounded-2xl overflow-hidden">
+          <div class="p-4 border-b border-zinc-800 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            <input id="intakeSearch" placeholder="Search name, email…" class="bg-black border border-zinc-800 rounded-xl p-2 text-sm" oninput="ruthkoFilterIntake()" />
+            <select id="intakeFilterType" class="bg-black border border-zinc-800 rounded-xl p-2 text-sm" onchange="ruthkoFilterIntake()">
+              <option value="all">All types</option>
+              <option value="job_seeker">Job Seeker</option>
+              <option value="employer">Employer</option>
+              <option value="sponsor">Sponsor</option>
+              <option value="partner">Partner</option>
+              <option value="volunteer">Volunteer</option>
+              <option value="event_rsvp">Event RSVP</option>
+            </select>
+            <select id="intakeFilterStatus" class="bg-black border border-zinc-800 rounded-xl p-2 text-sm" onchange="ruthkoFilterIntake()">
+              <option value="all">All statuses</option>
+              <option value="new">New</option>
+              <option value="reviewing">Reviewing</option>
+              <option value="contacted">Contacted</option>
+              <option value="qualified">Qualified</option>
+              <option value="scheduled">Scheduled</option>
+              <option value="converted">Converted</option>
+              <option value="closed">Closed</option>
+              <option value="rejected">Rejected</option>
+            </select>
+            <select id="intakeFilterPriority" class="bg-black border border-zinc-800 rounded-xl p-2 text-sm" onchange="ruthkoFilterIntake()">
+              <option value="all">All priorities</option>
+              <option value="urgent">Urgent</option>
+              <option value="high">High</option>
+              <option value="normal">Normal</option>
+              <option value="low">Low</option>
+            </select>
+            <input id="intakeDateFrom" type="date" class="bg-black border border-zinc-800 rounded-xl p-2 text-sm" onchange="ruthkoFilterIntake()" title="From date" />
+            <input id="intakeDateTo" type="date" class="bg-black border border-zinc-800 rounded-xl p-2 text-sm" onchange="ruthkoFilterIntake()" title="To date" />
+          </div>
+          <div class="overflow-x-auto max-h-[520px]">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-zinc-950 text-zinc-400 text-xs uppercase sticky top-0">
+                <tr>
+                  <th class="p-3">Name</th>
+                  <th class="p-3">Type</th>
+                  <th class="p-3">Email</th>
+                  <th class="p-3">Status</th>
+                  <th class="p-3">Priority</th>
+                  <th class="p-3">Date</th>
+                  <th class="p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="intakeTableBody"><tr><td colspan="7" class="p-6 text-center text-zinc-500">Loading intake submissions…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Intake detail modal -->
+      <div id="intakeModal" class="hidden fixed inset-0 z-[200] bg-black/80 flex items-start justify-center p-4 overflow-y-auto">
+        <div class="glass border border-zinc-700 rounded-3xl p-6 w-full max-w-2xl mt-8 mb-8">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-bold">Intake Submission</h3>
+            <button onclick="document.getElementById('intakeModal').classList.add('hidden')" class="text-zinc-400 hover:text-white">✕ Close</button>
+          </div>
+          <div id="intakeModalBody" class="space-y-4 text-sm"></div>
+          <div class="flex flex-wrap gap-3 mt-6" id="intakeModalActions"></div>
+        </div>
+      </div>
+
       <div id="crmMetrics" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4 mb-6"></div>
       <div class="grid grid-cols-1 xl:grid-cols-4 gap-6 mb-6">
         <article class="xl:col-span-3 glass p-5 rounded-2xl border border-zinc-800"><div class="flex items-center justify-between gap-3 mb-4"><h3 class="text-xl font-bold">Pipeline Board</h3><select id="pipelineFilter" onchange="renderCrm()" class="bg-black border border-zinc-800 rounded-xl p-2 text-sm"><option value="all">All lead types</option><option>Employer</option><option>Candidate</option><option>Sponsor</option><option>Vendor</option><option>Event Guest</option><option>Partner</option></select></div><div id="pipelineBoard" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4"></div></article>
@@ -105,6 +188,173 @@
   </main>
 
   <script>
+    // Phase 26: Intake Queue logic
+    var _intakeAll = [];
+    var _intakeFiltered = [];
+
+    var INTAKE_TYPE_LABELS = {
+      job_seeker: 'Job Seeker', employer: 'Employer', sponsor: 'Sponsor',
+      partner: 'Partner', volunteer: 'Volunteer', event_rsvp: 'Event RSVP', general: 'General'
+    };
+    var INTAKE_STATUS_COLORS = {
+      new: 'text-yellow-400', reviewing: 'text-blue-400', contacted: 'text-purple-400',
+      qualified: 'text-cyan-400', scheduled: 'text-indigo-400', converted: 'text-green-400',
+      closed: 'text-zinc-400', rejected: 'text-red-400', archived: 'text-zinc-600'
+    };
+
+    async function ruthkoLoadIntake() {
+      if (!window.ruthkoCrmIntake) return;
+      var result = await window.ruthkoCrmIntake.getSubmissions({ limit: 200 });
+      _intakeAll = result.data || [];
+      _intakeFiltered = _intakeAll.slice();
+      ruthkoRenderIntakeStats(_intakeAll);
+      ruthkoRenderIntakeTable(_intakeFiltered);
+    }
+
+    function ruthkoFilterIntake() {
+      var search = (document.getElementById('intakeSearch').value || '').toLowerCase();
+      var type = document.getElementById('intakeFilterType').value;
+      var status = document.getElementById('intakeFilterStatus').value;
+      var priority = document.getElementById('intakeFilterPriority').value;
+      var dateFrom = document.getElementById('intakeDateFrom').value;
+      var dateTo = document.getElementById('intakeDateTo').value;
+      _intakeFiltered = _intakeAll.filter(function (r) {
+        if (search && !((r.first_name || '') + ' ' + (r.last_name || '') + ' ' + (r.email || '')).toLowerCase().includes(search)) return false;
+        if (type !== 'all' && r.submission_type !== type) return false;
+        if (status !== 'all' && r.status !== status) return false;
+        if (priority !== 'all' && r.priority !== priority) return false;
+        if (dateFrom && r.created_at < dateFrom) return false;
+        if (dateTo && r.created_at > dateTo + 'T23:59:59') return false;
+        return true;
+      });
+      ruthkoRenderIntakeTable(_intakeFiltered);
+    }
+
+    function ruthkoRenderIntakeStats(data) {
+      document.getElementById('intakeStatTotal').textContent = data.length;
+      document.getElementById('intakeStatNew').textContent = data.filter(function (r) { return r.status === 'new'; }).length;
+      document.getElementById('intakeStatReviewing').textContent = data.filter(function (r) { return r.status === 'reviewing'; }).length;
+      document.getElementById('intakeStatConverted').textContent = data.filter(function (r) { return r.status === 'converted'; }).length;
+    }
+
+    function ruthkoRenderIntakeTable(data) {
+      var tbody = document.getElementById('intakeTableBody');
+      if (!data.length) {
+        tbody.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-zinc-500">No submissions found.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = data.map(function (r) {
+        var name = ((r.first_name || '') + ' ' + (r.last_name || '')).trim() || '—';
+        var typeLabel = INTAKE_TYPE_LABELS[r.submission_type] || r.submission_type || '—';
+        var statusColor = INTAKE_STATUS_COLORS[r.status] || 'text-zinc-300';
+        var date = r.created_at ? new Date(r.created_at).toLocaleDateString() : '—';
+        return '<tr class="border-t border-zinc-900 hover:bg-white/5">' +
+          '<td class="p-3 font-medium">' + esc(name) + '</td>' +
+          '<td class="p-3 text-zinc-300">' + esc(typeLabel) + '</td>' +
+          '<td class="p-3 text-zinc-300">' + esc(r.email || '—') + '</td>' +
+          '<td class="p-3 ' + statusColor + ' capitalize font-semibold">' + esc(r.status || 'new') + '</td>' +
+          '<td class="p-3 text-zinc-300 capitalize">' + esc(r.priority || 'normal') + '</td>' +
+          '<td class="p-3 text-zinc-400">' + date + '</td>' +
+          '<td class="p-3 text-right"><button onclick="ruthkoViewIntake(' + JSON.stringify(r.id) + ')" class="text-yellow-400 hover:underline text-xs font-bold mr-2">View</button>' +
+          '<select onchange="ruthkoQuickStatus(' + JSON.stringify(r.id) + ', this.value)" class="bg-black border border-zinc-800 rounded-lg text-xs p-1">' +
+          '<option value="">Change status</option>' +
+          '<option value="reviewing">Reviewing</option><option value="contacted">Contacted</option>' +
+          '<option value="qualified">Qualified</option><option value="converted">Converted</option>' +
+          '<option value="rejected">Rejected</option><option value="archived">Archive</option>' +
+          '</select></td>' +
+          '</tr>';
+      }).join('');
+    }
+
+    function ruthkoViewIntake(id) {
+      var r = _intakeAll.find(function (x) { return x.id === id; });
+      if (!r) return;
+      var typeLabel = INTAKE_TYPE_LABELS[r.submission_type] || r.submission_type;
+      var details = r.details_json || {};
+      var detailRows = Object.entries(details).filter(function (kv) { return kv[1]; }).map(function (kv) {
+        return '<div class="flex gap-2"><span class="text-zinc-400 shrink-0 capitalize">' + esc(kv[0].replace(/_/g, ' ')) + ':</span><span class="text-zinc-100">' + esc(String(kv[1])) + '</span></div>';
+      }).join('');
+      document.getElementById('intakeModalBody').innerHTML =
+        '<div class="grid grid-cols-2 gap-3 glass border border-zinc-800 rounded-xl p-4">' +
+        '<div><span class="text-zinc-400">Name:</span> <span class="font-semibold">' + esc((r.first_name || '') + ' ' + (r.last_name || '')) + '</span></div>' +
+        '<div><span class="text-zinc-400">Type:</span> <span class="font-semibold">' + esc(typeLabel) + '</span></div>' +
+        '<div><span class="text-zinc-400">Email:</span> <span>' + esc(r.email || '—') + '</span></div>' +
+        '<div><span class="text-zinc-400">Phone:</span> <span>' + esc(r.phone || '—') + '</span></div>' +
+        '<div><span class="text-zinc-400">Status:</span> <span class="capitalize font-bold">' + esc(r.status) + '</span></div>' +
+        '<div><span class="text-zinc-400">Priority:</span> <span class="capitalize">' + esc(r.priority) + '</span></div>' +
+        '<div><span class="text-zinc-400">Language:</span> <span>' + esc(r.preferred_language || 'en') + '</span></div>' +
+        '<div><span class="text-zinc-400">Source:</span> <span>' + esc(r.source_page || '—') + '</span></div>' +
+        (r.organization_name ? '<div class="col-span-2"><span class="text-zinc-400">Organization:</span> <span>' + esc(r.organization_name) + '</span></div>' : '') +
+        (r.message ? '<div class="col-span-2"><span class="text-zinc-400">Message:</span> <p class="mt-1 text-zinc-200 whitespace-pre-wrap">' + esc(r.message) + '</p></div>' : '') +
+        '</div>' +
+        (detailRows ? '<div class="glass border border-zinc-800 rounded-xl p-4 space-y-2"><p class="font-semibold text-zinc-300 mb-2">Form Details</p>' + detailRows + '</div>' : '');
+
+      document.getElementById('intakeModalActions').innerHTML =
+        '<button onclick="ruthkoIntakeCreateContact(' + JSON.stringify(id) + ')" class="btn-primary px-4 py-2 rounded-xl text-sm font-bold">Create Contact</button>' +
+        '<button onclick="ruthkoIntakeToPipeline(' + JSON.stringify(id) + ')" class="btn-secondary px-4 py-2 rounded-xl text-sm font-bold">Add to Pipeline</button>' +
+        '<button onclick="ruthkoIntakeArchive(' + JSON.stringify(id) + ')" class="bg-zinc-900 border border-zinc-700 px-4 py-2 rounded-xl text-sm font-bold">Archive</button>' +
+        '<button onclick="ruthkoIntakeDuplicate(' + JSON.stringify(id) + ')" class="bg-zinc-900 border border-zinc-700 px-4 py-2 rounded-xl text-sm font-bold text-zinc-400">Mark Duplicate</button>';
+
+      document.getElementById('intakeModal').classList.remove('hidden');
+    }
+
+    async function ruthkoQuickStatus(id, status) {
+      if (!status || !window.ruthkoCrmIntake) return;
+      await window.ruthkoCrmIntake.updateSubmission(id, { status: status });
+      var r = _intakeAll.find(function (x) { return x.id === id; });
+      if (r) r.status = status;
+      ruthkoRenderIntakeStats(_intakeAll);
+      ruthkoRenderIntakeTable(_intakeFiltered);
+    }
+
+    async function ruthkoIntakeCreateContact(id) {
+      var r = _intakeAll.find(function (x) { return x.id === id; });
+      if (!r || !window.ruthkoCrmIntake) return;
+      var res = await window.ruthkoCrmIntake.createContact(r);
+      if (res.ok) {
+        await window.ruthkoCrmIntake.updateSubmission(id, { status: 'converted' });
+        if (r) r.status = 'converted';
+        ruthkoRenderIntakeStats(_intakeAll);
+        ruthkoRenderIntakeTable(_intakeFiltered);
+        document.getElementById('intakeModal').classList.add('hidden');
+        alert('Contact created successfully' + (res.source === 'local' ? ' (saved locally — connect Supabase to persist)' : '') + '.');
+      }
+    }
+
+    async function ruthkoIntakeToPipeline(id) {
+      var r = _intakeAll.find(function (x) { return x.id === id; });
+      if (!r || !window.ruthkoCrmIntake) return;
+      var res = await window.ruthkoCrmIntake.createPipelineItem({ submission_id: id, submission_type: r.submission_type, priority: r.priority });
+      if (res.ok) {
+        document.getElementById('intakeModal').classList.add('hidden');
+        alert('Pipeline item created' + (res.source === 'local' ? ' (saved locally)' : '') + '.');
+      }
+    }
+
+    async function ruthkoIntakeArchive(id) {
+      if (!window.ruthkoCrmIntake) return;
+      await window.ruthkoCrmIntake.archive(id);
+      var r = _intakeAll.find(function (x) { return x.id === id; });
+      if (r) r.status = 'archived';
+      ruthkoRenderIntakeStats(_intakeAll);
+      ruthkoFilterIntake();
+      document.getElementById('intakeModal').classList.add('hidden');
+    }
+
+    async function ruthkoIntakeDuplicate(id) {
+      if (!window.ruthkoCrmIntake) return;
+      await window.ruthkoCrmIntake.markDuplicate(id);
+      var r = _intakeAll.find(function (x) { return x.id === id; });
+      if (r) { r.status = 'archived'; r.priority = 'low'; }
+      ruthkoRenderIntakeStats(_intakeAll);
+      ruthkoFilterIntake();
+      document.getElementById('intakeModal').classList.add('hidden');
+    }
+
+    function esc(s) {
+      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
     if (window.lucide) lucide.createIcons();
     (function () {
       var page = document.body.getAttribute('data-page');
@@ -112,6 +362,18 @@
         if (link.getAttribute('data-page') === page) link.classList.add('nav-active');
       });
     })();
+
+    // Auto-load intake queue on page load
+    document.addEventListener('DOMContentLoaded', function () {
+      ruthkoLoadIntake();
+      // Scroll to intake section if hash present
+      if (window.location.hash === '#intake') {
+        setTimeout(function () {
+          var el = document.getElementById('intake');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 400);
+      }
+    });
   </script>
 </body>
 </html>
