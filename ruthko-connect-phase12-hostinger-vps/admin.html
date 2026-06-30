@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ruthko Connect | Professional CRM</title>
+  <title>Ruthko Connect | Admin Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -28,7 +28,7 @@
   <script src="js/auth.js"></script>
   <script src="js/auth-guard.js"></script>
 </head>
-<body class="min-h-screen bg-black text-white" data-page="crm">
+<body class="min-h-screen bg-black text-white" data-page="dashboard">
 
   <aside class="fixed left-0 top-0 z-50 h-full w-20 lg:w-64 bg-black border-r border-zinc-800 flex flex-col">
     <div class="p-4 lg:p-6 flex items-center gap-3 border-b border-zinc-900">
@@ -59,7 +59,7 @@
   <main class="ml-20 lg:ml-64 min-h-screen">
 
     <header class="h-16 border-b border-zinc-800 bg-black/70 backdrop-blur-md flex items-center justify-between px-6 shrink-0 sticky top-0 z-40">
-      <h1 class="text-xl font-bold">CRM & Sales</h1>
+      <h1 class="text-xl font-bold">Dashboard</h1>
       <div class="flex items-center gap-3">
         <a href="intake.html" class="hidden md:inline-flex btn-secondary px-4 py-2 rounded-xl font-bold text-sm">Intake</a>
         <a href="payments.html" class="hidden md:inline-flex btn-secondary px-4 py-2 rounded-xl font-bold text-sm">Payments</a>
@@ -73,27 +73,35 @@
     </header>
 
 
-    <section class="p-6">
-      <div class="flex flex-col xl:flex-row xl:items-end justify-between gap-4 mb-6">
-        <div><h2 class="text-4xl font-bold mb-3">Professional CRM & Sales</h2><p class="text-zinc-400 max-w-3xl">Pipeline, contacts, deals, tasks, automations, activity notes, exports, and administrative assistance in one workspace.</p></div>
-        <div class="flex flex-wrap gap-3"><button onclick="openLeadModal()" class="btn-primary px-5 py-3 rounded-xl font-bold">New Lead</button><button onclick="exportCrmCsv()" class="btn-secondary px-5 py-3 rounded-xl font-bold">Export CSV</button><a href="tasks.html" class="btn-secondary px-5 py-3 rounded-xl font-bold">Tasks</a><a href="campaigns.html" class="btn-secondary px-5 py-3 rounded-xl font-bold">Campaigns</a></div>
+    <section class="p-6 overflow-y-auto">
+      <div class="mb-8">
+        <h2 class="text-4xl font-bold mb-3">Ruthko Connect Command Center</h2>
+        <p class="text-zinc-400 max-w-3xl">Every main tab now opens a working page. Use this dashboard to route staffing leads, event guests, sponsors, vendors, CRM tasks, AI prompts, campaigns, and payments.</p>
       </div>
-      <div id="crmMetrics" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4 mb-6"></div>
-      <div class="grid grid-cols-1 xl:grid-cols-4 gap-6 mb-6">
-        <article class="xl:col-span-3 glass p-5 rounded-2xl border border-zinc-800"><div class="flex items-center justify-between gap-3 mb-4"><h3 class="text-xl font-bold">Pipeline Board</h3><select id="pipelineFilter" onchange="renderCrm()" class="bg-black border border-zinc-800 rounded-xl p-2 text-sm"><option value="all">All lead types</option><option>Employer</option><option>Candidate</option><option>Sponsor</option><option>Vendor</option><option>Event Guest</option><option>Partner</option></select></div><div id="pipelineBoard" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4"></div></article>
-        <article class="glass p-5 rounded-2xl border border-zinc-800"><h3 class="text-xl font-bold mb-4">Admin Assistant</h3><select id="assistantLead" class="w-full bg-black border border-zinc-800 rounded-xl p-3 mb-3"></select><div class="grid grid-cols-1 gap-2 mb-3"><button onclick="generateAdminHelp('brief')" class="btn-primary py-2 rounded-xl font-bold text-sm">Daily Brief</button><button onclick="generateAdminHelp('email')" class="btn-secondary py-2 rounded-xl font-bold text-sm">Follow-up Email</button><button onclick="generateAdminHelp('call')" class="btn-secondary py-2 rounded-xl font-bold text-sm">Call Script</button><button onclick="generateAdminHelp('proposal')" class="btn-secondary py-2 rounded-xl font-bold text-sm">Proposal Checklist</button></div><textarea id="assistantOutput" class="w-full h-80 bg-black border border-zinc-800 rounded-xl p-3 text-sm text-zinc-200"></textarea><button onclick="copyAssistantOutput()" class="mt-3 w-full bg-zinc-900 border border-zinc-700 rounded-xl py-2 font-bold text-sm">Copy Output</button></article>
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+        <article class="glass p-6 rounded-2xl border border-zinc-800"><p class="text-zinc-400 text-sm">Open Pipeline</p><h3 class="text-3xl font-bold mt-3">$1.2M</h3><p class="text-emerald-400 text-sm mt-2">CRM tracks deals, stages, and tasks</p></article>
+        <article class="glass p-6 rounded-2xl border border-zinc-800"><p class="text-zinc-400 text-sm">New Leads</p><h3 class="text-3xl font-bold mt-3">127</h3><p class="text-blue-400 text-sm mt-2">Employer, candidate, sponsor, vendor, event</p></article>
+        <article class="glass p-6 rounded-2xl border border-zinc-800"><p class="text-zinc-400 text-sm">Automations</p><h3 class="text-3xl font-bold mt-3">12</h3><p class="text-yellow-400 text-sm mt-2">Follow-up tasks and email workflows</p></article>
+        <article class="glass p-6 rounded-2xl border border-zinc-800"><p class="text-zinc-400 text-sm">Sponsor Offers</p><h3 class="text-3xl font-bold mt-3">4</h3><p class="text-orange-400 text-sm mt-2">Payment and inquiry links active</p></article>
       </div>
-      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
-        <article class="xl:col-span-2 glass p-5 rounded-2xl border border-zinc-800"><div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4"><h3 class="text-xl font-bold">Contacts and Deals</h3><input id="crmSearch" oninput="renderCrm()" placeholder="Search contacts, companies, email, type..." class="bg-black border border-zinc-800 rounded-xl p-3 text-sm w-full md:w-80" /></div><div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-zinc-400 text-left"><tr><th class="p-3">Name</th><th class="p-3">Type</th><th class="p-3">Company</th><th class="p-3">Stage</th><th class="p-3">Value</th><th class="p-3">Next Action</th><th class="p-3">Actions</th></tr></thead><tbody id="crmTable"></tbody></table></div></article>
-        <article class="glass p-5 rounded-2xl border border-zinc-800"><h3 class="text-xl font-bold mb-4">Follow-up Tasks</h3><div id="crmTasks" class="space-y-3 max-h-[420px] overflow-y-auto"></div></article>
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <a href="jobs.html" class="glass glass-hover p-6 rounded-3xl border border-zinc-800"><i data-lucide="briefcase" class="w-9 h-9 text-blue-500 mb-4"></i><h3 class="text-xl font-bold">Ruthko Jobs</h3><p class="text-sm text-zinc-400 mt-2">Job posts, employer staffing needs, candidate pipeline, and hiring actions.</p></a>
+        <a href="events.html" class="glass glass-hover p-6 rounded-3xl border border-zinc-800"><i data-lucide="calendar" class="w-9 h-9 text-orange-500 mb-4"></i><h3 class="text-xl font-bold">Ruthko Events</h3><p class="text-sm text-zinc-400 mt-2">Summits, RSVP links, ticket flow, speakers, vendors, and sponsors.</p></a>
+        <a href="partners.html" class="glass glass-hover p-6 rounded-3xl border border-zinc-800"><i data-lucide="users" class="w-9 h-9 text-yellow-500 mb-4"></i><h3 class="text-xl font-bold">Partners Hub</h3><p class="text-sm text-zinc-400 mt-2">Sponsors, vendors, business partners, consulates, investors, and collaborators.</p></a>
+        <a href="crm.html" class="glass glass-hover p-6 rounded-3xl border border-zinc-800"><i data-lucide="database" class="w-9 h-9 text-emerald-500 mb-4"></i><h3 class="text-xl font-bold">Professional CRM</h3><p class="text-sm text-zinc-400 mt-2">Pipeline, contacts, tasks, automations, activity notes, exports, and admin assistant.</p></a>
+        <a href="ai-studio.html" class="glass glass-hover p-6 rounded-3xl border border-zinc-800"><i data-lucide="sparkles" class="w-9 h-9 text-purple-500 mb-4"></i><h3 class="text-xl font-bold">AI Studio</h3><p class="text-sm text-zinc-400 mt-2">Industry prompt generator for staffing, events, sponsorship, vendors, and campaigns.</p></a>
+        <a href="sponsors.html" class="glass glass-hover p-6 rounded-3xl border border-zinc-800"><i data-lucide="crown" class="w-9 h-9 text-yellow-400 mb-4"></i><h3 class="text-xl font-bold">Sponsor Portal</h3><p class="text-sm text-zinc-400 mt-2">Sponsor packages with direct inquiry and payment links.</p></a>
       </div>
-      <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <article class="glass p-5 rounded-2xl border border-zinc-800"><div class="flex items-center justify-between mb-4"><h3 class="text-xl font-bold">Automations</h3><button onclick="runAutomations()" class="btn-primary px-4 py-2 rounded-xl text-sm font-bold">Run Now</button></div><div id="automationList" class="space-y-3"></div></article>
-        <article class="glass p-5 rounded-2xl border border-zinc-800"><h3 class="text-xl font-bold mb-4">Activity Feed</h3><div id="activityFeed" class="space-y-3 max-h-[360px] overflow-y-auto"></div></article>
+      <div class="mt-8 glass p-6 rounded-2xl border border-zinc-800">
+        <h3 class="text-xl font-bold text-yellow-400 mb-4">Best next operating flow</h3>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm text-zinc-300">
+          <div class="bg-zinc-900/60 p-4 rounded-xl border border-zinc-800"><p class="font-bold text-white">1. Intake</p><p class="mt-1">Capture a lead through public forms.</p></div>
+          <div class="bg-zinc-900/60 p-4 rounded-xl border border-zinc-800"><p class="font-bold text-white">2. CRM</p><p class="mt-1">Stage the lead and assign a value.</p></div>
+          <div class="bg-zinc-900/60 p-4 rounded-xl border border-zinc-800"><p class="font-bold text-white">3. Automate</p><p class="mt-1">Create follow-up tasks and emails.</p></div>
+          <div class="bg-zinc-900/60 p-4 rounded-xl border border-zinc-800"><p class="font-bold text-white">4. Close</p><p class="mt-1">Send payment links, proposals, or event links.</p></div>
+        </div>
       </div>
     </section>
-    <div id="leadModal" class="hidden fixed inset-0 z-[100] bg-black/70 items-center justify-center p-4"><div class="glass border border-zinc-800 rounded-3xl p-6 w-full max-w-2xl"><div class="flex items-center justify-between mb-4"><h3 class="text-2xl font-bold">Add Lead</h3><button onclick="closeLeadModal()" class="text-zinc-400">Close</button></div><form onsubmit="saveLead(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4"><input id="leadName" placeholder="Contact name" required class="bg-black border border-zinc-800 rounded-xl p-3"><input id="leadCompany" placeholder="Company" class="bg-black border border-zinc-800 rounded-xl p-3"><input id="leadEmail" type="email" placeholder="Email" class="bg-black border border-zinc-800 rounded-xl p-3"><input id="leadPhone" placeholder="Phone" class="bg-black border border-zinc-800 rounded-xl p-3"><select id="leadType" class="bg-black border border-zinc-800 rounded-xl p-3"><option>Employer</option><option>Candidate</option><option>Sponsor</option><option>Vendor</option><option>Event Guest</option><option>Partner</option></select><input id="leadValue" type="number" placeholder="Estimated value" class="bg-black border border-zinc-800 rounded-xl p-3"><textarea id="leadNeed" placeholder="Need or note" class="md:col-span-2 bg-black border border-zinc-800 rounded-xl p-3 h-24"></textarea><button class="md:col-span-2 btn-primary py-3 rounded-xl font-bold">Save Lead</button></form></div></div>
-    <script src="js/pro-crm.js"></script>
 
   </main>
 

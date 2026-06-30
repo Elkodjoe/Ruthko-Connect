@@ -24,7 +24,7 @@
 
   function getRedirectTarget() {
     const params = new URLSearchParams(window.location.search);
-    return params.get('redirect') || 'index.html';
+    return params.get('redirect') || 'admin.html';
   }
 
   function setMessage(id, message, isError) {
