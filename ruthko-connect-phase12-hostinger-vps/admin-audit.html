@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en" class="auth-checking">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Ruthko Connect | Audit Log</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: Inter, sans-serif; }
+    body { background: #0a0a0a; color: #fff; }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+    .glass-hover { transition: all .2s ease; }
+    .glass-hover:hover { background: rgba(255,255,255,0.08); }
+    .gradient-text { background: linear-gradient(to right, #facc15, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .btn-primary { background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%); color: #000; }
+    .btn-primary:hover { filter: brightness(1.08); }
+    .btn-secondary { background: rgba(255,255,255,0.1); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.15); }
+    .nav-active { background: rgba(39,39,42,0.9); color: #facc15; }
+    .auth-checking body { visibility: hidden; }
+    input, select { outline: none; }
+    .table-row:hover { background: rgba(255,255,255,0.04); }
+    .badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 700; }
+    .badge-login    { background: rgba(74,222,128,.15); color: #4ade80; }
+    .badge-logout   { background: rgba(148,163,184,.1); color: #94a3b8; }
+    .badge-save     { background: rgba(250,204,21,.15); color: #facc15; }
+    .badge-denied   { background: rgba(248,113,113,.15); color: #f87171; }
+    .badge-default  { background: rgba(139,92,246,.15); color: #a78bfa; }
+  </style>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script src="js/admin-auth.js"></script>
+  <script src="js/admin-roles.js"></script>
+  <script src="js/admin-guard.js"></script>
+  <script src="js/admin-audit-log.js"></script>
+  <script src="js/admin-change-history.js"></script>
+</head>
+<body class="min-h-screen bg-black text-white" data-page="audit">
+
+  <!-- Sidebar -->
+  <aside class="fixed left-0 top-0 z-50 h-full w-16 md:w-60 bg-black border-r border-zinc-800 flex flex-col">
+    <div class="p-3 md:p-5 flex items-center gap-3 border-b border-zinc-900">
+      <img src="images/logo.png" alt="Ruthko Logo" class="w-10 h-10 rounded-xl object-contain bg-white p-1 shrink-0" onerror="this.style.display='none';" />
+      <div class="hidden md:block">
+        <h1 class="font-bold text-base gradient-text">Ruthko Connect</h1>
+        <p class="text-xs text-zinc-400">Admin Console</p>
+      </div>
+    </div>
+    <nav class="flex-1 px-2 py-3 space-y-1 overflow-y-auto">
+      <a href="admin.html" data-page="admin" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="layout-dashboard" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Dashboard</span></a>
+      <a href="content-manager.html" data-page="content-manager" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="zap" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Quick Change</span></a>
+      <a href="ai-studio.html" data-page="ai" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="sparkles" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">AI Studio</span></a>
+      <a href="event-operations.html" data-page="event-ops" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="calendar-check" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Event Ops</span></a>
+      <a href="reports.html" data-page="reports" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="bar-chart-3" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Reports</span></a>
+      <a href="admin-audit.html" data-page="audit" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="shield-check" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Audit Log</span></a>
+      <a href="crm.html" data-page="crm" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="database" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">CRM & Sales</span></a>
+      <a href="tasks.html" data-page="tasks" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="list-checks" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Tasks</span></a>
+      <a href="campaigns.html" data-page="campaigns" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="send" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Campaigns</span></a>
+      <a href="jobs.html" data-page="jobs" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="briefcase" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Jobs</span></a>
+      <a href="events.html" data-page="events" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="calendar" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Events</span></a>
+      <a href="partners.html" data-page="partners" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="users" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Partners</span></a>
+      <a href="sponsors.html" data-page="sponsors" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="crown" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Sponsors</span></a>
+    </nav>
+    <div class="p-3 border-t border-zinc-800 space-y-2">
+      <a href="index.html" class="hidden md:block text-center text-xs font-bold btn-secondary rounded-xl py-2">Public Site</a>
+      <a href="intake.html" class="hidden md:block text-center text-xs font-bold btn-primary rounded-xl py-2">Intake</a>
+      <button onclick="ruthkoLogout()" class="block md:hidden w-full text-center text-xs bg-zinc-900 border border-zinc-700 font-bold rounded-xl py-2">Exit</button>
+    </div>
+  </aside>
+
+  <main class="ml-16 md:ml-60 min-h-screen">
+
+    <!-- Header -->
+    <header class="h-16 border-b border-zinc-800 bg-black/70 backdrop-blur-md flex items-center justify-between px-6 sticky top-0 z-40">
+      <h1 class="text-xl font-bold">Audit Log</h1>
+      <div class="flex items-center gap-3">
+        <span id="auditSourceBadge" class="text-xs text-zinc-500 font-mono hidden"></span>
+        <button onclick="exportAuditCsv()" class="btn-secondary px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2">
+          <i data-lucide="download" class="w-4 h-4"></i>
+          <span class="hidden md:inline">Export CSV</span>
+        </button>
+        <button onclick="ruthkoLogout()" class="px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-700 font-bold text-sm">Logout</button>
+      </div>
+    </header>
+
+    <section class="p-6">
+
+      <!-- Page header -->
+      <div class="mb-6">
+        <p class="text-yellow-400 font-bold uppercase tracking-wide text-sm">Admin Accountability</p>
+        <h2 class="text-3xl font-extrabold mt-2">Audit Log & Change History</h2>
+        <p class="text-zinc-400 mt-2 max-w-2xl">Every admin action is recorded here. Owners and admins can filter, search, export, and restore previous content versions.</p>
+      </div>
+
+      <!-- Stats row -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="glass p-4 rounded-2xl border border-zinc-800 text-center">
+          <p class="text-3xl font-extrabold text-yellow-400" id="statTotal">—</p>
+          <p class="text-xs text-zinc-400 mt-1 font-bold">Total Actions</p>
+        </div>
+        <div class="glass p-4 rounded-2xl border border-zinc-800 text-center">
+          <p class="text-3xl font-extrabold text-green-400" id="statSaves">—</p>
+          <p class="text-xs text-zinc-400 mt-1 font-bold">Content Saves</p>
+        </div>
+        <div class="glass p-4 rounded-2xl border border-zinc-800 text-center">
+          <p class="text-3xl font-extrabold text-blue-400" id="statLogins">—</p>
+          <p class="text-xs text-zinc-400 mt-1 font-bold">Logins</p>
+        </div>
+        <div class="glass p-4 rounded-2xl border border-zinc-800 text-center">
+          <p class="text-3xl font-extrabold text-red-400" id="statDenied">—</p>
+          <p class="text-xs text-zinc-400 mt-1 font-bold">Access Denied</p>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="glass border border-zinc-800 rounded-2xl p-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-3">
+          <input id="filterSearch" type="text" placeholder="Search email, action, label…"
+            class="bg-black border border-zinc-800 rounded-xl px-3 py-2 text-sm text-white placeholder-zinc-600 focus:border-yellow-500 col-span-1 md:col-span-1 xl:col-span-2"
+            oninput="applyFilters()" />
+          <select id="filterAction" class="bg-black border border-zinc-800 rounded-xl px-3 py-2 text-sm text-white focus:border-yellow-500" onchange="applyFilters()">
+            <option value="">All Actions</option>
+            <option>admin_login</option>
+            <option>admin_logout</option>
+            <option>content_save</option>
+            <option>content_import</option>
+            <option>content_export</option>
+            <option>announcement_update</option>
+            <option>event_create</option>
+            <option>event_update</option>
+            <option>event_delete</option>
+            <option>job_create</option>
+            <option>job_update</option>
+            <option>job_delete</option>
+            <option>partner_update</option>
+            <option>sponsor_update</option>
+            <option>campaign_create</option>
+            <option>campaign_send</option>
+            <option>task_create</option>
+            <option>task_update</option>
+            <option>settings_update</option>
+            <option>role_update</option>
+            <option>access_denied</option>
+          </select>
+          <select id="filterRole" class="bg-black border border-zinc-800 rounded-xl px-3 py-2 text-sm text-white focus:border-yellow-500" onchange="applyFilters()">
+            <option value="">All Roles</option>
+            <option>owner</option>
+            <option>admin</option>
+            <option>editor</option>
+            <option>viewer</option>
+          </select>
+          <select id="filterEntity" class="bg-black border border-zinc-800 rounded-xl px-3 py-2 text-sm text-white focus:border-yellow-500" onchange="applyFilters()">
+            <option value="">All Entity Types</option>
+            <option>site_content</option>
+            <option>event</option>
+            <option>job</option>
+            <option>partner</option>
+            <option>sponsor</option>
+            <option>campaign</option>
+            <option>task</option>
+            <option>settings</option>
+            <option>session</option>
+          </select>
+        </div>
+        <div class="flex gap-3 mt-3">
+          <input id="filterDateFrom" type="date" class="bg-black border border-zinc-800 rounded-xl px-3 py-2 text-sm text-white focus:border-yellow-500" onchange="applyFilters()" />
+          <input id="filterDateTo" type="date" class="bg-black border border-zinc-800 rounded-xl px-3 py-2 text-sm text-white focus:border-yellow-500" onchange="applyFilters()" />
+          <button onclick="clearFilters()" class="btn-secondary px-4 py-2 rounded-xl text-sm font-bold">Clear</button>
+        </div>
+      </div>
+
+      <!-- Audit table -->
+      <div class="glass border border-zinc-800 rounded-2xl overflow-hidden mb-8">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-zinc-800">
+          <h3 class="font-bold">Admin Actions</h3>
+          <span id="auditCount" class="text-xs text-zinc-500 font-mono">Loading…</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-zinc-800 text-zinc-400 text-xs uppercase tracking-wide">
+                <th class="text-left px-5 py-3 font-bold">Time</th>
+                <th class="text-left px-5 py-3 font-bold">Admin</th>
+                <th class="text-left px-5 py-3 font-bold">Role</th>
+                <th class="text-left px-5 py-3 font-bold">Action</th>
+                <th class="text-left px-5 py-3 font-bold">Entity</th>
+                <th class="text-left px-5 py-3 font-bold">Label</th>
+              </tr>
+            </thead>
+            <tbody id="auditTableBody">
+              <tr><td colspan="6" class="text-center py-12 text-zinc-500">Loading audit log…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Change History / Version Restore -->
+      <div class="glass border border-zinc-800 rounded-2xl overflow-hidden" id="versionSection" data-requires-role="owner,admin,editor">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-zinc-800">
+          <div>
+            <h3 class="font-bold">Content Version History</h3>
+            <p class="text-xs text-zinc-500 mt-0.5">Previous saved versions of hero and announcement content</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <select id="versionEntityKey" class="bg-black border border-zinc-800 rounded-xl px-3 py-2 text-sm text-white focus:border-yellow-500" onchange="loadVersionHistory()">
+              <option value="hero">Hero Section</option>
+              <option value="announcement">Announcement</option>
+              <option value="contact">Contact Info</option>
+            </select>
+            <select id="versionLang" class="bg-black border border-zinc-800 rounded-xl px-3 py-2 text-sm text-white focus:border-yellow-500" onchange="loadVersionHistory()">
+              <option value="en">English</option>
+              <option value="fr">French</option>
+              <option value="es">Spanish</option>
+            </select>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-zinc-800 text-zinc-400 text-xs uppercase tracking-wide">
+                <th class="text-left px-5 py-3 font-bold">Version</th>
+                <th class="text-left px-5 py-3 font-bold">Saved</th>
+                <th class="text-left px-5 py-3 font-bold">By</th>
+                <th class="text-left px-5 py-3 font-bold">Note</th>
+                <th class="text-left px-5 py-3 font-bold" data-requires-role="owner,admin">Restore</th>
+              </tr>
+            </thead>
+            <tbody id="versionTableBody">
+              <tr><td colspan="5" class="text-center py-8 text-zinc-500">Select a section to view history</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    // ── Nav highlight ─────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', function () {
+      var page = document.body.dataset.page;
+      document.querySelectorAll('.nav-link').forEach(function (a) {
+        if (a.dataset.page === page) a.classList.add('nav-active');
+      });
+      if (window.lucide) lucide.createIcons();
+    });
+
+    // ── Data stores ───────────────────────────────────────────────────────────
+    var allLogs = [];
+    var filteredLogs = [];
+    var currentUserRole = null;
+
+    // ── Role check ────────────────────────────────────────────────────────────
+    document.addEventListener('ruthko:role-ready', function (e) {
+      currentUserRole = (e.detail && e.detail.role) || null;
+      // Editors can only see their own changes — filter will apply below
+      loadAuditLogs();
+    });
+
+    // Fallback: load without role info if Phase 23 not present
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(function () {
+        if (!allLogs.length) loadAuditLogs();
+      }, 1200);
+    });
+
+    // ── Load audit logs ───────────────────────────────────────────────────────
+    async function loadAuditLogs() {
+      if (typeof window.ruthkoAuditLog === 'undefined') return;
+
+      var result = await window.ruthkoAuditLog.getLogs({ limit: 500 });
+      allLogs = result.data || [];
+
+      // Editor sees only their own changes
+      if (currentUserRole === 'editor') {
+        var profile = typeof window.ruthkoGetCachedProfile === 'function' ? window.ruthkoGetCachedProfile() : null;
+        var email = profile && profile.email;
+        if (email) allLogs = allLogs.filter(function (r) { return r.admin_email === email; });
+      }
+
+      // Source badge
+      var badge = document.getElementById('auditSourceBadge');
+      if (badge) {
+        badge.textContent = result.source === 'supabase' ? 'Supabase' : 'Local';
+        badge.className = 'text-xs font-mono ' + (result.source === 'supabase' ? 'text-green-400' : 'text-yellow-400');
+        badge.classList.remove('hidden');
+      }
+
+      applyFilters();
+    }
+
+    // ── Filters ───────────────────────────────────────────────────────────────
+    function applyFilters() {
+      var search  = (document.getElementById('filterSearch').value || '').toLowerCase();
+      var action  = document.getElementById('filterAction').value;
+      var role    = document.getElementById('filterRole').value;
+      var entity  = document.getElementById('filterEntity').value;
+      var dateFrom = document.getElementById('filterDateFrom').value;
+      var dateTo   = document.getElementById('filterDateTo').value;
+
+      filteredLogs = allLogs.filter(function (r) {
+        if (action && r.action_type !== action) return false;
+        if (role && r.admin_role !== role) return false;
+        if (entity && r.entity_type !== entity) return false;
+        if (dateFrom && r.created_at < dateFrom) return false;
+        if (dateTo && r.created_at > dateTo + 'T23:59:59') return false;
+        if (search) {
+          var hay = [r.admin_email, r.action_type, r.entity_label, r.entity_type].join(' ').toLowerCase();
+          if (hay.indexOf(search) === -1) return false;
+        }
+        return true;
+      });
+
+      renderAuditTable(filteredLogs);
+      updateStats(allLogs);
+    }
+
+    function clearFilters() {
+      ['filterSearch','filterAction','filterRole','filterEntity','filterDateFrom','filterDateTo'].forEach(function (id) {
+        document.getElementById(id).value = '';
+      });
+      applyFilters();
+    }
+
+    // ── Render ────────────────────────────────────────────────────────────────
+    function badgeClass(action) {
+      if (!action) return 'badge badge-default';
+      if (action === 'admin_login')  return 'badge badge-login';
+      if (action === 'admin_logout') return 'badge badge-logout';
+      if (action === 'access_denied') return 'badge badge-denied';
+      if (action.indexOf('save') !== -1 || action.indexOf('create') !== -1 || action.indexOf('update') !== -1 || action.indexOf('send') !== -1) return 'badge badge-save';
+      return 'badge badge-default';
+    }
+
+    function fmtTime(ts) {
+      if (!ts) return '—';
+      try {
+        return new Date(ts).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      } catch (_) { return ts.slice(0, 16).replace('T',' '); }
+    }
+
+    function esc(s) {
+      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function renderAuditTable(logs) {
+      var el = document.getElementById('auditCount');
+      if (el) el.textContent = logs.length + ' record' + (logs.length === 1 ? '' : 's');
+
+      var tbody = document.getElementById('auditTableBody');
+      if (!logs.length) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-12 text-zinc-500">No audit records found</td></tr>';
+        return;
+      }
+      tbody.innerHTML = logs.map(function (r) {
+        return '<tr class="table-row border-b border-zinc-900">' +
+          '<td class="px-5 py-3 text-xs text-zinc-400 whitespace-nowrap font-mono">' + fmtTime(r.created_at) + '</td>' +
+          '<td class="px-5 py-3 text-xs max-w-[160px] truncate">' + esc(r.admin_email || '—') + '</td>' +
+          '<td class="px-5 py-3"><span class="badge badge-default">' + esc(r.admin_role || '—') + '</span></td>' +
+          '<td class="px-5 py-3"><span class="' + badgeClass(r.action_type) + '">' + esc(r.action_type || '—') + '</span></td>' +
+          '<td class="px-5 py-3 text-xs text-zinc-400">' + esc(r.entity_type || '—') + '</td>' +
+          '<td class="px-5 py-3 text-xs text-zinc-300 max-w-[200px] truncate">' + esc(r.entity_label || '—') + '</td>' +
+        '</tr>';
+      }).join('');
+    }
+
+    function updateStats(logs) {
+      document.getElementById('statTotal').textContent = logs.length;
+      document.getElementById('statSaves').textContent  = logs.filter(function(r){return r.action_type && r.action_type.indexOf('save') !== -1;}).length;
+      document.getElementById('statLogins').textContent = logs.filter(function(r){return r.action_type === 'admin_login';}).length;
+      document.getElementById('statDenied').textContent = logs.filter(function(r){return r.action_type === 'access_denied';}).length;
+    }
+
+    // ── Export CSV ────────────────────────────────────────────────────────────
+    function exportAuditCsv() {
+      if (typeof window.ruthkoAuditLog === 'object') {
+        window.ruthkoAuditLog.exportCsv(filteredLogs.length ? filteredLogs : allLogs);
+        if (typeof window.ruthkoAuditLog.log === 'function') {
+          window.ruthkoAuditLog.log('content_export', { entityType: 'audit_log', entityLabel: 'CSV export' });
+        }
+      }
+    }
+
+    // ── Version history ───────────────────────────────────────────────────────
+    async function loadVersionHistory() {
+      var entityKey = document.getElementById('versionEntityKey').value;
+      var lang = document.getElementById('versionLang').value;
+      var tbody = document.getElementById('versionTableBody');
+      if (!window.ruthkoChangeHistory) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-zinc-500">Change history module not loaded</td></tr>';
+        return;
+      }
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-zinc-500">Loading versions…</td></tr>';
+      var result = await window.ruthkoChangeHistory.getVersions('site_content', entityKey, lang);
+      var versions = result.data || [];
+      if (!versions.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-zinc-500">No versions saved yet</td></tr>';
+        return;
+      }
+
+      var canRestore = currentUserRole === 'owner' || currentUserRole === 'admin';
+
+      tbody.innerHTML = versions.map(function (v) {
+        var restoreBtn = canRestore
+          ? '<button onclick="restoreVersion(\'' + esc(v.id) + '\')" class="btn-primary px-3 py-1 rounded-lg text-xs font-bold">Restore</button>'
+          : '<span class="text-zinc-600 text-xs">View only</span>';
+        return '<tr class="table-row border-b border-zinc-900">' +
+          '<td class="px-5 py-3 text-sm font-bold text-yellow-400">v' + (v.version_number || '—') + '</td>' +
+          '<td class="px-5 py-3 text-xs text-zinc-400 font-mono whitespace-nowrap">' + fmtTime(v.created_at) + '</td>' +
+          '<td class="px-5 py-3 text-xs text-zinc-300 max-w-[160px] truncate">' + esc(v.changed_by_email || '—') + '</td>' +
+          '<td class="px-5 py-3 text-xs text-zinc-400 max-w-[200px] truncate">' + esc(v.change_note || '—') + '</td>' +
+          '<td class="px-5 py-3">' + restoreBtn + '</td>' +
+        '</tr>';
+      }).join('');
+    }
+
+    async function restoreVersion(versionId) {
+      if (!window.ruthkoChangeHistory) return;
+      if (!confirm('Restore this version? The current content will be overwritten.')) return;
+      var result = await window.ruthkoChangeHistory.restoreVersion(versionId, currentUserRole);
+      if (result.ok) {
+        alert('Version restored successfully. Reload the content manager to see changes.');
+        loadVersionHistory();
+      } else {
+        alert('Restore failed: ' + (result.error || 'Unknown error'));
+      }
+    }
+  </script>
+</body>
+</html>
