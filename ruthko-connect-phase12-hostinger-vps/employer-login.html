@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Ruthko Connect | Employer Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: Inter, sans-serif; }
+    body { background: #0a0a0a; color: #fff; }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+    .gradient-text { background: linear-gradient(to right, #facc15, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .btn-primary { background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%); color: #000; }
+    .btn-primary:hover { filter: brightness(1.08); }
+    input { outline: none; }
+  </style>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/employer-portal-auth.js"></script>
+</head>
+<body class="min-h-screen bg-black text-white flex items-center justify-center p-4">
+
+  <div class="w-full max-w-md">
+    <div class="text-center mb-8">
+      <img src="images/logo.png" alt="Ruthko Connect" class="w-16 h-16 mx-auto rounded-2xl object-contain bg-white p-2 mb-4" onerror="this.style.display='none';" />
+      <h1 class="text-3xl font-extrabold gradient-text">Ruthko Connect</h1>
+      <p class="text-zinc-400 mt-1">Employer Portal</p>
+    </div>
+
+    <div class="glass border border-zinc-800 rounded-3xl p-8">
+      <h2 class="text-xl font-bold mb-1">Access Your Shortlist</h2>
+      <p class="text-zinc-400 text-sm mb-6">Enter the access token from your invitation email to review candidates.</p>
+
+      <div id="loginError" class="hidden bg-red-900/40 border border-red-700 text-red-300 rounded-xl p-3 text-sm mb-4"></div>
+
+      <label class="text-sm font-semibold text-zinc-300 block mb-1">Access Token</label>
+      <input id="epToken" type="text" placeholder="Paste your access token here" class="w-full bg-black border border-zinc-700 rounded-xl p-3 text-sm mb-4" />
+
+      <button id="epLoginBtn" onclick="epLogin()" class="w-full btn-primary py-3 rounded-xl font-bold text-base">Access Portal</button>
+
+      <p class="text-zinc-600 text-xs text-center mt-6">Don't have a token? Contact your Ruthko Connect recruiter.<br>This portal is for employer use only.</p>
+    </div>
+  </div>
+
+  <script>
+    // If already authenticated redirect to portal
+    (function () {
+      var auth = window.ruthkoEmployerAuth;
+      if (auth && auth.isAuthenticated()) {
+        window.location.href = 'employer-portal.html';
+      }
+    })();
+
+    async function epLogin() {
+      var btn = document.getElementById('epLoginBtn');
+      var err = document.getElementById('loginError');
+      var token = (document.getElementById('epToken') || {}).value || '';
+      if (!token.trim()) { showError('Please enter your access token.'); return; }
+
+      btn.textContent = 'Checking…';
+      btn.disabled = true;
+      err.classList.add('hidden');
+
+      var auth   = window.ruthkoEmployerAuth;
+      var result = await auth.loginWithToken(token);
+
+      if (result.ok) {
+        var redirect = new URLSearchParams(window.location.search).get('redirect');
+        window.location.href = redirect || 'employer-portal.html';
+      } else {
+        showError(result.error || 'Invalid or expired token.');
+        btn.textContent = 'Access Portal';
+        btn.disabled = false;
+      }
+    }
+
+    function showError(msg) {
+      var err = document.getElementById('loginError');
+      if (err) { err.textContent = msg; err.classList.remove('hidden'); }
+    }
+
+    document.getElementById('epToken').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') epLogin();
+    });
+  </script>
+</body>
+</html>

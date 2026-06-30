@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Ruthko Connect | Order Status</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: Inter, sans-serif; }
+    body { background: #0a0a0a; color: #fff; }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+    .gradient-text { background: linear-gradient(to right, #facc15, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .btn-primary { background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%); color: #000; }
+    .btn-primary:hover { filter: brightness(1.08); }
+    .btn-secondary { background: rgba(255,255,255,0.1); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.15); }
+    input, textarea { outline: none; }
+  </style>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/employer-portal-auth.js"></script>
+  <script src="js/employer-feedback-service.js"></script>
+  <script src="js/employer-order-status.js"></script>
+</head>
+<body class="min-h-screen bg-black text-white">
+
+  <header class="sticky top-0 z-50 border-b border-zinc-800 bg-black/80 backdrop-blur-md">
+    <div class="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="employer-portal.html" class="text-zinc-400 hover:text-white text-sm">← Portal</a>
+        <span class="font-bold gradient-text">Ruthko Connect</span>
+      </div>
+      <button onclick="epLogout()" class="px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-700 font-bold text-sm">Logout</button>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-6 py-10">
+
+    <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+      <h1 class="text-2xl font-extrabold">Order Status</h1>
+      <button onclick="eosRequestMoreCandidates()" class="btn-secondary px-4 py-2 rounded-xl font-bold text-sm">Request More Candidates</button>
+    </div>
+
+    <!-- Order detail -->
+    <div id="eosOrderDetail">
+      <p class="text-zinc-500 text-sm">Loading order…</p>
+    </div>
+
+    <!-- Messages -->
+    <section class="mt-8">
+      <h2 class="text-lg font-bold mb-4">Messages with Your Recruiter</h2>
+      <div id="eosMessages" class="glass border border-zinc-800 rounded-2xl p-4 space-y-3 max-h-80 overflow-y-auto mb-4">
+        <p class="text-zinc-500 text-sm">Loading messages…</p>
+      </div>
+      <div class="flex gap-3">
+        <input id="eosMsgInput" placeholder="Type a message to your recruiter…" class="flex-1 bg-black border border-zinc-800 rounded-xl p-3 text-sm" onkeydown="if(event.key==='Enter')eosSendMessage()" />
+        <button onclick="eosSendMessage()" class="btn-primary px-5 py-3 rounded-xl font-bold text-sm">Send</button>
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>
