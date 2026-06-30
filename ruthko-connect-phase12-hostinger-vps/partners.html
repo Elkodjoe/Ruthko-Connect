@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  
+
 <style>
   * { font-family: Inter, sans-serif; }
   body { background: #0a0a0a; color: #fff; }
@@ -19,12 +19,11 @@
   .btn-primary:hover { filter: brightness(1.08); }
   .btn-secondary { background: rgba(255,255,255,0.1); }
   .btn-secondary:hover { background: rgba(255,255,255,0.15); }
-  .field { width: 100%; background: #000; border: 1px solid #27272a; border-radius: 0.75rem; padding: 0.85rem; color: #fff; }
-  .field:focus { outline: none; border-color: rgba(250, 204, 21, .7); }
 </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-config.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/site-settings.js"></script>
 </head>
 
@@ -36,55 +35,73 @@
       <img src="images/logo.png" alt="Ruthko Staffing LLC Logo" class="w-12 h-12 rounded-xl object-contain bg-white p-1" />
       <div>
         <h1 class="font-extrabold text-xl gradient-text">Ruthko Connect</h1>
-        <p class="text-xs text-zinc-400">Staffing • Events • Partnerships</p>
+        <p class="text-xs text-zinc-400" data-i18n="header.tagline">Staffing • Events • Partnerships</p>
       </div>
     </a>
-    <nav class="hidden lg:flex items-center gap-5 text-sm text-zinc-300"><a href="index.html" class="hover:text-yellow-400 ">Home</a><a href="jobs.html" class="hover:text-yellow-400 ">Jobs</a><a href="events.html" class="hover:text-yellow-400 ">Events</a><a href="sponsors.html" class="hover:text-yellow-400 ">Sponsors</a><a href="partners.html" class="hover:text-yellow-400 text-yellow-400 font-bold">Partners</a><a href="ask-ruthko.html" class="hover:text-yellow-400 ">Ask Ruthko</a><a href="intake.html" class="hover:text-yellow-400 ">Contact</a></nav>
+    <nav class="hidden lg:flex items-center gap-5 text-sm text-zinc-300"><a href="index.html" class="hover:text-yellow-400" data-i18n="nav.home">Home</a><a href="jobs.html" class="hover:text-yellow-400" data-i18n="nav.jobs">Jobs</a><a href="events.html" class="hover:text-yellow-400" data-i18n="nav.events">Events</a><a href="sponsors.html" class="hover:text-yellow-400" data-i18n="nav.sponsors">Sponsors</a><a href="partners.html" class="hover:text-yellow-400 text-yellow-400 font-bold" data-i18n="nav.partners">Partners</a><a href="ask-ruthko.html" class="hover:text-yellow-400" data-i18n="nav.askRuthko">Ask Ruthko</a><a href="intake.html" class="hover:text-yellow-400" data-i18n="nav.contact">Contact</a></nav>
     <div class="flex items-center gap-3">
-      <a href="payments.html" class="hidden md:inline-flex btn-secondary px-4 py-2 rounded-xl font-bold text-sm">Payments</a>
-      <a href="login.html" class="btn-primary px-4 py-2 rounded-xl font-bold text-sm">Admin Login</a>
+      <div class="flex items-center gap-0.5 text-xs mr-1">
+        <button onclick="setLang('en')" class="lang-btn px-1.5 py-1 rounded" data-lang="en">EN</button>
+        <span class="text-zinc-700">·</span>
+        <button onclick="setLang('fr')" class="lang-btn px-1.5 py-1 rounded" data-lang="fr">FR</button>
+        <span class="text-zinc-700">·</span>
+        <button onclick="setLang('es')" class="lang-btn px-1.5 py-1 rounded" data-lang="es">ES</button>
+      </div>
+      <a href="payments.html" class="hidden md:inline-flex btn-secondary px-4 py-2 rounded-xl font-bold text-sm" data-i18n="nav.payments">Payments</a>
+      <a href="login.html" class="btn-primary px-4 py-2 rounded-xl font-bold text-sm" data-i18n="nav.adminLogin">Admin Login</a>
     </div>
   </div>
 </header>
 
 <main class="max-w-7xl mx-auto px-5 py-12">
-  <section class="mb-10"><p class="text-yellow-400 font-bold uppercase tracking-wide text-sm">Partners</p><h2 class="text-4xl md:text-5xl font-extrabold mt-3">Partner with Ruthko across jobs, events, sponsorships, and business programs.</h2><p class="text-zinc-400 mt-4 max-w-3xl">Ruthko works with employers, sponsors, vendors, organizers, community leaders, investors, and institutions.</p></section>
-  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"><a href="intake.html#employer" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
-          <i data-lucide="building-2" class="w-9 h-9 text-yellow-400 mb-4"></i>
-          <h3 class="text-xl font-bold">Employers</h3>
-          <p class="text-sm text-zinc-400 mt-2">Request staffing support and workforce partnership discussions.</p>
-          <p class="text-yellow-400 font-bold text-sm mt-4">Request staff</p>
-        </a><a href="sponsors.html" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
-          <i data-lucide="crown" class="w-9 h-9 text-yellow-400 mb-4"></i>
-          <h3 class="text-xl font-bold">Sponsors</h3>
-          <p class="text-sm text-zinc-400 mt-2">Support Ruthko events and gain brand visibility.</p>
-          <p class="text-yellow-400 font-bold text-sm mt-4">See sponsor packages</p>
-        </a><a href="intake.html#vendor" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
-          <i data-lucide="store" class="w-9 h-9 text-yellow-400 mb-4"></i>
-          <h3 class="text-xl font-bold">Vendors</h3>
-          <p class="text-sm text-zinc-400 mt-2">Apply for booths and event marketplace opportunities.</p>
-          <p class="text-yellow-400 font-bold text-sm mt-4">Request a booth</p>
-        </a><a href="intake.html#event" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
-          <i data-lucide="mic" class="w-9 h-9 text-yellow-400 mb-4"></i>
-          <h3 class="text-xl font-bold">Speakers</h3>
-          <p class="text-sm text-zinc-400 mt-2">Share your interest in speaking at Ruthko programs.</p>
-          <p class="text-yellow-400 font-bold text-sm mt-4">Submit event interest</p>
-        </a><a href="intake.html" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
-          <i data-lucide="handshake" class="w-9 h-9 text-yellow-400 mb-4"></i>
-          <h3 class="text-xl font-bold">Business partners</h3>
-          <p class="text-sm text-zinc-400 mt-2">Explore collaboration, referrals, and strategic partnership.</p>
-          <p class="text-yellow-400 font-bold text-sm mt-4">Contact Ruthko</p>
-        </a><a href="intake.html" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
-          <i data-lucide="users" class="w-9 h-9 text-yellow-400 mb-4"></i>
-          <h3 class="text-xl font-bold">Community groups</h3>
-          <p class="text-sm text-zinc-400 mt-2">Work with Ruthko on public programs and outreach.</p>
-          <p class="text-yellow-400 font-bold text-sm mt-4">Start conversation</p>
-        </a></div>
+  <section class="mb-10">
+    <p class="text-yellow-400 font-bold uppercase tracking-wide text-sm" data-i18n="partners.badge">Partners</p>
+    <h2 class="text-4xl md:text-5xl font-extrabold mt-3" data-i18n="partners.headline">Partner with Ruthko across jobs, events, sponsorships, and business programs.</h2>
+    <p class="text-zinc-400 mt-4 max-w-3xl" data-i18n="partners.sub">Ruthko works with employers, sponsors, vendors, organizers, community leaders, investors, and institutions.</p>
+  </section>
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+    <a href="intake.html#employer" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
+      <i data-lucide="building-2" class="w-9 h-9 text-yellow-400 mb-4"></i>
+      <h3 class="text-xl font-bold" data-i18n="partners.employersTitle">Employers</h3>
+      <p class="text-sm text-zinc-400 mt-2" data-i18n="partners.employersDesc">Request staffing support and workforce partnership discussions.</p>
+      <p class="text-yellow-400 font-bold text-sm mt-4" data-i18n="partners.employersLink">Request staff</p>
+    </a>
+    <a href="sponsors.html" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
+      <i data-lucide="crown" class="w-9 h-9 text-yellow-400 mb-4"></i>
+      <h3 class="text-xl font-bold" data-i18n="partners.sponsorsTitle">Sponsors</h3>
+      <p class="text-sm text-zinc-400 mt-2" data-i18n="partners.sponsorsDesc">Support Ruthko events and gain brand visibility.</p>
+      <p class="text-yellow-400 font-bold text-sm mt-4" data-i18n="partners.sponsorsLink">See sponsor packages</p>
+    </a>
+    <a href="intake.html#vendor" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
+      <i data-lucide="store" class="w-9 h-9 text-yellow-400 mb-4"></i>
+      <h3 class="text-xl font-bold" data-i18n="partners.vendorsTitle">Vendors</h3>
+      <p class="text-sm text-zinc-400 mt-2" data-i18n="partners.vendorsDesc">Apply for booths and event marketplace opportunities.</p>
+      <p class="text-yellow-400 font-bold text-sm mt-4" data-i18n="partners.vendorsLink">Request a booth</p>
+    </a>
+    <a href="intake.html#event" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
+      <i data-lucide="mic" class="w-9 h-9 text-yellow-400 mb-4"></i>
+      <h3 class="text-xl font-bold" data-i18n="partners.speakersTitle">Speakers</h3>
+      <p class="text-sm text-zinc-400 mt-2" data-i18n="partners.speakersDesc">Share your interest in speaking at Ruthko programs.</p>
+      <p class="text-yellow-400 font-bold text-sm mt-4" data-i18n="partners.speakersLink">Submit event interest</p>
+    </a>
+    <a href="intake.html" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
+      <i data-lucide="handshake" class="w-9 h-9 text-yellow-400 mb-4"></i>
+      <h3 class="text-xl font-bold" data-i18n="partners.businessTitle">Business partners</h3>
+      <p class="text-sm text-zinc-400 mt-2" data-i18n="partners.businessDesc">Explore collaboration, referrals, and strategic partnership.</p>
+      <p class="text-yellow-400 font-bold text-sm mt-4" data-i18n="partners.businessLink">Contact Ruthko</p>
+    </a>
+    <a href="intake.html" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
+      <i data-lucide="users" class="w-9 h-9 text-yellow-400 mb-4"></i>
+      <h3 class="text-xl font-bold" data-i18n="partners.communityTitle">Community groups</h3>
+      <p class="text-sm text-zinc-400 mt-2" data-i18n="partners.communityDesc">Work with Ruthko on public programs and outreach.</p>
+      <p class="text-yellow-400 font-bold text-sm mt-4" data-i18n="partners.communityLink">Start conversation</p>
+    </a>
+  </div>
 </main>
 
 <footer class="border-t border-zinc-800 mt-14">
   <div class="max-w-7xl mx-auto px-5 py-8 text-sm text-zinc-500 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-    <p>© Ruthko Connect. Staffing, event organizing, sponsorship, vendors, and partnerships.</p>
+    <p>© Ruthko Connect. <span data-i18n="footer.tagline">Staffing, event organizing, sponsorship, vendors, and partnerships.</span></p>
     <p><span data-contact-line>info@ruthkojobs.com • +1-701-260-3908 • +1-240-486-5002</span></p>
   </div>
 </footer>
@@ -93,4 +110,3 @@
   <script src="js/public-ruthko-assistant.js"></script>
 </body>
 </html>
-

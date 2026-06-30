@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  
+
 <style>
   * { font-family: Inter, sans-serif; }
   body { background: #0a0a0a; color: #fff; }
@@ -25,6 +25,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-config.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/site-settings.js"></script>
 </head>
 
@@ -36,13 +37,20 @@
       <img src="images/logo.png" alt="Ruthko Staffing LLC Logo" class="w-12 h-12 rounded-xl object-contain bg-white p-1" />
       <div>
         <h1 class="font-extrabold text-xl gradient-text">Ruthko Connect</h1>
-        <p class="text-xs text-zinc-400">Staffing • Events • Partnerships</p>
+        <p class="text-xs text-zinc-400" data-i18n="header.tagline">Staffing • Events • Partnerships</p>
       </div>
     </a>
-    <nav class="hidden lg:flex items-center gap-5 text-sm text-zinc-300"><a href="index.html" class="hover:text-yellow-400 text-yellow-400 font-bold">Home</a><a href="jobs.html" class="hover:text-yellow-400 ">Jobs</a><a href="events.html" class="hover:text-yellow-400 ">Events</a><a href="sponsors.html" class="hover:text-yellow-400 ">Sponsors</a><a href="partners.html" class="hover:text-yellow-400 ">Partners</a><a href="ask-ruthko.html" class="hover:text-yellow-400 ">Ask Ruthko</a><a href="intake.html" class="hover:text-yellow-400 ">Contact</a></nav>
+    <nav class="hidden lg:flex items-center gap-5 text-sm text-zinc-300"><a href="index.html" class="hover:text-yellow-400 text-yellow-400 font-bold" data-i18n="nav.home">Home</a><a href="jobs.html" class="hover:text-yellow-400" data-i18n="nav.jobs">Jobs</a><a href="events.html" class="hover:text-yellow-400" data-i18n="nav.events">Events</a><a href="sponsors.html" class="hover:text-yellow-400" data-i18n="nav.sponsors">Sponsors</a><a href="partners.html" class="hover:text-yellow-400" data-i18n="nav.partners">Partners</a><a href="ask-ruthko.html" class="hover:text-yellow-400" data-i18n="nav.askRuthko">Ask Ruthko</a><a href="intake.html" class="hover:text-yellow-400" data-i18n="nav.contact">Contact</a></nav>
     <div class="flex items-center gap-3">
-      <a href="payments.html" class="hidden md:inline-flex btn-secondary px-4 py-2 rounded-xl font-bold text-sm">Payments</a>
-      <a href="login.html" class="btn-primary px-4 py-2 rounded-xl font-bold text-sm">Admin Login</a>
+      <div class="flex items-center gap-0.5 text-xs mr-1">
+        <button onclick="setLang('en')" class="lang-btn px-1.5 py-1 rounded" data-lang="en">EN</button>
+        <span class="text-zinc-700">·</span>
+        <button onclick="setLang('fr')" class="lang-btn px-1.5 py-1 rounded" data-lang="fr">FR</button>
+        <span class="text-zinc-700">·</span>
+        <button onclick="setLang('es')" class="lang-btn px-1.5 py-1 rounded" data-lang="es">ES</button>
+      </div>
+      <a href="payments.html" class="hidden md:inline-flex btn-secondary px-4 py-2 rounded-xl font-bold text-sm" data-i18n="nav.payments">Payments</a>
+      <a href="login.html" class="btn-primary px-4 py-2 rounded-xl font-bold text-sm" data-i18n="nav.adminLogin">Admin Login</a>
     </div>
   </div>
 </header>
@@ -51,62 +59,69 @@
   <section class="max-w-7xl mx-auto px-5 py-16 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
     <div>
       <p class="text-yellow-400 font-bold uppercase tracking-wide text-sm">Ruthko Connect</p>
-      <h2 class="text-4xl md:text-6xl font-extrabold mt-4 leading-tight">Staffing, events, sponsors, vendors, and partnerships in one Ruthko platform.</h2>
-      <p class="text-zinc-400 mt-6 text-lg max-w-2xl">Ruthko supports employers, candidates, event guests, sponsors, vendors, and business partners through a clear intake and follow-up system.</p>
+      <h2 class="text-4xl md:text-6xl font-extrabold mt-4 leading-tight" data-i18n="index.headline">Staffing, events, sponsors, vendors, and partnerships in one Ruthko platform.</h2>
+      <p class="text-zinc-400 mt-6 text-lg max-w-2xl" data-i18n="index.sub">Ruthko supports employers, candidates, event guests, sponsors, vendors, and business partners through a clear intake and follow-up system.</p>
       <div class="flex flex-wrap gap-3 mt-8">
-        <a href="intake.html#employer" class="btn-primary px-6 py-3 rounded-xl font-bold">Request Staff</a>
-        <a href="events.html" class="btn-secondary px-6 py-3 rounded-xl font-bold">View Events</a>
-        <a href="sponsors.html" class="btn-secondary px-6 py-3 rounded-xl font-bold">Sponsor Ruthko</a>
+        <a href="intake.html#employer" class="btn-primary px-6 py-3 rounded-xl font-bold" data-i18n="index.btnStaff">Request Staff</a>
+        <a href="events.html" class="btn-secondary px-6 py-3 rounded-xl font-bold" data-i18n="index.btnEvents">View Events</a>
+        <a href="sponsors.html" class="btn-secondary px-6 py-3 rounded-xl font-bold" data-i18n="index.btnSponsor">Sponsor Ruthko</a>
       </div>
     </div>
     <div class="glass border border-zinc-800 rounded-3xl p-8">
       <img src="images/logo.png" alt="Ruthko Staffing LLC Logo" class="w-full max-w-sm mx-auto bg-white rounded-3xl p-8 object-contain" />
       <div class="grid grid-cols-2 gap-4 mt-8 text-sm">
-        <div class="bg-zinc-900/70 p-4 rounded-xl border border-zinc-800"><p class="font-bold text-white">Staffing</p><p class="text-zinc-400 mt-1">Employers and candidates.</p></div>
-        <div class="bg-zinc-900/70 p-4 rounded-xl border border-zinc-800"><p class="font-bold text-white">Events</p><p class="text-zinc-400 mt-1">Summits and programs.</p></div>
-        <div class="bg-zinc-900/70 p-4 rounded-xl border border-zinc-800"><p class="font-bold text-white">Sponsors</p><p class="text-zinc-400 mt-1">Visibility packages.</p></div>
-        <div class="bg-zinc-900/70 p-4 rounded-xl border border-zinc-800"><p class="font-bold text-white">Vendors</p><p class="text-zinc-400 mt-1">Booths and partners.</p></div>
+        <div class="bg-zinc-900/70 p-4 rounded-xl border border-zinc-800"><p class="font-bold text-white" data-i18n="index.cardStaffingTitle">Staffing</p><p class="text-zinc-400 mt-1" data-i18n="index.cardStaffingSub">Employers and candidates.</p></div>
+        <div class="bg-zinc-900/70 p-4 rounded-xl border border-zinc-800"><p class="font-bold text-white" data-i18n="index.cardEventsTitle">Events</p><p class="text-zinc-400 mt-1" data-i18n="index.cardEventsSub">Summits and programs.</p></div>
+        <div class="bg-zinc-900/70 p-4 rounded-xl border border-zinc-800"><p class="font-bold text-white" data-i18n="index.cardSponsorsTitle">Sponsors</p><p class="text-zinc-400 mt-1" data-i18n="index.cardSponsorsSub">Visibility packages.</p></div>
+        <div class="bg-zinc-900/70 p-4 rounded-xl border border-zinc-800"><p class="font-bold text-white" data-i18n="index.cardVendorsTitle">Vendors</p><p class="text-zinc-400 mt-1" data-i18n="index.cardVendorsSub">Booths and partners.</p></div>
       </div>
     </div>
   </section>
   <section class="max-w-7xl mx-auto px-5 py-8">
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"><a href="jobs.html" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
-          <i data-lucide="briefcase" class="w-9 h-9 text-yellow-400 mb-4"></i>
-          <h3 class="text-xl font-bold">Ruthko Jobs</h3>
-          <p class="text-sm text-zinc-400 mt-2">Employer staffing requests, candidate interest, and visa-friendly opportunity intake.</p>
-          <p class="text-yellow-400 font-bold text-sm mt-4">Open jobs page</p>
-        </a><a href="events.html" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
-          <i data-lucide="calendar" class="w-9 h-9 text-yellow-400 mb-4"></i>
-          <h3 class="text-xl font-bold">Ruthko Events</h3>
-          <p class="text-sm text-zinc-400 mt-2">Event organizing, RSVPs, speakers, sponsors, vendors, and attendee interest.</p>
-          <p class="text-yellow-400 font-bold text-sm mt-4">Open events page</p>
-        </a><a href="sponsors.html" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
-          <i data-lucide="crown" class="w-9 h-9 text-yellow-400 mb-4"></i>
-          <h3 class="text-xl font-bold">Sponsor Portal</h3>
-          <p class="text-sm text-zinc-400 mt-2">Public sponsor packages with inquiry and payment paths.</p>
-          <p class="text-yellow-400 font-bold text-sm mt-4">View sponsor options</p>
-        </a><a href="intake.html#vendor" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
-          <i data-lucide="store" class="w-9 h-9 text-yellow-400 mb-4"></i>
-          <h3 class="text-xl font-bold">Vendor Booths</h3>
-          <p class="text-sm text-zinc-400 mt-2">Vendor booth interest for Ruthko events and business programs.</p>
-          <p class="text-yellow-400 font-bold text-sm mt-4">Reserve interest</p>
-        </a><a href="partners.html" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
-          <i data-lucide="handshake" class="w-9 h-9 text-yellow-400 mb-4"></i>
-          <h3 class="text-xl font-bold">Partnerships</h3>
-          <p class="text-sm text-zinc-400 mt-2">Business partners, collaborators, employers, sponsors, and community groups.</p>
-          <p class="text-yellow-400 font-bold text-sm mt-4">Partner with Ruthko</p>
-        </a><a href="payments.html" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
-          <i data-lucide="credit-card" class="w-9 h-9 text-yellow-400 mb-4"></i>
-          <h3 class="text-xl font-bold">Payments</h3>
-          <p class="text-sm text-zinc-400 mt-2">Sponsor, vendor, ticket, and invoice request options.</p>
-          <p class="text-yellow-400 font-bold text-sm mt-4">Open payment page</p>
-        </a></div>
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <a href="jobs.html" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
+        <i data-lucide="briefcase" class="w-9 h-9 text-yellow-400 mb-4"></i>
+        <h3 class="text-xl font-bold" data-i18n="index.jobsTitle">Ruthko Jobs</h3>
+        <p class="text-sm text-zinc-400 mt-2" data-i18n="index.jobsSub">Employer staffing requests, candidate interest, and visa-friendly opportunity intake.</p>
+        <p class="text-yellow-400 font-bold text-sm mt-4" data-i18n="index.jobsLink">Open jobs page</p>
+      </a>
+      <a href="events.html" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
+        <i data-lucide="calendar" class="w-9 h-9 text-yellow-400 mb-4"></i>
+        <h3 class="text-xl font-bold" data-i18n="index.eventsTitle">Ruthko Events</h3>
+        <p class="text-sm text-zinc-400 mt-2" data-i18n="index.eventsSub">Event organizing, RSVPs, speakers, sponsors, vendors, and attendee interest.</p>
+        <p class="text-yellow-400 font-bold text-sm mt-4" data-i18n="index.eventsLink">Open events page</p>
+      </a>
+      <a href="sponsors.html" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
+        <i data-lucide="crown" class="w-9 h-9 text-yellow-400 mb-4"></i>
+        <h3 class="text-xl font-bold" data-i18n="index.sponsorPortalTitle">Sponsor Portal</h3>
+        <p class="text-sm text-zinc-400 mt-2" data-i18n="index.sponsorPortalSub">Public sponsor packages with inquiry and payment paths.</p>
+        <p class="text-yellow-400 font-bold text-sm mt-4" data-i18n="index.sponsorPortalLink">View sponsor options</p>
+      </a>
+      <a href="intake.html#vendor" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
+        <i data-lucide="store" class="w-9 h-9 text-yellow-400 mb-4"></i>
+        <h3 class="text-xl font-bold" data-i18n="index.vendorTitle">Vendor Booths</h3>
+        <p class="text-sm text-zinc-400 mt-2" data-i18n="index.vendorSub">Vendor booth interest for Ruthko events and business programs.</p>
+        <p class="text-yellow-400 font-bold text-sm mt-4" data-i18n="index.vendorLink">Reserve interest</p>
+      </a>
+      <a href="partners.html" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
+        <i data-lucide="handshake" class="w-9 h-9 text-yellow-400 mb-4"></i>
+        <h3 class="text-xl font-bold" data-i18n="index.partnershipsTitle">Partnerships</h3>
+        <p class="text-sm text-zinc-400 mt-2" data-i18n="index.partnershipsSub">Business partners, collaborators, employers, sponsors, and community groups.</p>
+        <p class="text-yellow-400 font-bold text-sm mt-4" data-i18n="index.partnershipsLink">Partner with Ruthko</p>
+      </a>
+      <a href="payments.html" class="glass glass-hover p-6 rounded-3xl border border-zinc-800 block">
+        <i data-lucide="credit-card" class="w-9 h-9 text-yellow-400 mb-4"></i>
+        <h3 class="text-xl font-bold" data-i18n="index.paymentsTitle">Payments</h3>
+        <p class="text-sm text-zinc-400 mt-2" data-i18n="index.paymentsSub">Sponsor, vendor, ticket, and invoice request options.</p>
+        <p class="text-yellow-400 font-bold text-sm mt-4" data-i18n="index.paymentsLink">Open payment page</p>
+      </a>
+    </div>
   </section>
 </main>
 
 <footer class="border-t border-zinc-800 mt-14">
   <div class="max-w-7xl mx-auto px-5 py-8 text-sm text-zinc-500 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-    <p>© Ruthko Connect. <span data-setting="footerMessage">Staffing, event organizing, sponsorship, vendors, and partnerships.</span></p>
+    <p>© Ruthko Connect. <span data-setting="footerMessage" data-i18n="footer.tagline">Staffing, event organizing, sponsorship, vendors, and partnerships.</span></p>
     <p><span data-contact-line>info@ruthkojobs.com • +1-701-260-3908 • +1-240-486-5002</span></p>
   </div>
 </footer>
@@ -115,4 +130,3 @@
   <script src="js/public-ruthko-assistant.js"></script>
 </body>
 </html>
-

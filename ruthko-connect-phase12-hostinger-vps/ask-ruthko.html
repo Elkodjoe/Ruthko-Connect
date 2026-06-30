@@ -19,6 +19,7 @@
     input, textarea { outline: none; }
   </style>
   <script src="js/ruthko-knowledge-base.js"></script>
+  <script src="js/i18n.js"></script>
 </head>
 <body class="min-h-screen">
   <header class="border-b border-zinc-800 bg-black/85 sticky top-0 z-40">
@@ -27,78 +28,107 @@
         <img src="images/logo.png" alt="Ruthko Staffing LLC Logo" class="w-12 h-12 rounded-xl object-contain bg-white p-1" />
         <div>
           <h1 class="font-extrabold text-xl gradient-text">Ruthko Connect</h1>
-          <p class="text-xs text-zinc-400">Staffing • Events • Partnerships</p>
+          <p class="text-xs text-zinc-400" data-i18n="header.tagline">Staffing • Events • Partnerships</p>
         </div>
       </a>
       <nav class="hidden lg:flex items-center gap-5 text-sm text-zinc-300">
-        <a href="index.html" class="hover:text-yellow-400">Home</a>
-        <a href="jobs.html" class="hover:text-yellow-400">Jobs</a>
-        <a href="events.html" class="hover:text-yellow-400">Events</a>
-        <a href="sponsors.html" class="hover:text-yellow-400">Sponsors</a>
-        <a href="partners.html" class="hover:text-yellow-400">Partners</a>
-        <a href="ask-ruthko.html" class="hover:text-yellow-400 text-yellow-400 font-bold">Ask Ruthko</a>
+        <a href="index.html" class="hover:text-yellow-400" data-i18n="nav.home">Home</a>
+        <a href="jobs.html" class="hover:text-yellow-400" data-i18n="nav.jobs">Jobs</a>
+        <a href="events.html" class="hover:text-yellow-400" data-i18n="nav.events">Events</a>
+        <a href="sponsors.html" class="hover:text-yellow-400" data-i18n="nav.sponsors">Sponsors</a>
+        <a href="partners.html" class="hover:text-yellow-400" data-i18n="nav.partners">Partners</a>
+        <a href="ask-ruthko.html" class="hover:text-yellow-400 text-yellow-400 font-bold" data-i18n="nav.askRuthko">Ask Ruthko</a>
       </nav>
-      <a href="intake.html" class="btn-primary px-4 py-2 rounded-xl font-bold text-sm">Contact Ruthko</a>
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-0.5 text-xs mr-1">
+          <button onclick="setLang('en')" class="lang-btn px-1.5 py-1 rounded" data-lang="en">EN</button>
+          <span class="text-zinc-700">·</span>
+          <button onclick="setLang('fr')" class="lang-btn px-1.5 py-1 rounded" data-lang="fr">FR</button>
+          <span class="text-zinc-700">·</span>
+          <button onclick="setLang('es')" class="lang-btn px-1.5 py-1 rounded" data-lang="es">ES</button>
+        </div>
+        <a href="intake.html" class="btn-primary px-4 py-2 rounded-xl font-bold text-sm" data-i18n="ask.contactRuthko">Contact Ruthko</a>
+      </div>
     </div>
   </header>
 
   <main class="max-w-5xl mx-auto px-5 py-14">
     <section class="text-center mb-10">
-      <p class="text-yellow-400 font-bold uppercase tracking-wide text-sm">Public Help Desk</p>
-      <h2 class="text-4xl md:text-6xl font-extrabold mt-4">Ask Ruthko</h2>
-      <p class="text-zinc-400 mt-5 max-w-2xl mx-auto">Ask about staffing, jobs, events, sponsors, vendor booths, partnerships, payments, and contact details.</p>
+      <p class="text-yellow-400 font-bold uppercase tracking-wide text-sm" data-i18n="ask.badge">Public Help Desk</p>
+      <h2 class="text-4xl md:text-6xl font-extrabold mt-4" data-i18n="ask.headline">Ask Ruthko</h2>
+      <p class="text-zinc-400 mt-5 max-w-2xl mx-auto" data-i18n="ask.sub">Ask about staffing, jobs, events, sponsors, vendor booths, partnerships, payments, and contact details.</p>
     </section>
 
     <section class="glass border border-zinc-800 rounded-3xl p-6 md:p-8">
       <div id="askRuthkoLog" class="space-y-4 min-h-[260px]">
-        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 text-zinc-300"><strong class="text-white">Ruthko:</strong><br>Hello. What do you need help with today?</div>
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 text-zinc-300"><strong class="text-white" data-i18n="ask.ruthko">Ruthko</strong>:<br><span id="greetingText" data-i18n="ask.greeting">Hello. What do you need help with today?</span></div>
       </div>
       <form id="askRuthkoForm" class="mt-6 flex flex-col md:flex-row gap-3">
-        <input id="askRuthkoInput" class="flex-1 bg-black border border-zinc-800 rounded-xl p-4" placeholder="Example: How do I sponsor a Ruthko event?" />
-        <button class="btn-primary px-6 py-4 rounded-xl font-extrabold" type="submit">Ask</button>
+        <input id="askRuthkoInput" class="flex-1 bg-black border border-zinc-800 rounded-xl p-4" data-i18n-ph="ask.placeholder" placeholder="Example: How do I sponsor a Ruthko event?" />
+        <button class="btn-primary px-6 py-4 rounded-xl font-extrabold" type="submit" data-i18n="ask.btnAsk">Ask</button>
       </form>
       <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mt-5 text-sm">
-        <button class="quickAsk bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-left" data-question="How do I request staff?">Request staff</button>
-        <button class="quickAsk bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-left" data-question="How do I sponsor a Ruthko event?">Sponsor</button>
-        <button class="quickAsk bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-left" data-question="How do I get a vendor booth?">Vendor booth</button>
-        <button class="quickAsk bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-left" data-question="How do I contact Ruthko?">Contact</button>
+        <button class="quickAsk bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-left" data-question="How do I request staff?" data-i18n="ask.quickStaff">Request staff</button>
+        <button class="quickAsk bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-left" data-question="How do I sponsor a Ruthko event?" data-i18n="ask.quickSponsor">Sponsor</button>
+        <button class="quickAsk bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-left" data-question="How do I get a vendor booth?" data-i18n="ask.quickVendor">Vendor booth</button>
+        <button class="quickAsk bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-left" data-question="How do I contact Ruthko?" data-i18n="ask.quickContact">Contact</button>
       </div>
     </section>
   </main>
 
   <footer class="border-t border-zinc-800 mt-14">
     <div class="max-w-7xl mx-auto px-5 py-8 text-sm text-zinc-500 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-      <p>© Ruthko Connect. Staffing, event organizing, sponsorship, vendors, and partnerships.</p>
+      <p>© Ruthko Connect. <span data-i18n="footer.tagline">Staffing, event organizing, sponsorship, vendors, and partnerships.</span></p>
       <p>info@ruthkojobs.com • +1-701-260-3908 • +1-240-486-5002</p>
     </div>
   </footer>
 
   <script>
     if (window.lucide) lucide.createIcons();
-    const log = document.getElementById('askRuthkoLog');
-    function esc(value) { return String(value || '').replace(/[&<>\"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' }[char])); }
+    var log = document.getElementById('askRuthkoLog');
+
+    function esc(v) { return String(v || '').replace(/[&<>"]/g, function(c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
     function append(role, text, link, label) {
-      log.insertAdjacentHTML('beforeend', `<div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 text-zinc-300"><strong class="text-white">${role}:</strong><br>${esc(text)}${link ? `<br><a class="text-yellow-400 font-bold inline-block mt-3" href="${link}">${label || 'Open page'}</a>` : ''}</div>`);
+      log.insertAdjacentHTML('beforeend',
+        '<div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 text-zinc-300"><strong class="text-white">' + esc(role) + '</strong>:<br>' +
+        esc(text) + (link ? '<br><a class="text-yellow-400 font-bold inline-block mt-3" href="' + link + '">' + esc(label || 'Open page') + '</a>' : '') +
+        '</div>'
+      );
       log.scrollTop = log.scrollHeight;
     }
+
     async function ask(question) {
       if (!question.trim()) return;
-      append('You', question);
+      var lang = (window.getCurrentLang && window.getCurrentLang()) || 'en';
+      var youLabel = (window.getI18n && window.getI18n('ask.you')) || 'You';
+      var ruthkoLabel = (window.getI18n && window.getI18n('ask.ruthko')) || 'Ruthko';
+      var fallbackText = (window.getI18n && window.getI18n('ask.fallback')) || 'Please submit your inquiry and Ruthko will follow up.';
+      var submitLabel = (window.getI18n && window.getI18n('ask.submitInquiry')) || 'Submit inquiry';
+      append(youLabel, question);
       try {
-        const response = await fetch('/api/ask-ruthko', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ question }) });
-        const data = await response.json();
-        append('Ruthko', data.answer || 'Please submit your inquiry and Ruthko will follow up.', data.link, data.label);
-      } catch (error) {
-        append('Ruthko', 'Please submit your inquiry and Ruthko will follow up.', 'intake.html', 'Submit inquiry');
+        var response = await fetch('/api/ask-ruthko', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: question, lang: lang })
+        });
+        var data = await response.json();
+        append(ruthkoLabel, data.answer || fallbackText, data.link, data.label);
+      } catch (e) {
+        append(ruthkoLabel, fallbackText, 'intake.html', submitLabel);
       }
     }
-    document.getElementById('askRuthkoForm').addEventListener('submit', function (event) {
-      event.preventDefault();
-      const input = document.getElementById('askRuthkoInput');
+
+    document.getElementById('askRuthkoForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var input = document.getElementById('askRuthkoInput');
       ask(input.value);
       input.value = '';
     });
-    document.querySelectorAll('.quickAsk').forEach(button => button.addEventListener('click', () => ask(button.dataset.question)));
+
+    document.querySelectorAll('.quickAsk').forEach(function(btn) {
+      btn.addEventListener('click', function() { ask(btn.dataset.question); });
+    });
   </script>
 </body>
 </html>
