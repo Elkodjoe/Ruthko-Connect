@@ -24,7 +24,7 @@
 
   function getRedirectTarget() {
     const params = new URLSearchParams(window.location.search);
-    return params.get('redirect') || 'index.html';
+    return params.get('redirect') || 'admin.html';
   }
 
   function setMessage(id, message, isError) {
@@ -114,7 +114,7 @@
   window.ruthkoRequireAdmin = async function () {
     const user = await window.ruthkoGetCurrentUser();
     if (!user) {
-      const redirect = encodeURIComponent(window.location.pathname.split('/').pop() || 'index.html');
+      const redirect = encodeURIComponent(window.location.pathname.split('/').pop() || 'admin.html');
       window.location.href = 'login.html?redirect=' + redirect;
       return null;
     }
