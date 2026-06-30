@@ -7,3 +7,5 @@ node_modules/
 .vscode/
 
 data/
+# Phase 21: allow shared content spec
+!data/site-content.json
