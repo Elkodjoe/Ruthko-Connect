@@ -1,0 +1,12 @@
+EVENT OPERATIONS FLOW MAP
+
+1. Public visitor opens events.html.
+2. Visitor registers interest through intake.html#event.
+3. Lead enters CRM.
+4. Admin opens event-operations.html.
+5. Admin creates or selects an event.
+6. Admin adds speakers, sponsors, vendors, and attendees.
+7. Admin checks guests in on event day.
+8. Admin generates event brief.
+9. Admin exports records for reporting.
+10. Admin sends campaign or follow-up through Campaigns.

@@ -1,0 +1,20 @@
+{
+  "name": "ruthko-connect",
+  "version": "1.5.0",
+  "private": true,
+  "description": "Ruthko Connect public website and protected admin platform for staffing, event operations, CRM, campaigns, payments, reports, analytics, and VPS backend functions.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "local": "npx serve . -l 5500",
+    "health": "node -e \"fetch('http://localhost:3000/health').then(r=>r.text()).then(console.log).catch(console.error)\""
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}

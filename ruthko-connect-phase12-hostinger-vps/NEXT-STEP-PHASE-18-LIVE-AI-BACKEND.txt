@@ -1,0 +1,9 @@
+Phase 18 should add live AI backend support.
+
+Recommended additions:
+- Optional OpenAI API endpoint on VPS
+- Admin-controlled Ruthko knowledge base editor
+- Public assistant answer logs
+- Lead capture from assistant conversations
+- CRM task creation when a visitor asks for follow-up
+- Admin review queue before public assistant knowledge changes go live

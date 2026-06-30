@@ -1,0 +1,20 @@
+Ruthko Connect Reports Flow
+
+1. Public forms collect employer, candidate, sponsor, vendor, event, and partner interest.
+2. CRM stores lead records and stages.
+3. Tasks track follow-up work.
+4. Payments store paid sponsor, vendor, booth, and ticket activity.
+5. Event Operations stores speakers, sponsors, vendors, attendees, and run sheet details.
+6. Reports reads the data and produces:
+   - KPI cards
+   - monthly chart
+   - lead mix
+   - event report
+   - sponsor and vendor report
+   - campaign report
+   - action alerts
+   - executive brief
+   - CSV export
+
+Reports page is admin-only.
+Public site stays clean.

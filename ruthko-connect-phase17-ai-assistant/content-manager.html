@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" class="auth-checking">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Ruthko Connect | Content Manager</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+  * { font-family: Inter, sans-serif; }
+  body { background: #0a0a0a; color: #fff; }
+  .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+  .glass-hover { transition: all .2s ease; }
+  .glass-hover:hover { background: rgba(255,255,255,0.08); }
+  .gradient-text { background: linear-gradient(to right, #facc15, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .btn-primary { background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%); color: #000; }
+  .btn-primary:hover { filter: brightness(1.08); }
+  .btn-secondary { background: rgba(255,255,255,0.1); }
+  .btn-secondary:hover { background: rgba(255,255,255,0.15); }
+  .field { width: 100%; background: #000; border: 1px solid #27272a; border-radius: 0.75rem; padding: 0.85rem; color: #fff; }
+  .field:focus { outline: none; border-color: rgba(250, 204, 21, .7); }
+  .nav-active { background: rgba(39,39,42,0.9); color: #facc15; }
+
+    .auth-checking body { visibility: hidden; }
+    .tab-active { background: rgba(250,204,21,.15); color: #facc15; border-color: rgba(250,204,21,.45); }
+    .dropzone { border: 1px dashed #52525b; }
+    .preview-img { max-height: 240px; object-fit: contain; }
+  </style>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/auth-guard.js"></script>
+</head>
+<body class="min-h-screen bg-black text-white" data-page="content-manager">
+  <aside class="fixed left-0 top-0 z-50 h-full w-20 lg:w-64 bg-black border-r border-zinc-800 flex flex-col">
+    <div class="p-4 lg:p-6 flex items-center gap-3 border-b border-zinc-900">
+      <img src="images/logo.png" alt="Ruthko Logo" class="w-12 h-12 rounded-xl object-contain bg-white p-1" />
+      <div class="hidden lg:block"><h1 class="font-bold text-xl gradient-text">Ruthko Connect</h1><p class="text-xs text-zinc-400">Jobs • Events • Partnerships</p></div>
+    </div>
+    <nav class="flex-1 px-3 py-4 space-y-2">
+      <a href="admin.html" data-page="admin" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Admin Dashboard</span></a>
+      <a href="event-operations.html" data-page="event-ops" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="calendar-check" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Event Ops</span></a>
+      <a href="reports.html" data-page="reports" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="bar-chart-3" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Reports</span></a>
+      <a href="content-manager.html" data-page="content-manager" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="settings-2" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Content Manager</span></a>
+      <a href="crm.html" data-page="crm" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="database" class="w-5 h-5"></i><span class="hidden lg:block font-medium">CRM & Sales</span></a>
+      <a href="ai-studio.html" data-page="ai" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="sparkles" class="w-5 h-5"></i><span class="hidden lg:block font-medium">AI Studio</span></a>
+      <a href="tasks.html" data-page="tasks" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="list-checks" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Tasks</span></a>
+      <a href="campaigns.html" data-page="campaigns" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="send" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Campaigns</span></a>
+    </nav>
+    <div class="p-4 border-t border-zinc-800 hidden lg:block"><a href="index.html" class="block btn-secondary text-center rounded-xl py-2 font-bold text-sm">Public Site</a></div>
+  </aside>
+  <main class="ml-20 lg:ml-64 min-h-screen">
+    <header class="h-16 border-b border-zinc-800 bg-black/70 backdrop-blur-md flex items-center justify-between px-6 sticky top-0 z-40">
+      <h1 class="text-xl font-bold">Quick Change Center</h1>
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="hidden md:inline-flex btn-secondary px-4 py-2 rounded-xl font-bold text-sm">View Public Site</a>
+        <button onclick="ruthkoLogout()" class="px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-700 font-bold text-sm">Logout</button>
+      </div>
+    </header>
+    <section class="p-6">
+      <div class="mb-8">
+        <p class="text-yellow-400 font-bold uppercase tracking-wide text-sm">Admin tools</p>
+        <h2 class="text-4xl font-extrabold mt-3">Change Ruthko content without touching code.</h2>
+        <p class="text-zinc-400 max-w-4xl mt-3">Update event banners, flyers, contact details, CRM email automations, and social media publication drafts from one protected admin screen.</p>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <aside class="glass rounded-2xl border border-zinc-800 p-4 h-fit space-y-2">
+          <button data-cms-tab="site" class="cms-tab tab-active w-full text-left px-4 py-3 rounded-xl border border-zinc-800 font-bold">Site Contacts</button>
+          <button data-cms-tab="event" class="cms-tab w-full text-left px-4 py-3 rounded-xl border border-zinc-800 font-bold">Event Banner</button>
+          <button data-cms-tab="flyers" class="cms-tab w-full text-left px-4 py-3 rounded-xl border border-zinc-800 font-bold">Flyers Library</button>
+          <button data-cms-tab="emails" class="cms-tab w-full text-left px-4 py-3 rounded-xl border border-zinc-800 font-bold">CRM Email Automations</button>
+          <button data-cms-tab="social" class="cms-tab w-full text-left px-4 py-3 rounded-xl border border-zinc-800 font-bold">Social Publications</button>
+          <button data-cms-tab="assistant" class="cms-tab w-full text-left px-4 py-3 rounded-xl border border-zinc-800 font-bold">Admin Assistant</button>
+        </aside>
+        <div class="lg:col-span-3 space-y-6">
+          <section data-cms-panel="site" class="cms-panel glass rounded-2xl border border-zinc-800 p-6">
+            <h3 class="text-2xl font-bold mb-4">Public contact details</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <label class="text-sm text-zinc-400">Primary email<input id="contactEmail" class="field mt-2" value="info@ruthkojobs.com" /></label>
+              <label class="text-sm text-zinc-400">WhatsApp or phone<input id="contactPhone1" class="field mt-2" value="+1-701-260-3908" /></label>
+              <label class="text-sm text-zinc-400">Second phone<input id="contactPhone2" class="field mt-2" value="+1-240-486-5002" /></label>
+              <label class="text-sm text-zinc-400">Public website<input id="contactWebsite" class="field mt-2" value="https://ruthkojobs.com" /></label>
+              <label class="text-sm text-zinc-400 md:col-span-2">Footer message<input id="footerMessage" class="field mt-2" value="Staffing, event organizing, sponsorship, vendors, and partnerships." /></label>
+            </div>
+            <button id="saveContactsBtn" class="btn-primary rounded-xl px-5 py-3 font-bold mt-5">Save Contact Changes</button>
+            <p id="contactsStatus" class="text-sm text-zinc-400 mt-3"></p>
+          </section>
+
+          <section data-cms-panel="event" class="cms-panel hidden glass rounded-2xl border border-zinc-800 p-6">
+            <h3 class="text-2xl font-bold mb-4">Event banner and flyer</h3>
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              <div class="space-y-4">
+                <label class="text-sm text-zinc-400">Event headline<input id="eventHeadline" class="field mt-2" value="Ruthko Events and Business Programs" /></label>
+                <label class="text-sm text-zinc-400">Event subtitle<textarea id="eventSubtitle" class="field mt-2 h-28">Professional event organizing for summits, vendor programs, sponsor activations, cultural exchanges, and business networking.</textarea></label>
+                <label class="text-sm text-zinc-400">Call-to-action link<input id="eventCtaLink" class="field mt-2" value="intake.html#event" /></label>
+                <label class="text-sm text-zinc-400">Banner image or flyer URL<input id="eventBannerUrl" class="field mt-2" placeholder="images/event-banner.jpg or https://..." /></label>
+                <div class="dropzone rounded-2xl p-5 bg-zinc-950/60">
+                  <p class="font-bold">Upload quick flyer preview</p>
+                  <p class="text-sm text-zinc-500 mt-1">For local preview, upload a JPG or PNG. For production, store the image in images or Supabase Storage and paste the URL above.</p>
+                  <input id="eventBannerFile" type="file" accept="image/*" class="mt-4 text-sm" />
+                </div>
+                <button id="saveEventBannerBtn" class="btn-primary rounded-xl px-5 py-3 font-bold">Save Event Banner</button>
+                <p id="eventStatus" class="text-sm text-zinc-400"></p>
+              </div>
+              <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-5">
+                <p class="text-sm text-zinc-400 mb-3">Preview</p>
+                <img id="eventBannerPreview" src="images/logo.png" class="preview-img w-full rounded-xl bg-white p-6" alt="Event banner preview" />
+                <h4 id="eventHeadlinePreview" class="text-2xl font-bold mt-4">Ruthko Events and Business Programs</h4>
+                <p id="eventSubtitlePreview" class="text-zinc-400 mt-2">Professional event organizing for summits, vendor programs, sponsor activations, cultural exchanges, and business networking.</p>
+              </div>
+            </div>
+          </section>
+
+          <section data-cms-panel="flyers" class="cms-panel hidden glass rounded-2xl border border-zinc-800 p-6">
+            <h3 class="text-2xl font-bold mb-4">Flyers library</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <input id="flyerTitle" class="field" placeholder="Flyer title" />
+              <input id="flyerLink" class="field" placeholder="Flyer URL or image path" />
+              <button id="addFlyerBtn" class="btn-primary rounded-xl px-5 py-3 font-bold">Add Flyer</button>
+            </div>
+            <div class="mt-4 dropzone rounded-2xl p-5 bg-zinc-950/60">
+              <p class="font-bold">Upload local flyer preview</p>
+              <input id="flyerFile" type="file" accept="image/*" class="mt-4 text-sm" />
+            </div>
+            <div id="flyerList" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mt-6"></div>
+          </section>
+
+          <section data-cms-panel="emails" class="cms-panel hidden glass rounded-2xl border border-zinc-800 p-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+              <div><h3 class="text-2xl font-bold">CRM email automations</h3><p class="text-zinc-400 text-sm mt-1">Edit templates for automatic follow-up emails.</p></div>
+              <button id="saveEmailTemplatesBtn" class="btn-primary rounded-xl px-5 py-3 font-bold">Save Templates</button>
+            </div>
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-4" id="emailTemplateList"></div>
+          </section>
+
+          <section data-cms-panel="social" class="cms-panel hidden glass rounded-2xl border border-zinc-800 p-6">
+            <h3 class="text-2xl font-bold mb-4">Social media publications</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <select id="socialPlatform" class="field"><option>Facebook</option><option>Instagram</option><option>LinkedIn</option><option>TikTok</option><option>YouTube Community</option></select>
+              <input id="socialTopic" class="field" placeholder="Topic, event, or service" />
+              <input id="socialDate" type="date" class="field" />
+              <button id="generateSocialBtn" class="btn-secondary rounded-xl px-5 py-3 font-bold">Generate Caption</button>
+            </div>
+            <textarea id="socialCaption" class="field mt-4 h-40" placeholder="Caption appears here or type your own."></textarea>
+            <div class="flex flex-wrap gap-3 mt-4">
+              <button id="saveSocialBtn" class="btn-primary rounded-xl px-5 py-3 font-bold">Save Publication</button>
+              <button id="copySocialBtn" class="btn-secondary rounded-xl px-5 py-3 font-bold">Copy Caption</button>
+              <button id="exportSocialBtn" class="btn-secondary rounded-xl px-5 py-3 font-bold">Export Social Plan CSV</button>
+            </div>
+            <div id="socialList" class="mt-6 space-y-3"></div>
+          </section>
+
+          <section data-cms-panel="assistant" class="cms-panel hidden glass rounded-2xl border border-zinc-800 p-6">
+            <h3 class="text-2xl font-bold mb-4">Administrative assistant</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <button data-admin-prompt="event" class="admin-prompt btn-secondary rounded-xl p-4 font-bold text-left">Event update request</button>
+              <button data-admin-prompt="crm" class="admin-prompt btn-secondary rounded-xl p-4 font-bold text-left">CRM follow-up plan</button>
+              <button data-admin-prompt="social" class="admin-prompt btn-secondary rounded-xl p-4 font-bold text-left">Social media week</button>
+            </div>
+            <textarea id="adminPromptOutput" class="field mt-5 h-56"></textarea>
+            <div class="flex gap-3 mt-4"><button id="copyAdminPromptBtn" class="btn-primary rounded-xl px-5 py-3 font-bold">Copy Prompt</button><button id="exportSettingsBtn" class="btn-secondary rounded-xl px-5 py-3 font-bold">Export Settings JSON</button></div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="js/content-manager.js"></script>
+</body>
+</html>

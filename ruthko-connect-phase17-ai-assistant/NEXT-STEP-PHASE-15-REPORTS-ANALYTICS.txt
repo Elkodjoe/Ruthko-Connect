@@ -1,0 +1,13 @@
+NEXT STEP - PHASE 15 REPORTS AND ANALYTICS
+
+Build reports for:
+- lead source performance
+- event attendance
+- sponsor revenue
+- vendor booth revenue
+- candidate leads
+- employer leads
+- task completion
+- campaign performance
+- payment status
+- event post-report PDF outline

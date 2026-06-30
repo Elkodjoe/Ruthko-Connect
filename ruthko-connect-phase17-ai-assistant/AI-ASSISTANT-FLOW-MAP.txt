@@ -1,0 +1,16 @@
+Ruthko AI Assistant Flow
+
+Public visitor opens a Ruthko page
+Public Ask Ruthko widget appears
+Visitor asks about staffing, events, sponsors, vendors, partners, payments, or contact
+Widget calls /api/ask-ruthko
+Server returns approved Ruthko public answer
+Visitor receives one clear next link
+
+Admin opens ai-studio.html
+Admin selects a playbook
+AI Studio produces admin prompt
+Admin copies prompt into campaign, CRM, event operations, or content manager workflow
+
+Security rule:
+Public assistant never exposes dashboard, CRM, campaigns, reports, task board, pipeline values, automation rules, or internal admin controls.

@@ -1,0 +1,32 @@
+Phase 10: Campaigns and Bulk Email Segments
+
+Build next:
+
+1. Segment leads by type
+- Employers
+- Candidates
+- Sponsors
+- Vendors
+- Event guests
+
+2. Add campaign templates
+- Employer staffing follow-up
+- Candidate document request
+- Sponsor proposal follow-up
+- Vendor booth reminder
+- Event reminder
+
+3. Add campaign page
+campaigns.html
+
+4. Add optional Resend broadcast function
+netlify/functions/send-campaign.js
+
+5. Add campaign tracking tables
+- campaigns
+- campaign_recipients
+- email_events
+
+Goal
+
+Turn Ruthko Connect into a simple sales and follow-up system, not only a dashboard.
