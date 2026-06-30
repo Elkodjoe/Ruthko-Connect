@@ -80,6 +80,7 @@
             <p class="text-xs uppercase tracking-wide text-zinc-500 font-bold">Live sync status</p>
             <p id="liveSyncStatus" class="text-sm text-yellow-400 font-bold mt-1">Checking live settings sync...</p>
             <p class="text-xs text-zinc-500 mt-2">When live sync is connected, changes made on phone or computer show on every device after refresh.</p>
+            <p class="text-xs text-zinc-500 mt-2">Content source: <span id="contentSourceBadge" class="font-bold">checking...</span></p>
           </div>
           <div class="flex flex-col gap-2">
             <input id="adminSettingsToken" class="field" placeholder="Admin settings token, optional" />
@@ -292,6 +293,8 @@
   </main>
   <script src="js/content-manager.js"></script>
   <script src="js/admin-data.js"></script>
+  <script src="js/supabase-content-service.js"></script>
+  <script src="js/admin-content-sync.js"></script>
   <script>
   // Phase 21 — Hero & Announcement admin UI
   (function () {
@@ -351,14 +354,12 @@
       });
     });
 
-    // Save hero
+    // Save hero — Phase 22: writes to Supabase + localStorage
     var saveHeroBtn = document.getElementById('saveHeroBtn');
     if (saveHeroBtn) {
-      saveHeroBtn.addEventListener('click', function () {
-        if (typeof window.ruthkoSaveContent !== 'function') return;
+      saveHeroBtn.addEventListener('click', async function () {
         var lang = currentHeroLang;
-        var partial = { hero: {} };
-        partial.hero[lang] = {
+        var heroContent = {
           title:    document.getElementById('heroTitle').value.trim(),
           subtitle: document.getElementById('heroSubtitle').value.trim(),
           cta1Text: document.getElementById('heroCta1Text').value.trim(),
@@ -368,8 +369,18 @@
           cta3Text: document.getElementById('heroCta3Text').value.trim(),
           cta3Link: document.getElementById('heroCta3Link').value.trim()
         };
-        window.ruthkoSaveContent(partial);
-        setStatus('heroStatus', 'Hero content saved (' + lang.toUpperCase() + ').', true);
+        if (window.ruthkoContentSync) {
+          saveHeroBtn.disabled = true;
+          saveHeroBtn.textContent = 'Saving…';
+          await window.ruthkoContentSync.saveSection('hero', lang, heroContent, { statusElementId: 'heroStatus' });
+          saveHeroBtn.disabled = false;
+          saveHeroBtn.textContent = 'Save Hero Content';
+        } else if (typeof window.ruthkoSaveContent === 'function') {
+          var partial = { hero: {} };
+          partial.hero[lang] = heroContent;
+          window.ruthkoSaveContent(partial);
+          setStatus('heroStatus', 'Saved locally (' + lang.toUpperCase() + ').', true);
+        }
       });
     }
 
@@ -447,18 +458,35 @@
 
     var saveAnnBtn = document.getElementById('saveAnnouncementBtn');
     if (saveAnnBtn) {
-      saveAnnBtn.addEventListener('click', function () {
-        if (typeof window.ruthkoSaveContent !== 'function') return;
-        window.ruthkoSaveContent({
-          announcement: {
-            active: document.getElementById('announcementActive').checked,
-            link:   document.getElementById('announcementLink').value.trim(),
-            en:     document.getElementById('annTextEn').value.trim(),
-            fr:     document.getElementById('annTextFr').value.trim(),
-            es:     document.getElementById('annTextEs').value.trim()
+      saveAnnBtn.addEventListener('click', async function () {
+        var langs = ['en', 'fr', 'es'];
+        var active = document.getElementById('announcementActive').checked;
+        var link   = document.getElementById('announcementLink').value.trim();
+        if (window.ruthkoContentSync) {
+          saveAnnBtn.disabled = true;
+          saveAnnBtn.textContent = 'Saving…';
+          for (var i = 0; i < langs.length; i++) {
+            var l = langs[i];
+            var textEl = document.getElementById('annText' + l.charAt(0).toUpperCase() + l.slice(1));
+            await window.ruthkoContentSync.saveSection(
+              'announcement', l,
+              { active: active, link: link, text: textEl ? textEl.value.trim() : '' },
+              i === 0 ? { statusElementId: 'announcementStatus' } : {}
+            );
           }
-        });
-        setStatus('announcementStatus', 'Announcement banner saved.', true);
+          saveAnnBtn.disabled = false;
+          saveAnnBtn.textContent = 'Save Banner';
+        } else if (typeof window.ruthkoSaveContent === 'function') {
+          window.ruthkoSaveContent({
+            announcement: {
+              active: active, link: link,
+              en: document.getElementById('annTextEn').value.trim(),
+              fr: document.getElementById('annTextFr').value.trim(),
+              es: document.getElementById('annTextEs').value.trim()
+            }
+          });
+          setStatus('announcementStatus', 'Announcement banner saved.', true);
+        }
       });
     }
 
@@ -477,7 +505,29 @@
       setTimeout(function () {
         loadHeroFields('en');
         loadAnnouncementFields();
-      }, 100);
+        // Show content source badge (Phase 22)
+        if (window.ruthkoContentSync) window.ruthkoContentSync.showSourceBadge('contentSourceBadge');
+      }, 200);
+    });
+
+    // Re-show source badge after Supabase load completes
+    window.addEventListener('ruthko:content-synced', function (e) {
+      if (e.detail && e.detail.source) {
+        var badge = document.getElementById('contentSourceBadge');
+        var labels = {
+          supabase: 'Supabase ✓',
+          local:    'localStorage (offline)',
+          json:     'site-content.json (default)',
+          'default': 'hardcoded defaults'
+        };
+        if (badge) {
+          badge.textContent = labels[e.detail.source] || e.detail.source;
+          badge.className = e.detail.source === 'supabase' ? 'font-bold text-green-400' : 'font-bold text-yellow-400';
+        }
+        // Reload fields from fresh Supabase data
+        loadHeroFields(currentHeroLang);
+        loadAnnouncementFields();
+      }
     });
   })();
   </script>
