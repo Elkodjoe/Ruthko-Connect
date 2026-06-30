@@ -28,6 +28,9 @@
   <script src="js/supabase-config.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/auth-guard.js"></script>
+  <script src="js/crm-intake-service.js"></script>
+  <script src="js/email-automation-service.js"></script>
+  <script src="js/crm-automation-rules.js"></script>
 </head>
 <body class="min-h-screen bg-black text-white" data-page="crm">
 
@@ -46,6 +49,8 @@
       <a href="event-operations.html" data-page="event-ops" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="calendar-check" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Event Ops</span></a>
       <a href="reports.html" data-page="reports" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="bar-chart-3" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Reports</span></a>
       <a href="crm.html" data-page="crm" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="database" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">CRM & Sales</span></a>
+      <a href="crm.html#intake" data-page="intake-queue" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="inbox" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Intake Queue</span></a>
+      <a href="crm.html#email-logs" data-page="email-logs" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="mail" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Email Logs</span></a>
       <a href="tasks.html" data-page="tasks" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="list-checks" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Tasks</span></a>
       <a href="campaigns.html" data-page="campaigns" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="send" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Campaigns</span></a>
       <a href="jobs.html" data-page="jobs" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="briefcase" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Jobs</span></a>
@@ -99,6 +104,103 @@
         <article class="glass p-5 rounded-2xl border border-zinc-800"><h3 class="text-xl font-bold mb-4">Activity Feed</h3><div id="activityFeed" class="space-y-3 max-h-[360px] overflow-y-auto"></div></article>
       </div>
     </section>
+    <!-- Phase 27: Email Logs -->
+    <section id="email-logs" class="p-6 border-t border-zinc-800">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 class="text-3xl font-bold mb-1">Email Logs</h2>
+          <p class="text-zinc-400 text-sm">All email send attempts from public form submissions and admin actions.</p>
+        </div>
+        <div class="flex gap-3">
+          <button id="p27RefreshEmailLogs" onclick="p27LoadEmailLogs()" class="btn-secondary px-4 py-2 rounded-xl font-bold text-sm">Refresh</button>
+        </div>
+      </div>
+      <div class="glass border border-zinc-800 rounded-2xl p-5 mb-6">
+        <div class="flex flex-wrap gap-3 mb-4">
+          <input id="p27EmailSearch" oninput="p27FilterEmailLogs()" placeholder="Search email, type, status..." class="bg-black border border-zinc-800 rounded-xl p-2 text-sm flex-1 min-w-48" />
+          <select id="p27EmailTypeFilter" onchange="p27FilterEmailLogs()" class="bg-black border border-zinc-800 rounded-xl p-2 text-sm">
+            <option value="">All Types</option>
+            <option value="applicant_confirmation">Applicant Confirmation</option>
+            <option value="employer_confirmation">Employer Confirmation</option>
+            <option value="sponsor_confirmation">Sponsor Confirmation</option>
+            <option value="partner_confirmation">Partner Confirmation</option>
+            <option value="volunteer_confirmation">Volunteer Confirmation</option>
+            <option value="rsvp_confirmation">RSVP Confirmation</option>
+            <option value="admin_notification">Admin Notification</option>
+          </select>
+          <select id="p27EmailStatusFilter" onchange="p27FilterEmailLogs()" class="bg-black border border-zinc-800 rounded-xl p-2 text-sm">
+            <option value="">All Statuses</option>
+            <option value="sent">Sent</option>
+            <option value="failed">Failed</option>
+            <option value="pending">Pending</option>
+            <option value="skipped">Skipped</option>
+          </select>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="text-zinc-400 text-left border-b border-zinc-800">
+              <tr>
+                <th class="p-3">Type</th>
+                <th class="p-3">Recipient</th>
+                <th class="p-3">Status</th>
+                <th class="p-3">Sent At</th>
+                <th class="p-3">Error</th>
+                <th class="p-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="p27EmailLogsTable"><tr><td colspan="6" class="p-4 text-zinc-500 text-center">Loading email logs…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 27: Automation Tasks -->
+    <section id="automation-tasks" class="p-6 border-t border-zinc-800">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 class="text-3xl font-bold mb-1">Automation Tasks</h2>
+          <p class="text-zinc-400 text-sm">Follow-up tasks created by CRM automation rules after form submissions.</p>
+        </div>
+        <div class="flex gap-3">
+          <button id="p27ShowOverdue" onclick="p27ToggleOverdue()" class="btn-secondary px-4 py-2 rounded-xl font-bold text-sm">Show Overdue</button>
+          <button onclick="p27LoadAutomationTasks()" class="btn-secondary px-4 py-2 rounded-xl font-bold text-sm">Refresh</button>
+        </div>
+      </div>
+      <div class="glass border border-zinc-800 rounded-2xl p-5">
+        <div class="flex flex-wrap gap-3 mb-4">
+          <select id="p27TaskStatusFilter" onchange="p27FilterAutomationTasks()" class="bg-black border border-zinc-800 rounded-xl p-2 text-sm">
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="processing">Processing</option>
+            <option value="completed">Completed</option>
+            <option value="failed">Failed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          <select id="p27TaskPriorityFilter" onchange="p27FilterAutomationTasks()" class="bg-black border border-zinc-800 rounded-xl p-2 text-sm">
+            <option value="">All Priorities</option>
+            <option value="urgent">Urgent</option>
+            <option value="high">High</option>
+            <option value="normal">Normal</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="text-zinc-400 text-left border-b border-zinc-800">
+              <tr>
+                <th class="p-3">Task</th>
+                <th class="p-3">Priority</th>
+                <th class="p-3">Status</th>
+                <th class="p-3">Due</th>
+                <th class="p-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="p27AutomationTasksTable"><tr><td colspan="5" class="p-4 text-zinc-500 text-center">Loading automation tasks…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
     <div id="leadModal" class="hidden fixed inset-0 z-[100] bg-black/70 items-center justify-center p-4"><div class="glass border border-zinc-800 rounded-3xl p-6 w-full max-w-2xl"><div class="flex items-center justify-between mb-4"><h3 class="text-2xl font-bold">Add Lead</h3><button onclick="closeLeadModal()" class="text-zinc-400">Close</button></div><form onsubmit="saveLead(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4"><input id="leadName" placeholder="Contact name" required class="bg-black border border-zinc-800 rounded-xl p-3"><input id="leadCompany" placeholder="Company" class="bg-black border border-zinc-800 rounded-xl p-3"><input id="leadEmail" type="email" placeholder="Email" class="bg-black border border-zinc-800 rounded-xl p-3"><input id="leadPhone" placeholder="Phone" class="bg-black border border-zinc-800 rounded-xl p-3"><select id="leadType" class="bg-black border border-zinc-800 rounded-xl p-3"><option>Employer</option><option>Candidate</option><option>Sponsor</option><option>Vendor</option><option>Event Guest</option><option>Partner</option></select><input id="leadValue" type="number" placeholder="Estimated value" class="bg-black border border-zinc-800 rounded-xl p-3"><textarea id="leadNeed" placeholder="Need or note" class="md:col-span-2 bg-black border border-zinc-800 rounded-xl p-3 h-24"></textarea><button class="md:col-span-2 btn-primary py-3 rounded-xl font-bold">Save Lead</button></form></div></div>
     <script src="js/pro-crm.js"></script>
 
@@ -112,6 +214,197 @@
         if (link.getAttribute('data-page') === page) link.classList.add('nav-active');
       });
     })();
+  </script>
+  <script>
+  // Phase 27: Email Logs + Automation Tasks panel logic
+  (function () {
+    'use strict';
+
+    var allEmailLogs = [];
+    var allTasks = [];
+    var showingOverdue = false;
+
+    function esc(s) {
+      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function statusBadge(status) {
+      var colors = { sent:'bg-green-900 text-green-300', failed:'bg-red-900 text-red-300', pending:'bg-yellow-900 text-yellow-300', skipped:'bg-zinc-800 text-zinc-400' };
+      var cls = colors[status] || 'bg-zinc-800 text-zinc-400';
+      return '<span class="px-2 py-0.5 rounded text-xs font-semibold ' + cls + '">' + esc(status) + '</span>';
+    }
+
+    function priorityBadge(p) {
+      var colors = { urgent:'bg-red-900 text-red-300', high:'bg-orange-900 text-orange-300', normal:'bg-blue-900 text-blue-300', low:'bg-zinc-800 text-zinc-400' };
+      var cls = colors[p] || 'bg-zinc-800 text-zinc-400';
+      return '<span class="px-2 py-0.5 rounded text-xs font-semibold ' + cls + '">' + esc(p) + '</span>';
+    }
+
+    function fmtDate(d) {
+      if (!d) return '—';
+      var dt = new Date(d);
+      return isNaN(dt) ? '—' : dt.toLocaleString();
+    }
+
+    function isAdminOrOwner() {
+      try {
+        var profile = JSON.parse(localStorage.getItem('ruthko_admin_profile') || '{}');
+        return ['owner','admin'].indexOf(profile.role) !== -1;
+      } catch (_) { return false; }
+    }
+
+    // ── Email Logs ────────────────────────────────────────────────────────────
+    window.p27LoadEmailLogs = function () {
+      var tbody = document.getElementById('p27EmailLogsTable');
+      if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-zinc-500 text-center">Loading…</td></tr>';
+      var svc = window.ruthkoEmailAutomation;
+      var promise = svc ? svc.getEmailLogs({ limit: 200 }) : Promise.resolve([]);
+      promise.then(function (logs) {
+        allEmailLogs = Array.isArray(logs) ? logs : [];
+        p27FilterEmailLogs();
+      }).catch(function () {
+        allEmailLogs = [];
+        p27FilterEmailLogs();
+      });
+    };
+
+    window.p27FilterEmailLogs = function () {
+      var search = (document.getElementById('p27EmailSearch') || {}).value || '';
+      var typeF  = (document.getElementById('p27EmailTypeFilter') || {}).value || '';
+      var statusF= (document.getElementById('p27EmailStatusFilter') || {}).value || '';
+      var q = search.toLowerCase();
+      var filtered = allEmailLogs.filter(function (l) {
+        if (typeF   && l.email_type !== typeF)  return false;
+        if (statusF && l.status    !== statusF) return false;
+        if (q && !(
+          (l.recipient_email||'').toLowerCase().includes(q) ||
+          (l.email_type||'').toLowerCase().includes(q) ||
+          (l.status||'').toLowerCase().includes(q)
+        )) return false;
+        return true;
+      });
+      p27RenderEmailLogs(filtered);
+    };
+
+    function p27RenderEmailLogs(logs) {
+      var tbody = document.getElementById('p27EmailLogsTable');
+      if (!tbody) return;
+      if (!logs.length) {
+        tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-zinc-500 text-center">No email logs found.</td></tr>';
+        return;
+      }
+      var canResend = isAdminOrOwner();
+      tbody.innerHTML = logs.map(function (l) {
+        var resendBtn = (canResend && l.status === 'failed')
+          ? '<button onclick="p27ResendEmail(\'' + esc(l.id) + '\')" class="btn-primary px-3 py-1 rounded-lg text-xs font-bold">Resend</button>'
+          : '';
+        return '<tr class="border-b border-zinc-900 hover:bg-white/5">' +
+          '<td class="p-3">' + esc(l.email_type) + '</td>' +
+          '<td class="p-3">' + esc(l.recipient_email) + '</td>' +
+          '<td class="p-3">' + statusBadge(l.status) + '</td>' +
+          '<td class="p-3 text-zinc-400 text-xs">' + fmtDate(l.sent_at || l.created_at) + '</td>' +
+          '<td class="p-3 text-red-400 text-xs max-w-xs truncate">' + esc(l.error_message) + '</td>' +
+          '<td class="p-3">' + resendBtn + '</td>' +
+          '</tr>';
+      }).join('');
+    }
+
+    window.p27ResendEmail = function (id) {
+      var log = allEmailLogs.find(function (l) { return l.id === id; });
+      if (!log) return;
+      var svc = window.ruthkoEmailAutomation;
+      if (!svc || !svc.resendEmail) { alert('Email service not loaded.'); return; }
+      svc.resendEmail(log).then(function () { p27LoadEmailLogs(); }).catch(function () { p27LoadEmailLogs(); });
+    };
+
+    // ── Automation Tasks ──────────────────────────────────────────────────────
+    window.p27LoadAutomationTasks = function () {
+      var tbody = document.getElementById('p27AutomationTasksTable');
+      if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-zinc-500 text-center">Loading…</td></tr>';
+      var svc = window.ruthkoAutomation;
+      var promise = svc ? svc.getActiveTasks({ limit: 200 }) : Promise.resolve([]);
+      promise.then(function (tasks) {
+        allTasks = Array.isArray(tasks) ? tasks : [];
+        p27FilterAutomationTasks();
+      }).catch(function () {
+        allTasks = [];
+        p27FilterAutomationTasks();
+      });
+    };
+
+    window.p27ToggleOverdue = function () {
+      showingOverdue = !showingOverdue;
+      var btn = document.getElementById('p27ShowOverdue');
+      if (btn) btn.textContent = showingOverdue ? 'Show All' : 'Show Overdue';
+      p27FilterAutomationTasks();
+    };
+
+    window.p27FilterAutomationTasks = function () {
+      var statusF   = (document.getElementById('p27TaskStatusFilter') || {}).value || '';
+      var priorityF = (document.getElementById('p27TaskPriorityFilter') || {}).value || '';
+      var now = new Date();
+      var filtered = allTasks.filter(function (t) {
+        if (statusF   && t.status   !== statusF)   return false;
+        if (priorityF && t.priority !== priorityF) return false;
+        if (showingOverdue && !(t.due_at && new Date(t.due_at) < now && t.status === 'pending')) return false;
+        return true;
+      });
+      p27RenderAutomationTasks(filtered);
+    };
+
+    function p27RenderAutomationTasks(tasks) {
+      var tbody = document.getElementById('p27AutomationTasksTable');
+      if (!tbody) return;
+      if (!tasks.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-zinc-500 text-center">No automation tasks found.</td></tr>';
+        return;
+      }
+      var now = new Date();
+      tbody.innerHTML = tasks.map(function (t) {
+        var due = t.due_at ? new Date(t.due_at) : null;
+        var dueStr = due ? fmtDate(t.due_at) : '—';
+        var overdue = due && due < now && t.status === 'pending';
+        var dueCell = overdue
+          ? '<span class="text-red-400 font-semibold">' + esc(dueStr) + ' ⚠</span>'
+          : '<span class="text-zinc-400 text-xs">' + esc(dueStr) + '</span>';
+        return '<tr class="border-b border-zinc-900 hover:bg-white/5">' +
+          '<td class="p-3"><div class="font-medium">' + esc(t.task_title) + '</div><div class="text-xs text-zinc-500 mt-0.5">' + esc(t.task_description) + '</div></td>' +
+          '<td class="p-3">' + priorityBadge(t.priority) + '</td>' +
+          '<td class="p-3">' + statusBadge(t.status) + '</td>' +
+          '<td class="p-3">' + dueCell + '</td>' +
+          '<td class="p-3 flex gap-2">' +
+            '<button onclick="p27CompleteTask(\'' + esc(t.id) + '\')" class="btn-secondary px-3 py-1 rounded-lg text-xs font-bold">Done</button>' +
+            '<button onclick="p27CancelTask(\'' + esc(t.id) + '\')" class="bg-zinc-900 border border-zinc-700 px-3 py-1 rounded-lg text-xs font-bold">Cancel</button>' +
+          '</td></tr>';
+      }).join('');
+    }
+
+    window.p27CompleteTask = function (id) {
+      var svc = window.ruthkoAutomation;
+      if (!svc || !svc.updateTaskStatus) return;
+      svc.updateTaskStatus(id, 'completed').then(p27LoadAutomationTasks).catch(p27LoadAutomationTasks);
+    };
+
+    window.p27CancelTask = function (id) {
+      var svc = window.ruthkoAutomation;
+      if (!svc || !svc.updateTaskStatus) return;
+      svc.updateTaskStatus(id, 'cancelled').then(p27LoadAutomationTasks).catch(p27LoadAutomationTasks);
+    };
+
+    // ── Auto-load on DOMContentLoaded ─────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', function () {
+      p27LoadEmailLogs();
+      p27LoadAutomationTasks();
+      if (window.location.hash === '#email-logs') {
+        var el = document.getElementById('email-logs');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }
+      if (window.location.hash === '#automation-tasks') {
+        var el = document.getElementById('automation-tasks');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  })();
   </script>
 </body>
 </html>
