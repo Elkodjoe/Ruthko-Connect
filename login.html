@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Login — Ruthko Connect</title>
+  <title>Staff Login - Ruthko Connect</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -29,7 +29,7 @@
     <div class="text-center mb-10">
       <img src="images/logo.png" alt="Ruthko Logo" class="w-16 h-16 rounded-2xl object-cover mx-auto mb-4" onerror="this.style.display='none'">
       <h1 class="text-3xl font-bold gradient-text">Ruthko Connect</h1>
-      <p class="text-zinc-500 text-sm mt-1">Admin Dashboard</p>
+      <p class="text-zinc-500 text-sm mt-1">Private Portal</p>
     </div>
 
     <!-- Sample mode notice -->
@@ -41,12 +41,12 @@
     <form id="login-form" class="space-y-4">
       <div>
         <label class="block text-xs font-medium text-zinc-400 mb-1.5">Email</label>
-        <input id="login-email" type="email" required autocomplete="email" class="field" placeholder="admin@ruthko.com" value="admin@ruthko.com">
+        <input id="login-email" type="email" required autocomplete="email" class="field" placeholder="staff@ruthko.com" value="">
       </div>
       <div>
         <label class="block text-xs font-medium text-zinc-400 mb-1.5">Password</label>
         <div class="relative">
-          <input id="login-password" type="password" required autocomplete="current-password" class="field pr-12" placeholder="••••••••" value="admin123">
+          <input id="login-password" type="password" required autocomplete="current-password" class="field pr-12" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" value="admin123">
           <button type="button" id="toggle-pw" class="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 text-xs font-medium">Show</button>
         </div>
       </div>
@@ -54,13 +54,13 @@
       <div id="login-error" class="hidden text-sm text-red-400 bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-3"></div>
 
       <button type="submit" id="login-btn" class="w-full py-4 rounded-xl font-bold text-black text-base transition" style="background:linear-gradient(135deg,#facc15,#f59e0b);">
-        Sign In to Dashboard
+        Sign In
       </button>
     </form>
 
     <!-- Divider -->
     <div class="mt-8 pt-6 border-t border-zinc-800 text-center space-y-2">
-      <p class="text-xs text-zinc-600">Public pages — no login required</p>
+      <p class="text-xs text-zinc-600">Public pages â€” no login required</p>
       <div class="flex justify-center gap-4 text-sm">
         <a href="intake.html"   class="text-zinc-500 hover:text-white transition">Intake Forms</a>
         <a href="payments.html" class="text-zinc-500 hover:text-white transition">Payments</a>
@@ -86,13 +86,13 @@
       // Check existing session
       if (cfg.sampleMode) {
         if (sessionStorage.getItem("ruthko_admin_session")) {
-          window.location.href = "index.html";
+          window.location.href = "admin.html";
         }
       } else if (window.supabase) {
         var client  = window.supabase.createClient(cfg.supabase.url, cfg.supabase.anonKey);
         var result  = await client.auth.getSession();
         var session = result.data && result.data.session;
-        if (session) window.location.href = "index.html";
+        if (session) window.location.href = "admin.html";
       }
     })();
 
@@ -113,18 +113,18 @@
       var email = document.getElementById("login-email").value.trim();
       var pass  = document.getElementById("login-password").value;
 
-      btn.textContent = "Signing in…";
+      btn.textContent = "Signing inâ€¦";
       btn.disabled    = true;
       errEl.classList.add("hidden");
 
       var result = await RuthkoAuth.login(email, pass);
 
       if (result.ok) {
-        window.location.href = "index.html";
+        window.location.href = "admin.html";
       } else {
         errEl.textContent = result.error || "Login failed. Check your credentials.";
         errEl.classList.remove("hidden");
-        btn.textContent = "Sign In to Dashboard";
+        btn.textContent = "Sign In";
         btn.disabled    = false;
       }
     });
@@ -132,3 +132,4 @@
 
 </body>
 </html>
+

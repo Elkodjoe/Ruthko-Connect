@@ -18,7 +18,7 @@ var RuthkoAuth = (function () {
 
   var STORAGE_KEY = "ruthko_admin_session";
   var LOGIN_PAGE  = "login.html";
-  var HOME_PAGE   = "index.html";
+  var HOME_PAGE   = "admin.html";
 
   var _supabase = null;
 

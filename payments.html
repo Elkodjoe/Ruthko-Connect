@@ -3,323 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ruthko Connect — Payments</title>
+  <title>Ruthko Connect | Payments</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     * { font-family: 'Inter', sans-serif; }
     body { background: #0a0a0a; color: #fff; }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+    .field { width: 100%; background: #111; border: 1px solid #27272a; border-radius: 12px; padding: 12px 16px; color: #fff; font-size: 14px; outline: none; }
+    .field:focus { border-color: rgba(250,204,21,0.55); }
+    .pay-btn { display: block; width: 100%; padding: 14px; border-radius: 12px; font-weight: 700; text-align: center; }
+    .pay-btn:hover { filter: brightness(1.05); }
     .gradient-text { background: linear-gradient(to right, #facc15, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(10px); }
-    .field { width: 100%; background: #111; border: 1px solid #27272a; border-radius: 12px; padding: 12px 16px; color: #fff; font-size: 14px; outline: none; transition: border-color 0.2s; }
-    .field:focus { border-color: rgba(250,204,21,0.5); }
-    .field::placeholder { color: #71717a; }
-    select.field option { background: #111; }
-    .pay-btn { display: block; width: 100%; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 15px; text-align: center; transition: filter 0.2s; }
-    .pay-btn:hover { filter: brightness(1.1); }
   </style>
 </head>
 <body class="min-h-screen">
-
-  <!--
-  ─────────────────────────────────────────────────────────────────
-  STRIPE PAYMENT LINKS  — paste your real links below, then remove
-  the intake.html fallback comment on each one.
-  ─────────────────────────────────────────────────────────────────
-  PLATINUM  $50,000  → STRIPE_PLATINUM_URL
-  GOLD      $15,000  → STRIPE_GOLD_URL
-  SILVER     $5,000  → STRIPE_SILVER_URL
-  VENDOR     $3,500  → STRIPE_VENDOR_URL
-  TICKET_GENERAL $250 → STRIPE_TICKET_GENERAL_URL
-  TICKET_VIP    $500 → STRIPE_TICKET_VIP_URL
-  ─────────────────────────────────────────────────────────────────
-  -->
   <script>
     var STRIPE = {
-      platinum:       "intake.html#sponsor",   // replace with: https://buy.stripe.com/...
-      gold:           "intake.html#sponsor",
-      silver:         "intake.html#sponsor",
-      vendor:         "intake.html#vendor",
-      ticketGeneral:  "intake.html#rsvp",
-      ticketVip:      "intake.html#rsvp"
+      platinum: "intake.html#sponsor",
+      gold: "intake.html#sponsor",
+      silver: "intake.html#sponsor",
+      vendor: "intake.html#vendor",
+      ticketGeneral: "intake.html#rsvp",
+      ticketVip: "intake.html#rsvp"
     };
+
     function pay(key) {
       window.open(STRIPE[key], "_blank", "noopener,noreferrer");
     }
-  </script>
 
-  <!-- Header -->
-  <header class="border-b border-zinc-800 bg-black/70 backdrop-blur-md sticky top-0 z-40">
-    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <img src="images/logo.png" alt="Ruthko Logo" class="w-10 h-10 rounded-xl object-cover" onerror="this.style.display='none'">
-        <div>
-          <h1 class="font-bold text-lg gradient-text">Ruthko Connect</h1>
-          <p class="text-xs text-zinc-500">Payments & Sponsorship</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-3">
-        <a href="intake.html" class="text-sm text-zinc-400 hover:text-white px-4 py-2 rounded-lg border border-zinc-800 hover:border-zinc-600 transition">
-          Intake Forms
-        </a>
-        <a href="index.html" class="text-sm text-zinc-400 hover:text-white px-4 py-2 rounded-lg border border-zinc-800 hover:border-zinc-600 transition">
-          ← Dashboard
-        </a>
-      </div>
-    </div>
-  </header>
-
-  <!-- Hero -->
-  <section class="max-w-6xl mx-auto px-6 py-14 text-center">
-    <p class="text-yellow-500 text-sm font-semibold uppercase tracking-widest mb-3">Secure Checkout</p>
-    <h2 class="text-4xl md:text-5xl font-bold mb-4">Choose Your Package</h2>
-    <p class="text-zinc-400 text-lg max-w-2xl mx-auto">All payments are processed securely via Stripe. You'll receive a receipt and confirmation email immediately after checkout.</p>
-  </section>
-
-  <!-- ─── SPONSOR PACKAGES ───────────────────────── -->
-  <section class="max-w-6xl mx-auto px-6 mb-16">
-    <h3 class="text-2xl font-bold mb-2">Sponsorship Packages</h3>
-    <p class="text-zinc-500 text-sm mb-8">Sponsors receive branding, visibility, and networking access across all Ruthko Connect events.</p>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-
-      <!-- Platinum -->
-      <div class="relative border-2 border-yellow-500 rounded-3xl p-7 flex flex-col" style="background: rgba(250,204,21,0.04);">
-        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-yellow-500 text-black text-xs font-bold px-4 py-1 rounded-full">MOST EXCLUSIVE</div>
-        <div class="mb-6">
-          <p class="text-yellow-400 font-bold text-sm uppercase tracking-wider mb-2">Platinum Sponsor</p>
-          <p class="text-4xl font-bold">$50,000</p>
-          <p class="text-zinc-400 text-xs mt-1">per event cycle</p>
-        </div>
-        <ul class="space-y-2 text-sm text-zinc-300 mb-8 flex-1">
-          <li class="flex items-center gap-2"><span class="text-yellow-500">✓</span> Main stage branding</li>
-          <li class="flex items-center gap-2"><span class="text-yellow-500">✓</span> VIP networking access</li>
-          <li class="flex items-center gap-2"><span class="text-yellow-500">✓</span> Investor introductions</li>
-          <li class="flex items-center gap-2"><span class="text-yellow-500">✓</span> Premium booth placement</li>
-          <li class="flex items-center gap-2"><span class="text-yellow-500">✓</span> Full media package</li>
-          <li class="flex items-center gap-2"><span class="text-yellow-500">✓</span> Social media campaign</li>
-          <li class="flex items-center gap-2"><span class="text-yellow-500">✓</span> 20 VIP event tickets</li>
-        </ul>
-        <button onclick="pay('platinum')" class="pay-btn" style="background: linear-gradient(135deg,#facc15,#f59e0b); color: black;">
-          Pay $50,000
-        </button>
-        <button onclick="requestInvoice('Platinum Sponsor — $50,000')" class="mt-3 w-full py-2.5 text-sm text-zinc-400 hover:text-white border border-zinc-700 hover:border-zinc-500 rounded-xl transition">
-          Request Invoice
-        </button>
-      </div>
-
-      <!-- Gold -->
-      <div class="border border-zinc-700 rounded-3xl p-7 flex flex-col glass">
-        <div class="mb-6">
-          <p class="text-yellow-300 font-bold text-sm uppercase tracking-wider mb-2">Gold Sponsor</p>
-          <p class="text-4xl font-bold">$15,000</p>
-          <p class="text-zinc-400 text-xs mt-1">per event cycle</p>
-        </div>
-        <ul class="space-y-2 text-sm text-zinc-300 mb-8 flex-1">
-          <li class="flex items-center gap-2"><span class="text-yellow-400">✓</span> Event branding package</li>
-          <li class="flex items-center gap-2"><span class="text-yellow-400">✓</span> Website promotion</li>
-          <li class="flex items-center gap-2"><span class="text-yellow-400">✓</span> Social media exposure</li>
-          <li class="flex items-center gap-2"><span class="text-yellow-400">✓</span> Networking opportunities</li>
-          <li class="flex items-center gap-2"><span class="text-yellow-400">✓</span> 10 event tickets</li>
-          <li class="flex items-center gap-2"><span class="text-yellow-400">✓</span> Logo on all materials</li>
-        </ul>
-        <button onclick="pay('gold')" class="pay-btn" style="background: #ca8a04; color: white;">
-          Pay $15,000
-        </button>
-        <button onclick="requestInvoice('Gold Sponsor — $15,000')" class="mt-3 w-full py-2.5 text-sm text-zinc-400 hover:text-white border border-zinc-700 hover:border-zinc-500 rounded-xl transition">
-          Request Invoice
-        </button>
-      </div>
-
-      <!-- Silver -->
-      <div class="border border-zinc-700 rounded-3xl p-7 flex flex-col glass">
-        <div class="mb-6">
-          <p class="text-zinc-300 font-bold text-sm uppercase tracking-wider mb-2">Silver Sponsor</p>
-          <p class="text-4xl font-bold">$5,000</p>
-          <p class="text-zinc-400 text-xs mt-1">per event cycle</p>
-        </div>
-        <ul class="space-y-2 text-sm text-zinc-300 mb-8 flex-1">
-          <li class="flex items-center gap-2"><span class="text-zinc-400">✓</span> Logo placement</li>
-          <li class="flex items-center gap-2"><span class="text-zinc-400">✓</span> Event mentions</li>
-          <li class="flex items-center gap-2"><span class="text-zinc-400">✓</span> Business exposure</li>
-          <li class="flex items-center gap-2"><span class="text-zinc-400">✓</span> 5 event tickets</li>
-          <li class="flex items-center gap-2"><span class="text-zinc-400">✓</span> Program ad placement</li>
-        </ul>
-        <button onclick="pay('silver')" class="pay-btn bg-zinc-600 hover:bg-zinc-500 text-white">
-          Pay $5,000
-        </button>
-        <button onclick="requestInvoice('Silver Sponsor — $5,000')" class="mt-3 w-full py-2.5 text-sm text-zinc-400 hover:text-white border border-zinc-700 hover:border-zinc-500 rounded-xl transition">
-          Request Invoice
-        </button>
-      </div>
-
-      <!-- Vendor Booth -->
-      <div class="border border-orange-500/50 rounded-3xl p-7 flex flex-col" style="background: rgba(249,115,22,0.04);">
-        <div class="mb-6">
-          <p class="text-orange-400 font-bold text-sm uppercase tracking-wider mb-2">Vendor Booth</p>
-          <p class="text-4xl font-bold">$3,500</p>
-          <p class="text-zinc-400 text-xs mt-1">per event</p>
-        </div>
-        <ul class="space-y-2 text-sm text-zinc-300 mb-8 flex-1">
-          <li class="flex items-center gap-2"><span class="text-orange-400">✓</span> Dedicated booth space</li>
-          <li class="flex items-center gap-2"><span class="text-orange-400">✓</span> Lead generation access</li>
-          <li class="flex items-center gap-2"><span class="text-orange-400">✓</span> Full event access</li>
-          <li class="flex items-center gap-2"><span class="text-orange-400">✓</span> Networking exposure</li>
-          <li class="flex items-center gap-2"><span class="text-orange-400">✓</span> 2 exhibitor badges</li>
-        </ul>
-        <button onclick="pay('vendor')" class="pay-btn bg-orange-600 hover:bg-orange-500 text-white">
-          Reserve &amp; Pay $3,500
-        </button>
-        <button onclick="requestInvoice('Vendor Booth — $3,500')" class="mt-3 w-full py-2.5 text-sm text-zinc-400 hover:text-white border border-zinc-700 hover:border-zinc-500 rounded-xl transition">
-          Request Invoice
-        </button>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ─── EVENT TICKETS ──────────────────────────── -->
-  <section class="max-w-6xl mx-auto px-6 mb-16">
-    <h3 class="text-2xl font-bold mb-2">Event Tickets</h3>
-    <p class="text-zinc-500 text-sm mb-8">Cultural Handshake Summit · Houston, TX · May 13–15, 2026</p>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-      <div class="glass border border-zinc-800 rounded-3xl p-8 flex flex-col">
-        <div class="flex items-start justify-between mb-6">
-          <div>
-            <p class="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-2">General Admission</p>
-            <p class="text-3xl font-bold">$250</p>
-            <p class="text-zinc-500 text-xs mt-1">per person · 3-day access</p>
-          </div>
-          <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center text-2xl">🎟️</div>
-        </div>
-        <ul class="space-y-2 text-sm text-zinc-300 mb-8 flex-1">
-          <li class="flex items-center gap-2"><span class="text-blue-400">✓</span> All 3 conference days</li>
-          <li class="flex items-center gap-2"><span class="text-blue-400">✓</span> Keynote sessions</li>
-          <li class="flex items-center gap-2"><span class="text-blue-400">✓</span> Networking lunch</li>
-          <li class="flex items-center gap-2"><span class="text-blue-400">✓</span> Vendor floor access</li>
-          <li class="flex items-center gap-2"><span class="text-blue-400">✓</span> Digital swag bag</li>
-        </ul>
-        <button onclick="pay('ticketGeneral')" class="pay-btn bg-blue-600 hover:bg-blue-500 text-white">
-          Buy General Ticket — $250
-        </button>
-      </div>
-
-      <div class="border-2 border-purple-500/60 rounded-3xl p-8 flex flex-col" style="background: rgba(168,85,247,0.05);">
-        <div class="flex items-start justify-between mb-6">
-          <div>
-            <p class="text-sm font-semibold text-purple-400 uppercase tracking-wider mb-2">VIP Access</p>
-            <p class="text-3xl font-bold">$500</p>
-            <p class="text-zinc-500 text-xs mt-1">per person · full VIP package</p>
-          </div>
-          <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center text-2xl">👑</div>
-        </div>
-        <ul class="space-y-2 text-sm text-zinc-300 mb-8 flex-1">
-          <li class="flex items-center gap-2"><span class="text-purple-400">✓</span> Everything in General</li>
-          <li class="flex items-center gap-2"><span class="text-purple-400">✓</span> VIP lounge access</li>
-          <li class="flex items-center gap-2"><span class="text-purple-400">✓</span> Private speaker meet &amp; greet</li>
-          <li class="flex items-center gap-2"><span class="text-purple-400">✓</span> Priority front-row seating</li>
-          <li class="flex items-center gap-2"><span class="text-purple-400">✓</span> VIP dinner on Day 2</li>
-          <li class="flex items-center gap-2"><span class="text-purple-400">✓</span> Exclusive gift package</li>
-        </ul>
-        <button onclick="pay('ticketVip')" class="pay-btn" style="background: linear-gradient(135deg,#9333ea,#7c3aed); color: white;">
-          Buy VIP Ticket — $500
-        </button>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ─── INVOICE REQUEST FORM ───────────────────── -->
-  <section class="max-w-2xl mx-auto px-6 mb-24" id="invoice-section">
-    <div class="glass border border-zinc-800 rounded-3xl p-8">
-      <h3 class="text-2xl font-bold mb-2">Request an Invoice</h3>
-      <p class="text-zinc-400 text-sm mb-8">Prefer to pay by bank transfer or company check? Fill in your details and we'll send a formal invoice within 24 hours.</p>
-      <form name="invoice-request" method="POST" action="/thank-you.html" data-netlify="true" netlify-honeypot="bot-field" class="space-y-4">
-        <input type="hidden" name="form-name" value="invoice-request">
-        <input type="hidden" name="bot-field" class="hidden">
-        <input type="hidden" name="selected_package" id="invoice-package-field" value="">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-medium text-zinc-400 mb-1">Full Name / Company *</label>
-            <input type="text" name="name" required class="field" placeholder="Name or Company">
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-zinc-400 mb-1">Email *</label>
-            <input type="email" name="email" required class="field" placeholder="billing@company.com">
-          </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-medium text-zinc-400 mb-1">Phone</label>
-            <input type="tel" name="phone" class="field" placeholder="+1 (555) 000-0000">
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-zinc-400 mb-1">Package *</label>
-            <select name="package" id="invoice-package-select" required class="field">
-              <option value="" disabled selected>Select package</option>
-              <option>Platinum Sponsor — $50,000</option>
-              <option>Gold Sponsor — $15,000</option>
-              <option>Silver Sponsor — $5,000</option>
-              <option>Vendor Booth — $3,500</option>
-              <option>General Ticket — $250</option>
-              <option>VIP Ticket — $500</option>
-              <option>Custom Amount</option>
-            </select>
-          </div>
-        </div>
-        <div>
-          <label class="block text-xs font-medium text-zinc-400 mb-1">Billing Address</label>
-          <textarea name="billing_address" rows="2" class="field resize-none" placeholder="Street, City, State, ZIP, Country"></textarea>
-        </div>
-        <div>
-          <label class="block text-xs font-medium text-zinc-400 mb-1">Additional Notes</label>
-          <textarea name="notes" rows="2" class="field resize-none" placeholder="PO number, payment terms, or anything else we should know..."></textarea>
-        </div>
-        <button type="submit" class="w-full py-3.5 rounded-xl font-bold text-black" style="background: linear-gradient(135deg,#facc15,#f59e0b)">
-          Request Invoice
-        </button>
-      </form>
-    </div>
-  </section>
-
-  <!-- Trust bar -->
-  <section class="border-t border-zinc-800 py-10 text-center">
-    <p class="text-zinc-500 text-sm mb-4">Trusted & Secure</p>
-    <div class="flex flex-wrap items-center justify-center gap-8 text-zinc-600 text-sm">
-      <span>🔒 SSL Encrypted</span>
-      <span>💳 Powered by Stripe</span>
-      <span>📧 Instant Receipt</span>
-      <span>📞 Support via WhatsApp</span>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="border-t border-zinc-800 py-8 text-center text-zinc-500 text-sm">
-    <p>© 2026 Ruthko Connect ·
-      <a href="https://wa.me/17012603908" class="text-green-500 hover:text-green-400">WhatsApp</a> ·
-      <a href="intake.html" class="hover:text-white">Intake Forms</a> ·
-      <a href="index.html" class="hover:text-white">Dashboard</a>
-    </p>
-  </footer>
-
-  <!-- WhatsApp button -->
-  <a href="https://wa.me/17012603908" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp"
-     class="fixed bottom-6 right-6 text-white px-5 py-4 rounded-full shadow-2xl z-50 font-bold flex items-center gap-2 transition"
-     style="background:#22c55e;">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-      <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.12 1.523 5.853L.057 23.215a.75.75 0 00.928.928l5.362-1.466A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.745 9.745 0 01-4.984-1.369l-.356-.213-3.694 1.009 1.009-3.694-.213-.356A9.745 9.745 0 012.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"/>
-    </svg>
-    WhatsApp
-  </a>
-
-  <script>
-    // Pre-fill invoice form when "Request Invoice" is clicked from a package card
     function requestInvoice(packageName) {
-      var select = document.getElementById('invoice-package-select');
-      var field  = document.getElementById('invoice-package-field');
+      var select = document.getElementById("invoice-package-select");
+      var field = document.getElementById("invoice-package-field");
       if (select) {
         for (var i = 0; i < select.options.length; i++) {
           if (select.options[i].text === packageName) {
@@ -329,14 +45,196 @@
         }
       }
       if (field) field.value = packageName;
-      document.getElementById('invoice-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById("invoice-section").scrollIntoView({ behavior: "smooth", block: "start" });
     }
   </script>
 
-  <!-- CRM bridge for invoice-request form -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js"></script>
-  <script src="js/intake-crm.js"></script>
+  <header class="border-b border-zinc-800 bg-black/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-5 md:px-8 py-4 flex items-center justify-between gap-4">
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="images/logo.png" alt="Ruthko Connect Logo" class="w-11 h-11 rounded-xl object-cover" onerror="this.style.display='none'">
+        <div>
+          <div class="font-bold text-lg gradient-text">Ruthko Connect</div>
+          <div class="text-xs text-zinc-400">Payments, sponsorships, and tickets</div>
+        </div>
+      </a>
+      <div class="flex items-center gap-2">
+        <a href="intake.html" class="text-sm text-zinc-300 hover:text-white px-4 py-2 rounded-lg border border-zinc-800 hover:border-zinc-600 transition">Intake Forms</a>
+        <a href="index.html" class="text-sm text-zinc-300 hover:text-white px-4 py-2 rounded-lg border border-zinc-800 hover:border-zinc-600 transition">Home</a>
+      </div>
+    </div>
+  </header>
 
+  <section class="max-w-7xl mx-auto px-5 md:px-8 py-14 md:py-20 text-center">
+    <p class="text-yellow-400 text-sm font-semibold uppercase tracking-[0.24em] mb-3">Secure checkout</p>
+    <h1 class="text-4xl md:text-5xl font-bold mb-4">Choose your package</h1>
+    <p class="text-zinc-400 text-lg max-w-2xl mx-auto">
+      Sponsors, vendors, and event guests can review public payment options here and continue to the matching intake flow.
+    </p>
+  </section>
+
+  <section class="max-w-7xl mx-auto px-5 md:px-8 pb-16">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+      <div class="relative border-2 border-yellow-500 rounded-3xl p-7 flex flex-col glass">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-yellow-500 text-black text-xs font-bold px-4 py-1 rounded-full">MOST EXCLUSIVE</div>
+        <div class="mb-6">
+          <p class="text-yellow-400 font-bold text-sm uppercase tracking-wider mb-2">Platinum Sponsor</p>
+          <p class="text-4xl font-bold">$50,000</p>
+          <p class="text-zinc-400 text-xs mt-1">per event cycle</p>
+        </div>
+        <ul class="space-y-2 text-sm text-zinc-300 mb-8 flex-1">
+          <li>Priority branding</li>
+          <li>VIP access</li>
+          <li>Investor introductions</li>
+          <li>Premium booth placement</li>
+        </ul>
+        <button onclick="pay('platinum')" class="pay-btn" style="background: linear-gradient(135deg,#facc15,#f59e0b); color:black;">Pay $50,000</button>
+        <button onclick="requestInvoice('Platinum Sponsor - $50,000')" class="mt-3 w-full py-2.5 text-sm text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-500 rounded-xl transition">Request Invoice</button>
+      </div>
+
+      <div class="border border-zinc-700 rounded-3xl p-7 flex flex-col glass">
+        <div class="mb-6">
+          <p class="text-yellow-300 font-bold text-sm uppercase tracking-wider mb-2">Gold Sponsor</p>
+          <p class="text-4xl font-bold">$15,000</p>
+          <p class="text-zinc-400 text-xs mt-1">per event cycle</p>
+        </div>
+        <ul class="space-y-2 text-sm text-zinc-300 mb-8 flex-1">
+          <li>Event branding package</li>
+          <li>Website promotion</li>
+          <li>Social media exposure</li>
+          <li>Networking opportunities</li>
+        </ul>
+        <button onclick="pay('gold')" class="pay-btn" style="background:#ca8a04; color:white;">Pay $15,000</button>
+        <button onclick="requestInvoice('Gold Sponsor - $15,000')" class="mt-3 w-full py-2.5 text-sm text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-500 rounded-xl transition">Request Invoice</button>
+      </div>
+
+      <div class="border border-zinc-700 rounded-3xl p-7 flex flex-col glass">
+        <div class="mb-6">
+          <p class="text-zinc-300 font-bold text-sm uppercase tracking-wider mb-2">Silver Sponsor</p>
+          <p class="text-4xl font-bold">$5,000</p>
+          <p class="text-zinc-400 text-xs mt-1">per event cycle</p>
+        </div>
+        <ul class="space-y-2 text-sm text-zinc-300 mb-8 flex-1">
+          <li>Logo placement</li>
+          <li>Event mentions</li>
+          <li>Business exposure</li>
+          <li>Program ad placement</li>
+        </ul>
+        <button onclick="pay('silver')" class="pay-btn bg-zinc-600 hover:bg-zinc-500 text-white">Pay $5,000</button>
+        <button onclick="requestInvoice('Silver Sponsor - $5,000')" class="mt-3 w-full py-2.5 text-sm text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-500 rounded-xl transition">Request Invoice</button>
+      </div>
+
+      <div class="border border-orange-500/50 rounded-3xl p-7 flex flex-col glass">
+        <div class="mb-6">
+          <p class="text-orange-400 font-bold text-sm uppercase tracking-wider mb-2">Vendor Booth</p>
+          <p class="text-4xl font-bold">$3,500</p>
+          <p class="text-zinc-400 text-xs mt-1">per event</p>
+        </div>
+        <ul class="space-y-2 text-sm text-zinc-300 mb-8 flex-1">
+          <li>Dedicated booth space</li>
+          <li>Lead generation access</li>
+          <li>Full event access</li>
+          <li>Networking exposure</li>
+        </ul>
+        <button onclick="pay('vendor')" class="pay-btn bg-orange-600 hover:bg-orange-500 text-white">Reserve and Pay $3,500</button>
+        <button onclick="requestInvoice('Vendor Booth - $3,500')" class="mt-3 w-full py-2.5 text-sm text-zinc-300 hover:text-white border border-zinc-700 hover:border-zinc-500 rounded-xl transition">Request Invoice</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="max-w-7xl mx-auto px-5 md:px-8 pb-16">
+    <h2 class="text-2xl font-bold mb-2">Event Tickets</h2>
+    <p class="text-zinc-500 text-sm mb-8">Choose your ticket and continue to the matching intake flow.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="glass border border-zinc-800 rounded-3xl p-8 flex flex-col">
+        <div class="flex items-start justify-between mb-6">
+          <div>
+            <p class="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-2">General Admission</p>
+            <p class="text-3xl font-bold">$250</p>
+            <p class="text-zinc-500 text-xs mt-1">3-day access</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center text-2xl">🎟️</div>
+        </div>
+        <ul class="space-y-2 text-sm text-zinc-300 mb-8 flex-1">
+          <li>All conference days</li>
+          <li>Keynote sessions</li>
+          <li>Networking lunch</li>
+          <li>Vendor floor access</li>
+        </ul>
+        <button onclick="pay('ticketGeneral')" class="pay-btn bg-blue-600 hover:bg-blue-500 text-white">Buy General Ticket - $250</button>
+      </div>
+
+      <div class="border-2 border-purple-500/60 rounded-3xl p-8 flex flex-col glass">
+        <div class="flex items-start justify-between mb-6">
+          <div>
+            <p class="text-sm font-semibold text-purple-400 uppercase tracking-wider mb-2">VIP Access</p>
+            <p class="text-3xl font-bold">$500</p>
+            <p class="text-zinc-500 text-xs mt-1">full VIP package</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center text-2xl">👑</div>
+        </div>
+        <ul class="space-y-2 text-sm text-zinc-300 mb-8 flex-1">
+          <li>Everything in General</li>
+          <li>VIP lounge access</li>
+          <li>Priority seating</li>
+          <li>Private networking</li>
+        </ul>
+        <button onclick="pay('ticketVip')" class="pay-btn bg-purple-600 hover:bg-purple-500 text-white">Buy VIP Ticket - $500</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="invoice-section" class="border-t border-zinc-800 py-16">
+    <div class="max-w-4xl mx-auto px-5 md:px-8">
+      <div class="text-center mb-10">
+        <p class="text-yellow-400 text-sm font-semibold uppercase tracking-[0.24em] mb-3">Invoice request</p>
+        <h2 class="text-3xl font-bold">Prefer a direct invoice?</h2>
+        <p class="mt-3 text-zinc-400">Use this form and the team will follow up with the right public package.</p>
+      </div>
+
+      <form class="grid gap-4 glass border border-zinc-800 rounded-3xl p-6 md:p-8">
+        <div class="grid md:grid-cols-2 gap-4">
+          <input class="field" placeholder="Full name" />
+          <input class="field" placeholder="Email address" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-zinc-400 mb-2">Package</label>
+          <select id="invoice-package-select" class="field">
+            <option>Platinum Sponsor - $50,000</option>
+            <option>Gold Sponsor - $15,000</option>
+            <option>Silver Sponsor - $5,000</option>
+            <option>Vendor Booth - $3,500</option>
+            <option>General Ticket - $250</option>
+            <option>VIP Ticket - $500</option>
+          </select>
+        </div>
+        <input id="invoice-package-field" class="field hidden" value="Platinum Sponsor - $50,000" />
+        <textarea class="field min-h-[96px] resize-none" placeholder="Billing address, event name, notes, or special requirements."></textarea>
+        <button type="button" class="pay-btn text-black" style="background: linear-gradient(135deg,#facc15,#f59e0b);">Request Invoice</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="border-t border-zinc-800 py-10 text-center">
+    <p class="text-zinc-500 text-sm mb-4">Trusted and secure</p>
+    <div class="flex flex-wrap items-center justify-center gap-8 text-zinc-600 text-sm">
+      <span>SSL encrypted</span>
+      <span>Powered by Stripe</span>
+      <span>Instant receipt</span>
+      <span>Support via WhatsApp</span>
+    </div>
+  </section>
+
+  <footer class="border-t border-zinc-800 py-8 text-center text-zinc-500 text-sm">
+    <p>
+      &copy; 2026 Ruthko Connect ·
+      <a href="https://wa.me/17012603908" class="text-green-500 hover:text-green-400">WhatsApp</a> ·
+      <a href="intake.html" class="hover:text-white">Intake Forms</a> ·
+      <a href="index.html" class="hover:text-white">Home</a>
+    </p>
+  </footer>
+
+  <script>lucide.createIcons();</script>
 </body>
 </html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ruthko Connect | Sponsor Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: Inter, sans-serif; }
+    body { background: #0a0a0a; color: #fff; }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+    .glass-hover { transition: all .2s ease; }
+    .glass-hover:hover { background: rgba(255,255,255,0.08); }
+    .gradient-text { background: linear-gradient(to right, #facc15, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .btn-primary { background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%); color: #000; }
+    .btn-primary:hover { filter: brightness(1.08); }
+    .btn-secondary { background: rgba(255,255,255,0.1); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.15); }
+    .nav-active { background: rgba(39,39,42,0.9); color: #facc15; }
+    .auth-checking body { visibility: hidden; }
+    input, textarea, select { outline: none; }
+    .pipeline-card { cursor: grab; }
+  </style>
+</head>
+<body class="min-h-screen bg-black text-white" data-page="sponsors">
+
+  <aside class="fixed left-0 top-0 z-50 h-full w-20 lg:w-64 bg-black border-r border-zinc-800 flex flex-col">
+    <div class="p-4 lg:p-6 flex items-center gap-3 border-b border-zinc-900">
+      <img src="images/logo.png" alt="Ruthko Staffing LLC Logo" class="w-20 h-10 rounded-xl object-contain" onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';" />
+      <div id="logoFallback" class="hidden w-12 h-12 rounded-xl bg-yellow-500 text-black items-center justify-center font-extrabold">R</div>
+      <div class="hidden lg:block">
+        <h1 class="font-bold text-xl gradient-text">Ruthko Connect</h1>
+        <p class="text-xs text-zinc-400">Jobs • Events • Partnerships</p>
+      </div>
+    </div>
+    <nav class="flex-1 px-3 py-4 space-y-2">
+      <a href="index.html" data-page="home" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="home" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Home</span></a>
+      <a href="jobs.html" data-page="jobs" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="briefcase" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Jobs</span></a>
+      <a href="events.html" data-page="events" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="calendar" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Events</span></a>
+      <a href="sponsors.html" data-page="sponsors" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="crown" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Sponsors</span></a>
+      <a href="partners.html" data-page="partners" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="users" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Partner With Us</span></a>
+      <a href="intake.html" data-page="intake" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="file-text" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Intake</span></a>
+      <a href="payments.html" data-page="payments" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="credit-card" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Payments</span></a>
+      <a href="login.html" data-page="login" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="log-in" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Login</span></a>
+    </nav>
+    <div class="p-4 border-t border-zinc-800 hidden lg:block">
+      <a href="intake.html" class="block btn-primary text-center rounded-xl py-2 font-bold text-sm">Open Intake</a>
+      <p class="text-xs text-zinc-500 mt-3">Sponsor and vendor opportunities</p>
+    </div>
+  </aside>
+
+  <main class="ml-20 lg:ml-64 min-h-screen">
+
+    <header class="h-16 border-b border-zinc-800 bg-black/70 backdrop-blur-md flex items-center justify-between px-6 shrink-0 sticky top-0 z-40">
+      <h1 class="text-xl font-bold">Sponsor Portal</h1>
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="hidden md:inline-flex btn-secondary px-4 py-2 rounded-xl font-bold text-sm">Home</a>
+        <a href="partners.html" class="hidden md:inline-flex btn-secondary px-4 py-2 rounded-xl font-bold text-sm">Partners</a>
+        <a href="intake.html" class="hidden md:inline-flex btn-primary px-4 py-2 rounded-xl font-bold text-sm">Open Intake</a>
+      </div>
+    </header>
+
+
+    <section class="p-6">
+      <div class="flex flex-col xl:flex-row xl:items-end justify-between gap-4 mb-8">
+        <div>
+          <h2 class="text-4xl font-bold mb-3">Sponsor Portal</h2>
+          <p class="text-zinc-400 max-w-3xl">Choose a sponsor package, reserve a vendor booth, or send a custom inquiry for your organization.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <a href="payments.html" class="btn-primary px-5 py-3 rounded-xl font-bold">Open Payments</a>
+          <a href="intake.html#sponsor" class="btn-secondary px-5 py-3 rounded-xl font-bold">Sponsor Inquiry</a>
+          <a href="partners.html" class="btn-secondary px-5 py-3 rounded-xl font-bold">Partner With Us</a>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+        <article class="bg-zinc-900 border border-yellow-500 rounded-3xl p-6 shadow-xl"><h3 class="text-2xl font-bold text-yellow-400">Platinum Sponsor</h3><p class="text-4xl font-bold mt-4">$50,000</p><ul class="mt-6 space-y-2 text-zinc-300 text-sm"><li>Main stage branding</li><li>VIP networking access</li><li>Investor introductions</li><li>Media visibility</li><li>Premium booth placement</li></ul><a href="payments.html?package=platinum" class="mt-6 block w-full bg-yellow-500 text-black py-3 rounded-xl font-bold text-center">Pay or Reserve</a><a href="intake.html#sponsor" class="mt-3 block text-center text-yellow-400 font-bold text-sm">Ask about Platinum</a></article>
+        <article class="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 shadow-xl"><h3 class="text-2xl font-bold text-yellow-300">Gold Sponsor</h3><p class="text-4xl font-bold mt-4">$15,000</p><ul class="mt-6 space-y-2 text-zinc-300 text-sm"><li>Event branding</li><li>Website promotion</li><li>Social media exposure</li><li>Networking opportunities</li></ul><a href="payments.html?package=gold" class="mt-6 block w-full bg-yellow-400 text-black py-3 rounded-xl font-bold text-center">Pay or Reserve</a><a href="intake.html#sponsor" class="mt-3 block text-center text-yellow-400 font-bold text-sm">Ask about Gold</a></article>
+        <article class="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 shadow-xl"><h3 class="text-2xl font-bold text-zinc-200">Silver Sponsor</h3><p class="text-4xl font-bold mt-4">$5,000</p><ul class="mt-6 space-y-2 text-zinc-300 text-sm"><li>Logo placement</li><li>Event mentions</li><li>Business exposure</li></ul><a href="payments.html?package=silver" class="mt-6 block w-full bg-zinc-700 text-white py-3 rounded-xl font-bold text-center">Pay or Reserve</a><a href="intake.html#sponsor" class="mt-3 block text-center text-yellow-400 font-bold text-sm">Ask about Silver</a></article>
+        <article class="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 shadow-xl"><h3 class="text-2xl font-bold text-orange-400">Vendor Booth</h3><p class="text-4xl font-bold mt-4">$3,500</p><ul class="mt-6 space-y-2 text-zinc-300 text-sm"><li>Business booth</li><li>Lead generation</li><li>Event access</li><li>Networking exposure</li></ul><a href="payments.html?package=vendor" class="mt-6 block w-full bg-orange-500 text-white py-3 rounded-xl font-bold text-center">Reserve Booth</a><a href="intake.html#vendor" class="mt-3 block text-center text-orange-400 font-bold text-sm">Ask about booth</a></article>
+      </div>
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <article class="glass p-6 rounded-2xl border border-zinc-800"><h3 class="font-bold text-xl mb-4">Sponsor options</h3><ol class="space-y-3 text-sm text-zinc-300 list-decimal list-inside"><li>Pick a package that matches your visibility goal.</li><li>Use the inquiry form for a custom proposal.</li><li>Open the payment page when you are ready to reserve.</li><li>Follow the thank-you page for next steps.</li></ol></article>
+        <article class="glass p-6 rounded-2xl border border-zinc-800"><h3 class="font-bold text-xl mb-4">Sponsor documents</h3><div class="space-y-3"><a class="block bg-zinc-900/70 p-4 rounded-xl border border-zinc-800" href="payments.html">Payment packages</a><a class="block bg-zinc-900/70 p-4 rounded-xl border border-zinc-800" href="intake.html#sponsor">Sponsor inquiry</a><a class="block bg-zinc-900/70 p-4 rounded-xl border border-zinc-800" href="partners.html">Partner records</a></div></article>
+        <article class="glass p-6 rounded-2xl border border-zinc-800"><h3 class="font-bold text-xl mb-4">Quick sponsor message</h3><p class="text-sm text-zinc-400 mb-4">Use the public intake form to start a sponsor conversation.</p><a href="intake.html#sponsor" class="btn-primary inline-flex px-5 py-3 rounded-xl font-bold">Open Sponsor Form</a></article>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    if (window.lucide) lucide.createIcons();
+    (function () {
+      var page = document.body.getAttribute('data-page');
+      document.querySelectorAll('.nav-link').forEach(function (link) {
+        if (link.getAttribute('data-page') === page) link.classList.add('nav-active');
+      });
+    })();
+  </script>
+</body>
+</html>
