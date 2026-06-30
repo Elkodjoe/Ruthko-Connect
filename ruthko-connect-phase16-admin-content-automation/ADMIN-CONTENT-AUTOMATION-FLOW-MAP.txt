@@ -1,0 +1,10 @@
+ADMIN CONTENT AUTOMATION FLOW MAP
+
+Admin logs in
+Admin opens content-manager.html
+Admin updates contacts, event banner, flyers, email templates, or social posts
+Content saves to local sample mode or Supabase site_settings
+Public pages read js/site-settings.js
+Public events and contact details update without code edits
+Social publications export to CSV for manual posting
+CRM email templates are ready for live auto-reply wiring in Phase 17

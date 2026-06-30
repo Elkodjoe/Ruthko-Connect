@@ -1,0 +1,73 @@
+HOSTINGER VPS COMMANDS FOR RUTHKO CONNECT
+
+1. Push your latest local project to GitHub
+
+cd C:\Users\kodjo\ruthko-connect
+git add .
+git commit -m "Prepare Ruthko Connect for Hostinger VPS"
+git branch -M main
+git remote set-url origin https://github.com/Elkodjoe/Ruthko-Connect.git
+git push -u origin main
+
+2. In Hostinger hPanel
+
+Open VPS.
+Copy the VPS IP address.
+Open Domains > DNS for ruthkojobs.com.
+Add or update these records:
+
+Type: A
+Name: @
+Value: your VPS IP
+TTL: default
+
+Type: A
+Name: www
+Value: your VPS IP
+TTL: default
+
+3. SSH into the VPS
+
+ssh root@YOUR_VPS_IP
+
+4. Install and deploy
+
+apt update
+apt install -y git curl
+cd /var/www || mkdir -p /var/www && cd /var/www
+git clone https://github.com/Elkodjoe/Ruthko-Connect.git ruthko-connect
+cd ruthko-connect
+bash scripts/deploy-hostinger-vps.sh
+
+5. Edit environment variables
+
+nano /var/www/ruthko-connect/.env
+
+Add real values for:
+RESEND_API_KEY
+SUPABASE_URL
+SUPABASE_SERVICE_ROLE_KEY
+
+Save nano:
+Ctrl + O
+Enter
+Ctrl + X
+
+6. Restart app
+
+pm2 restart ruthko-connect
+pm2 status
+curl http://127.0.0.1:3000/health
+
+7. Turn on SSL after DNS resolves
+
+certbot --nginx -d ruthkojobs.com -d www.ruthkojobs.com
+
+8. Visit
+
+https://ruthkojobs.com
+https://ruthkojobs.com/login.html
+https://ruthkojobs.com/crm.html
+https://ruthkojobs.com/events.html
+https://ruthkojobs.com/sponsors.html
+https://ruthkojobs.com/ai-studio.html

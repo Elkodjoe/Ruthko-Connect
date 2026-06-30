@@ -1,0 +1,9 @@
+PHASE 17: LIVE SOCIAL PUBLISHING AND TEMPLATE-BASED EMAILS
+
+Next build items
+1. Connect saved CRM email templates to send-auto-reply.js
+2. Add real media upload to Hostinger VPS or Supabase Storage
+3. Add approval workflow for social posts
+4. Add Meta, LinkedIn, and TikTok API integration placeholders
+5. Add scheduled publication queue
+6. Add admin audit log for every content change
