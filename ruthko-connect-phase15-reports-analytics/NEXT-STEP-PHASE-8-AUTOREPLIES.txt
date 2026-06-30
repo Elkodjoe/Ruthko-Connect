@@ -1,0 +1,22 @@
+NEXT STEP - PHASE 8 AUTO-REPLIES
+
+Add automatic thank-you emails to the person who submitted the form.
+
+Phase 8 should add:
+
+Employer auto-reply
+Candidate auto-reply
+Sponsor auto-reply
+Vendor auto-reply
+Event RSVP auto-reply
+Email templates
+Follow-up sequence plan
+Reply-to setup
+Unsubscribe-safe message wording
+
+Recommended next files:
+
+netlify/functions/send-autoreply.js
+js/intake-crm.js update
+EMAIL-TEMPLATES.txt
+README-PHASE-8-AUTOREPLIES.txt

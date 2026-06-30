@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Ruthko Connect Campaigns</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: Inter, sans-serif; }
+    body { background: #0a0a0a; color: #fff; }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+    .gradient-text { background: linear-gradient(to right, #facc15, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .btn-primary { background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%); color: #000; }
+    .auth-checking body { visibility: hidden; }
+  </style>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/auth-guard.js"></script>
+</head>
+<body class="min-h-screen">
+  <header class="border-b border-zinc-800 bg-black/70 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <a href="admin.html" class="text-sm text-zinc-400 hover:text-yellow-400">Back to Admin Dashboard</a>
+        <h1 class="text-3xl font-extrabold gradient-text mt-1">Ruthko Campaigns</h1>
+        <p class="text-zinc-400 text-sm mt-1">Build consent-based lead segments, draft emails, export lists, and send approved campaigns.</p>
+        <p id="campaignConnectionStatus" class="text-xs text-yellow-400 mt-2">Checking campaign database.</p>
+      </div>
+      <div class="flex flex-col md:flex-row md:items-center gap-3">
+        <span class="text-xs text-zinc-400" data-admin-email>admin@ruthko.com</span>
+        <a href="event-operations.html" class="px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-700 font-bold text-sm">Event Ops</a>
+        <a href="crm.html" class="px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-700 font-bold text-sm">CRM</a>
+        <a href="tasks.html" class="px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-700 font-bold text-sm">Tasks</a>
+        <a href="intake.html" class="px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-700 font-bold text-sm">Open Intake</a>
+        <button onclick="ruthkoLogout()" class="px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-700 font-bold text-sm">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-8">
+    <section class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+      <article class="glass p-5 rounded-2xl border border-zinc-800"><p class="text-sm text-zinc-400">Eligible Contacts</p><h2 id="statEligible" class="text-3xl font-bold mt-2">0</h2></article>
+      <article class="glass p-5 rounded-2xl border border-zinc-800"><p class="text-sm text-zinc-400">Draft Campaigns</p><h2 id="statDrafts" class="text-3xl font-bold mt-2">0</h2></article>
+      <article class="glass p-5 rounded-2xl border border-zinc-800"><p class="text-sm text-zinc-400">Sent Campaigns</p><h2 id="statSent" class="text-3xl font-bold mt-2">0</h2></article>
+      <article class="glass p-5 rounded-2xl border border-zinc-800"><p class="text-sm text-zinc-400">Suppressed</p><h2 id="statSuppressed" class="text-3xl font-bold mt-2">0</h2></article>
+    </section>
+
+    <section class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
+      <article class="glass p-6 rounded-2xl border border-zinc-800 xl:col-span-1">
+        <h2 class="text-2xl font-bold mb-2">Segment Builder</h2>
+        <p class="text-zinc-400 text-sm mb-5">Choose the audience before you draft or export.</p>
+        <div class="space-y-4">
+          <select id="segmentType" class="w-full bg-black border border-zinc-800 rounded-xl p-3">
+            <option value="all">All eligible contacts</option>
+            <option value="Employer">Employers</option>
+            <option value="Candidate">Candidates</option>
+            <option value="Sponsor">Sponsors</option>
+            <option value="Vendor">Vendors</option>
+            <option value="Event">Event guests</option>
+            <option value="Partner">Partners</option>
+          </select>
+          <select id="segmentStatus" class="w-full bg-black border border-zinc-800 rounded-xl p-3">
+            <option value="">Any lead status</option>
+            <option value="New">New</option>
+            <option value="Qualified">Qualified</option>
+            <option value="Proposal">Proposal</option>
+            <option value="Closed Won">Closed Won</option>
+            <option value="Closed Lost">Closed Lost</option>
+          </select>
+          <input id="segmentSearch" placeholder="Search name, email, notes" class="w-full bg-black border border-zinc-800 rounded-xl p-3" />
+          <div class="flex gap-3">
+            <button id="refreshSegmentButton" class="btn-primary px-5 py-3 rounded-xl font-bold">Refresh Segment</button>
+            <button id="exportSegmentButton" class="px-5 py-3 rounded-xl bg-zinc-900 border border-zinc-700 font-bold">Export CSV</button>
+          </div>
+          <p id="segmentMessage" class="text-sm font-bold text-yellow-400"></p>
+        </div>
+      </article>
+
+      <article class="glass p-6 rounded-2xl border border-zinc-800 xl:col-span-2">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-5">
+          <div>
+            <h2 class="text-2xl font-bold">Campaign Composer</h2>
+            <p class="text-zinc-400 text-sm mt-1">Save a draft first. Send only when the segment is correct.</p>
+          </div>
+          <p id="campaignMessage" class="text-sm font-bold text-green-400"></p>
+        </div>
+        <form id="campaignForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input name="name" placeholder="Campaign name" required class="bg-black border border-zinc-800 rounded-xl p-3" />
+          <select name="campaign_type" class="bg-black border border-zinc-800 rounded-xl p-3">
+            <option value="Email">Email</option>
+            <option value="Sponsor Follow-up">Sponsor Follow-up</option>
+            <option value="Employer Follow-up">Employer Follow-up</option>
+            <option value="Candidate Update">Candidate Update</option>
+            <option value="Event Reminder">Event Reminder</option>
+          </select>
+          <input name="subject" placeholder="Email subject" required class="md:col-span-2 bg-black border border-zinc-800 rounded-xl p-3" />
+          <input name="preview_text" placeholder="Preview text" class="md:col-span-2 bg-black border border-zinc-800 rounded-xl p-3" />
+          <textarea name="body_text" placeholder="Plain email message" required class="md:col-span-2 bg-black border border-zinc-800 rounded-xl p-3 h-40"></textarea>
+          <label class="md:col-span-2 flex items-start gap-3 text-sm text-zinc-300">
+            <input id="confirmConsent" type="checkbox" class="mt-1" />
+            <span>I confirm this campaign will only be sent to contacts who agreed to receive Ruthko updates.</span>
+          </label>
+          <div class="md:col-span-2 flex flex-wrap gap-3">
+            <button type="submit" class="btn-primary px-6 py-3 rounded-xl font-bold">Save Draft</button>
+            <button type="button" id="previewButton" class="px-6 py-3 rounded-xl bg-zinc-900 border border-zinc-700 font-bold">Preview</button>
+            <button type="button" id="sendCampaignButton" class="px-6 py-3 rounded-xl bg-emerald-700 hover:bg-emerald-600 font-bold">Send to Current Segment</button>
+          </div>
+        </form>
+      </article>
+    </section>
+
+    <section class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
+      <article class="glass rounded-2xl border border-zinc-800 overflow-hidden">
+        <div class="p-5 border-b border-zinc-800 flex items-center justify-between gap-4">
+          <div><h2 class="text-2xl font-bold">Current Segment</h2><p class="text-zinc-400 text-sm mt-1">Only eligible contacts appear here.</p></div>
+          <span id="segmentCount" class="text-yellow-400 font-bold">0 contacts</span>
+        </div>
+        <div class="overflow-x-auto max-h-[480px]">
+          <table class="w-full text-left">
+            <thead class="bg-zinc-950 text-zinc-400 text-xs uppercase sticky top-0"><tr><th class="p-4">Name</th><th class="p-4">Type</th><th class="p-4">Email</th><th class="p-4">Status</th></tr></thead>
+            <tbody id="segmentTableBody"></tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="glass rounded-2xl border border-zinc-800 overflow-hidden">
+        <div class="p-5 border-b border-zinc-800"><h2 class="text-2xl font-bold">Saved Campaigns</h2><p class="text-zinc-400 text-sm mt-1">Review draft and sent campaign records.</p></div>
+        <div id="campaignList" class="divide-y divide-zinc-800 max-h-[480px] overflow-y-auto"></div>
+      </article>
+    </section>
+
+    <section id="previewPanel" class="hidden glass p-6 rounded-2xl border border-zinc-800">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-bold">Preview</h2>
+        <button onclick="document.getElementById('previewPanel').classList.add('hidden')" class="px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-700 font-bold text-sm">Close</button>
+      </div>
+      <div id="previewContent" class="bg-white text-black rounded-2xl p-6"></div>
+    </section>
+  </main>
+
+  <script src="js/ruthko-campaigns.js"></script>
+  <script>if (window.lucide) lucide.createIcons();</script>
+</body>
+</html>

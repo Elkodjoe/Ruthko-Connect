@@ -1,0 +1,20 @@
+NEXT STEP: PHASE 6, CONNECT PUBLIC FORMS TO DATABASE
+
+Goal
+
+Move form submissions from static form capture into Supabase leads.
+
+Build items
+
+1. Connect intake.html to Supabase.
+2. Save employer requests into leads.
+3. Save candidate requests into leads.
+4. Save sponsor interest into leads.
+5. Save vendor booth requests into leads.
+6. Save event RSVPs into leads or ruthko_events.
+7. Add source labels, intake timestamps, and follow-up status.
+8. Show new public form submissions inside crm.html.
+
+Business result
+
+You will have one working lead system for Ruthko Jobs, Ruthko Events, sponsors, vendors, and partners.

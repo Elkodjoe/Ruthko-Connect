@@ -1,0 +1,33 @@
+PHASE 13, EVENT OPERATIONS SYSTEM
+
+Build Ruthko Connect into a stronger event organizing platform.
+
+Add:
+Event dashboard
+Event creation form
+Ticket types
+Booth inventory
+Sponsor package tracking
+Speaker management
+Attendee list
+Check-in status
+Vendor list
+Sponsor deliverables
+Event budget tracker
+Revenue summary
+Post-event report builder
+
+Core event tables:
+events
+event_tickets
+event_attendees
+event_speakers
+event_sponsors
+event_vendors
+event_booths
+event_deliverables
+event_expenses
+event_tasks
+
+Purpose:
+Ruthko should manage jobs and events inside one system.

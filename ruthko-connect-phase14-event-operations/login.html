@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ruthko Connect Admin Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: Inter, sans-serif; }
+    body { background: #0a0a0a; color: #fff; }
+    .glass { background: rgba(255,255,255,0.06); backdrop-filter: blur(10px); }
+    .gradient-text { background: linear-gradient(to right, #facc15, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .btn-primary { background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%); color: #000; }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center px-6">
+  <main class="w-full max-w-md">
+    <section class="glass border border-zinc-800 rounded-3xl p-8 shadow-2xl">
+      <div class="text-center mb-8">
+        <img src="images/logo.png" alt="Ruthko Logo" class="w-16 h-16 mx-auto rounded-2xl object-cover mb-4" onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';" />
+        <div id="logoFallback" class="hidden w-16 h-16 mx-auto rounded-2xl bg-yellow-500 text-black items-center justify-center font-extrabold text-2xl mb-4">R</div>
+        <h1 class="text-3xl font-extrabold gradient-text">Ruthko Connect</h1>
+        <p class="text-zinc-400 mt-2">Admin access for dashboard and CRM.</p>
+      </div>
+
+      <form onsubmit="ruthkoLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-sm font-bold text-zinc-300 mb-2" for="email">Email</label>
+          <input id="email" type="email" required placeholder="admin@ruthko.com" class="w-full bg-black border border-zinc-800 rounded-xl p-3 focus:outline-none focus:border-yellow-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-zinc-300 mb-2" for="password">Password</label>
+          <input id="password" type="password" required placeholder="Enter password" class="w-full bg-black border border-zinc-800 rounded-xl p-3 focus:outline-none focus:border-yellow-500" />
+        </div>
+        <button id="loginButton" type="submit" class="btn-primary w-full py-3 rounded-xl font-extrabold">Sign In</button>
+        <p id="authMessage"></p>
+      </form>
+
+      <div class="mt-6 p-4 rounded-2xl bg-zinc-950 border border-zinc-800 text-sm text-zinc-400">
+        <p class="font-bold text-yellow-400 mb-2">Local sample mode</p>
+        <p>Any email and password work until you connect Supabase and change sampleMode to false.</p>
+      </div>
+
+      <div class="mt-6 flex items-center justify-between text-sm">
+        <a href="intake.html" class="text-zinc-400 hover:text-yellow-400">Public Intake</a>
+        <a href="payments.html" class="text-zinc-400 hover:text-yellow-400">Payments</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script>ruthkoRedirectIfLoggedIn();</script>
+</body>
+</html>

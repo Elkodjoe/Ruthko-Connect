@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Ruthko Connect | AI Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: Inter, sans-serif; }
+    body { background: #0a0a0a; color: #fff; }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+    .glass-hover { transition: all .2s ease; }
+    .glass-hover:hover { background: rgba(255,255,255,0.08); }
+    .gradient-text { background: linear-gradient(to right, #facc15, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .btn-primary { background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%); color: #000; }
+    .btn-primary:hover { filter: brightness(1.08); }
+    .btn-secondary { background: rgba(255,255,255,0.1); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.15); }
+    .nav-active { background: rgba(39,39,42,0.9); color: #facc15; }
+    .auth-checking body { visibility: hidden; }
+    input, textarea, select { outline: none; }
+    .pipeline-card { cursor: grab; }
+  </style>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/auth-guard.js"></script>
+</head>
+<body class="min-h-screen bg-black text-white" data-page="ai">
+
+  <aside class="fixed left-0 top-0 z-50 h-full w-20 lg:w-64 bg-black border-r border-zinc-800 flex flex-col">
+    <div class="p-4 lg:p-6 flex items-center gap-3 border-b border-zinc-900">
+      <img src="images/logo.png" alt="Ruthko Logo" class="w-12 h-12 rounded-xl object-cover" onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';" />
+      <div id="logoFallback" class="hidden w-12 h-12 rounded-xl bg-yellow-500 text-black items-center justify-center font-extrabold">R</div>
+      <div class="hidden lg:block">
+        <h1 class="font-bold text-xl gradient-text">Ruthko Connect</h1>
+        <p class="text-xs text-zinc-400">Jobs • Events • Partnerships</p>
+      </div>
+    </div>
+    <nav class="flex-1 px-3 py-4 space-y-2">
+      <a href="admin.html" data-page="dashboard" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Dashboard</span></a>
+      <a href="jobs.html" data-page="jobs" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="briefcase" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Ruthko Jobs</span></a>
+      <a href="events.html" data-page="events" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="calendar" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Ruthko Events</span></a>
+      <a href="partners.html" data-page="partners" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="users" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Partners Hub</span></a>
+      <a href="crm.html" data-page="crm" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="database" class="w-5 h-5"></i><span class="hidden lg:block font-medium">CRM & Sales</span></a>
+      <a href="ai-studio.html" data-page="ai" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="sparkles" class="w-5 h-5"></i><span class="hidden lg:block font-medium">AI Studio</span></a>
+      <a href="sponsors.html" data-page="sponsors" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="crown" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Sponsor Portal</span></a>
+      <a href="tasks.html" data-page="tasks" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="list-checks" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Tasks</span></a>
+      <a href="campaigns.html" data-page="campaigns" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="send" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Campaigns</span></a>
+    </nav>
+    <div class="p-4 border-t border-zinc-800 hidden lg:block">
+      <a href="intake.html" class="block btn-primary text-center rounded-xl py-2 font-bold text-sm">Public Intake</a>
+      <p class="text-xs text-zinc-500 mt-3">Admin console</p>
+    </div>
+  </aside>
+
+  <main class="ml-20 lg:ml-64 min-h-screen">
+
+    <header class="h-16 border-b border-zinc-800 bg-black/70 backdrop-blur-md flex items-center justify-between px-6 shrink-0 sticky top-0 z-40">
+      <h1 class="text-xl font-bold">AI Studio</h1>
+      <div class="flex items-center gap-3">
+        <a href="event-operations.html" class="hidden md:inline-flex btn-secondary px-4 py-2 rounded-xl font-bold text-sm">Event Ops</a>
+        <a href="intake.html" class="hidden md:inline-flex btn-secondary px-4 py-2 rounded-xl font-bold text-sm">Intake</a>
+        <a href="payments.html" class="hidden md:inline-flex btn-secondary px-4 py-2 rounded-xl font-bold text-sm">Payments</a>
+        <a href="crm.html" class="hidden md:inline-flex btn-primary px-4 py-2 rounded-xl font-bold text-sm">CRM</a>
+        <div class="hidden md:block text-right">
+          <div class="text-sm font-semibold">Ruthko Admin</div>
+          <div class="text-xs text-zinc-400" data-admin-email>admin@ruthko.com</div>
+        </div>
+        <button onclick="ruthkoLogout()" class="hidden sm:inline-flex px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-700 font-bold text-sm">Logout</button>
+      </div>
+    </header>
+
+
+    <section class="p-6">
+      <div class="mb-8">
+        <h2 class="text-4xl font-bold mb-3">AI Studio Prompt Generator</h2>
+        <p class="text-zinc-400 max-w-3xl">Generate industry-ready prompts for Ruthko staffing, events, sponsorship, vendors, CRM follow-up, and campaigns.</p>
+      </div>
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <article class="xl:col-span-1 glass p-6 rounded-2xl border border-zinc-800">
+          <h3 class="text-xl font-bold mb-4">Prompt Builder</h3>
+          <div class="space-y-4">
+            <label class="block"><span class="text-sm text-zinc-400">Industry</span><select id="industry" class="mt-2 w-full bg-black border border-zinc-800 rounded-xl p-3"><option>Healthcare staffing</option><option>Hospitality staffing</option><option>International recruitment</option><option>Event sponsorship</option><option>Cultural summit</option><option>Vendor booth sales</option><option>Candidate onboarding</option><option>Employer outreach</option><option>CRM administrative assistant</option></select></label>
+            <label class="block"><span class="text-sm text-zinc-400">Content type</span><select id="contentType" class="mt-2 w-full bg-black border border-zinc-800 rounded-xl p-3"><option>Professional email</option><option>Flyer copy</option><option>Social media post</option><option>Sales call script</option><option>Sponsor proposal</option><option>Job advertisement</option><option>Follow-up message</option><option>CRM daily brief</option><option>Event invitation</option></select></label>
+            <label class="block"><span class="text-sm text-zinc-400">Audience</span><input id="audience" class="mt-2 w-full bg-black border border-zinc-800 rounded-xl p-3" value="business decision makers" /></label>
+            <label class="block"><span class="text-sm text-zinc-400">Goal</span><input id="goal" class="mt-2 w-full bg-black border border-zinc-800 rounded-xl p-3" value="book a meeting and move the lead to the next CRM stage" /></label>
+            <label class="block"><span class="text-sm text-zinc-400">Offer or details</span><textarea id="details" class="mt-2 w-full bg-black border border-zinc-800 rounded-xl p-3 h-24">Ruthko Connect supports jobs, events, partnerships, sponsor packages, and vendor opportunities.</textarea></label>
+            <button onclick="buildIndustryPrompt()" class="btn-primary w-full py-3 rounded-xl font-bold">Generate Prompt</button>
+            <button onclick="copyPrompt()" class="btn-secondary w-full py-3 rounded-xl font-bold">Copy Prompt</button>
+          </div>
+        </article>
+        <article class="xl:col-span-2 glass p-6 rounded-2xl border border-zinc-800">
+          <div class="flex items-center justify-between gap-3 mb-4"><h3 class="text-xl font-bold">Generated Prompt</h3><span id="promptStatus" class="text-xs text-zinc-500">Ready</span></div>
+          <textarea id="promptOutput" class="w-full min-h-[420px] bg-black border border-zinc-800 rounded-2xl p-4 text-sm leading-6 text-zinc-200"></textarea>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
+            <button onclick="loadTemplate('sponsor')" class="bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-sm font-bold">Sponsor template</button>
+            <button onclick="loadTemplate('staffing')" class="bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-sm font-bold">Staffing template</button>
+            <button onclick="loadTemplate('event')" class="bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-sm font-bold">Event template</button>
+          </div>
+        </article>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+        <a href="campaigns.html" class="glass glass-hover p-5 rounded-2xl border border-zinc-800"><h3 class="font-bold">Use with campaigns</h3><p class="text-sm text-zinc-400 mt-2">Paste generated content into the campaign builder.</p></a>
+        <a href="crm.html" class="glass glass-hover p-5 rounded-2xl border border-zinc-800"><h3 class="font-bold">Use with CRM</h3><p class="text-sm text-zinc-400 mt-2">Generate follow-up emails and admin summaries.</p></a>
+        <a href="sponsors.html" class="glass glass-hover p-5 rounded-2xl border border-zinc-800"><h3 class="font-bold">Use for sponsors</h3><p class="text-sm text-zinc-400 mt-2">Create sponsorship proposals and pitch messages.</p></a>
+      </div>
+    </section>
+    <script src="js/ai-prompt-generator.js"></script>
+
+  </main>
+
+  <script>
+    if (window.lucide) lucide.createIcons();
+    (function () {
+      var page = document.body.getAttribute('data-page');
+      document.querySelectorAll('.nav-link').forEach(function (link) {
+        if (link.getAttribute('data-page') === page) link.classList.add('nav-active');
+      });
+    })();
+  </script>
+</body>
+</html>

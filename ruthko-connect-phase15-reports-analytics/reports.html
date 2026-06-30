@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Ruthko Reports & Analytics | Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: Inter, sans-serif; }
+    body { background: #0a0a0a; color: #fff; }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+    .glass-hover { transition: all .2s ease; }
+    .glass-hover:hover { background: rgba(255,255,255,0.08); }
+    .gradient-text { background: linear-gradient(to right, #facc15, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .btn-primary { background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%); color: #000; }
+    .btn-primary:hover { filter: brightness(1.08); }
+    .btn-secondary { background: rgba(255,255,255,0.1); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.15); }
+    .nav-active { background: rgba(39,39,42,0.9); color: #facc15; }
+    .auth-checking body { visibility: hidden; }
+    input, textarea, select { outline: none; }
+    .field { width: 100%; background: #000; border: 1px solid #27272a; border-radius: .75rem; padding: .85rem; color: #fff; }
+    .field:focus { border-color: rgba(250, 204, 21, .7); }
+    .bar { min-width: 1.5rem; border-radius: .75rem .75rem 0 0; background: linear-gradient(180deg, rgba(250,204,21,.95), rgba(249,115,22,.75)); }
+    .bar-blue { background: linear-gradient(180deg, rgba(56,189,248,.95), rgba(37,99,235,.75)); }
+    .bar-green { background: linear-gradient(180deg, rgba(52,211,153,.95), rgba(5,150,105,.75)); }
+  </style>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/auth-guard.js"></script>
+</head>
+<body class="min-h-screen bg-black text-white" data-page="reports">
+  <aside class="fixed left-0 top-0 z-50 h-full w-20 lg:w-64 bg-black border-r border-zinc-800 flex flex-col">
+    <div class="p-4 lg:p-6 flex items-center gap-3 border-b border-zinc-900">
+      <img src="images/logo.png" alt="Ruthko Logo" class="w-12 h-12 rounded-xl object-contain bg-white p-1" onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';" />
+      <div id="logoFallback" class="hidden w-12 h-12 rounded-xl bg-yellow-500 text-black items-center justify-center font-extrabold">R</div>
+      <div class="hidden lg:block">
+        <h1 class="font-bold text-xl gradient-text">Ruthko Connect</h1>
+        <p class="text-xs text-zinc-400">Jobs • Events • Partnerships</p>
+      </div>
+    </div>
+    <nav class="flex-1 px-3 py-4 space-y-2">
+      <a href="admin.html" data-page="admin" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Admin Dashboard</span></a>
+      <a href="event-operations.html" data-page="event-ops" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="calendar-check" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Event Ops</span></a>
+      <a href="reports.html" data-page="reports" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="bar-chart-3" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Reports</span></a>
+      <a href="crm.html" data-page="crm" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="database" class="w-5 h-5"></i><span class="hidden lg:block font-medium">CRM & Sales</span></a>
+      <a href="tasks.html" data-page="tasks" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="list-checks" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Tasks</span></a>
+      <a href="campaigns.html" data-page="campaigns" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="send" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Campaigns</span></a>
+      <a href="ai-studio.html" data-page="ai" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="sparkles" class="w-5 h-5"></i><span class="hidden lg:block font-medium">AI Studio</span></a>
+      <a href="payments.html" data-page="payments" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition"><i data-lucide="credit-card" class="w-5 h-5"></i><span class="hidden lg:block font-medium">Payments</span></a>
+    </nav>
+    <div class="p-4 border-t border-zinc-800 hidden lg:block">
+      <button id="downloadSnapshotButton" class="block btn-primary text-center rounded-xl py-2 font-bold text-sm w-full">Download Snapshot</button>
+      <p class="text-xs text-zinc-500 mt-3">Protected analytics workspace</p>
+    </div>
+  </aside>
+
+  <main class="ml-20 lg:ml-64 min-h-screen">
+    <header class="h-16 border-b border-zinc-800 bg-black/70 backdrop-blur-md flex items-center justify-between px-6 shrink-0 sticky top-0 z-40">
+      <h1 class="text-xl font-bold">Reports & Analytics</h1>
+      <div class="flex items-center gap-3">
+        <a href="admin.html" class="hidden md:inline-flex btn-secondary px-4 py-2 rounded-xl font-bold text-sm">Dashboard</a>
+        <a href="event-operations.html" class="hidden md:inline-flex btn-secondary px-4 py-2 rounded-xl font-bold text-sm">Event Ops</a>
+        <a href="crm.html" class="hidden md:inline-flex btn-primary px-4 py-2 rounded-xl font-bold text-sm">CRM</a>
+        <div class="hidden md:block text-right">
+          <div class="text-sm font-semibold">Ruthko Admin</div>
+          <div class="text-xs text-zinc-400" data-admin-email>admin@ruthko.com</div>
+        </div>
+        <button onclick="ruthkoLogout()" class="hidden sm:inline-flex px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-700 font-bold text-sm">Logout</button>
+      </div>
+    </header>
+
+    <section class="p-6 overflow-y-auto">
+      <div class="mb-8">
+        <p class="text-yellow-400 font-bold uppercase tracking-wide text-sm">Ruthko Connect Intelligence</p>
+        <h2 class="text-4xl font-extrabold mt-2">Know what is growing, stuck, and ready to close.</h2>
+        <p class="text-zinc-400 mt-3 max-w-4xl">Track staffing leads, event operations, sponsors, vendors, payments, campaigns, and task follow-up in one protected reporting view.</p>
+        <p id="reportsMessage" class="text-sm text-yellow-400 font-bold mt-3">Local sample mode is ready. Connect Supabase for live records.</p>
+      </div>
+
+      <div class="glass p-5 rounded-2xl border border-zinc-800 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+          <select id="periodFilter" class="field"><option value="30">Last 30 days</option><option value="90">Last 90 days</option><option value="365">Last 12 months</option><option value="all">All time</option></select>
+          <select id="businessFilter" class="field"><option value="all">All business lines</option><option value="staffing">Staffing</option><option value="events">Events</option><option value="sponsors">Sponsors</option><option value="vendors">Vendors</option></select>
+          <button id="refreshReportsButton" class="btn-primary px-4 py-3 rounded-xl font-bold">Refresh</button>
+          <button id="exportReportsButton" class="px-4 py-3 rounded-xl bg-zinc-900 border border-zinc-700 font-bold">Export CSV</button>
+          <button id="copyReportBriefButton" class="px-4 py-3 rounded-xl bg-zinc-900 border border-zinc-700 font-bold">Copy Brief</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+        <article class="glass p-6 rounded-2xl border border-zinc-800"><p class="text-zinc-400 text-sm">Total Pipeline</p><h3 id="metricPipeline" class="text-3xl font-bold mt-3">$0</h3><p class="text-emerald-400 text-sm mt-2">Open leads and sponsor value</p></article>
+        <article class="glass p-6 rounded-2xl border border-zinc-800"><p class="text-zinc-400 text-sm">Closed Revenue</p><h3 id="metricRevenue" class="text-3xl font-bold mt-3">$0</h3><p class="text-yellow-400 text-sm mt-2">Paid and closed-won value</p></article>
+        <article class="glass p-6 rounded-2xl border border-zinc-800"><p class="text-zinc-400 text-sm">Active Leads</p><h3 id="metricLeads" class="text-3xl font-bold mt-3">0</h3><p class="text-blue-400 text-sm mt-2">New, qualified, proposal</p></article>
+        <article class="glass p-6 rounded-2xl border border-zinc-800"><p class="text-zinc-400 text-sm">Task Health</p><h3 id="metricTaskHealth" class="text-3xl font-bold mt-3">0%</h3><p class="text-orange-400 text-sm mt-2">Open vs completed tasks</p></article>
+      </div>
+
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
+        <section class="glass p-6 rounded-2xl border border-zinc-800 xl:col-span-2">
+          <div class="flex items-center justify-between mb-5"><div><h3 class="text-2xl font-bold">Monthly Revenue & Pipeline</h3><p class="text-zinc-400 text-sm mt-1">Payments, closed deals, sponsor pledges, and open opportunity value.</p></div><i data-lucide="line-chart" class="w-8 h-8 text-yellow-400"></i></div>
+          <div id="monthlyChart" class="h-72 flex items-end gap-4 border-b border-zinc-800 pb-3 overflow-x-auto"></div>
+          <div id="monthlyLabels" class="flex gap-4 text-xs text-zinc-500 mt-3 overflow-x-auto"></div>
+        </section>
+        <section class="glass p-6 rounded-2xl border border-zinc-800">
+          <div class="flex items-center justify-between mb-5"><div><h3 class="text-2xl font-bold">Lead Mix</h3><p class="text-zinc-400 text-sm mt-1">Business line distribution.</p></div><i data-lucide="pie-chart" class="w-8 h-8 text-cyan-400"></i></div>
+          <div id="leadMixList" class="space-y-4"></div>
+        </section>
+      </div>
+
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
+        <section class="glass p-6 rounded-2xl border border-zinc-800">
+          <h3 class="text-2xl font-bold mb-4">Event Operations</h3>
+          <div id="eventReportList" class="space-y-3"></div>
+        </section>
+        <section class="glass p-6 rounded-2xl border border-zinc-800">
+          <h3 class="text-2xl font-bold mb-4">Sponsor & Vendor Revenue</h3>
+          <div id="sponsorReportList" class="space-y-3"></div>
+        </section>
+        <section class="glass p-6 rounded-2xl border border-zinc-800">
+          <h3 class="text-2xl font-bold mb-4">Campaign Performance</h3>
+          <div id="campaignReportList" class="space-y-3"></div>
+        </section>
+      </div>
+
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
+        <section class="glass p-6 rounded-2xl border border-zinc-800">
+          <div class="flex items-center justify-between mb-4"><h3 class="text-2xl font-bold">Action Alerts</h3><span class="text-xs text-yellow-400 font-bold">Admin follow-up</span></div>
+          <div id="actionAlerts" class="space-y-3"></div>
+        </section>
+        <section class="glass p-6 rounded-2xl border border-zinc-800">
+          <div class="flex items-center justify-between mb-4"><h3 class="text-2xl font-bold">Executive Brief</h3><button id="regenerateBriefButton" class="btn-primary px-4 py-2 rounded-xl font-bold text-sm">Generate Brief</button></div>
+          <textarea id="executiveBrief" class="field h-80 text-sm leading-6"></textarea>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/reports-analytics.js"></script>
+  <script>
+    if (window.lucide) lucide.createIcons();
+    (function () {
+      var page = document.body.getAttribute('data-page');
+      document.querySelectorAll('.nav-link').forEach(function (link) {
+        if (link.getAttribute('data-page') === page) link.classList.add('nav-active');
+      });
+    })();
+  </script>
+</body>
+</html>

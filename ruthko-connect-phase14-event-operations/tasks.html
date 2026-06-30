@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Ruthko Connect Tasks</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: Inter, sans-serif; }
+    body { background: #0a0a0a; color: #fff; }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+    .gradient-text { background: linear-gradient(to right, #facc15, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .btn-primary { background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%); color: #000; }
+    .auth-checking body { visibility: hidden; }
+  </style>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/auth-guard.js"></script>
+</head>
+<body class="min-h-screen">
+  <header class="border-b border-zinc-800 bg-black/70 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <a href="admin.html" class="text-sm text-zinc-400 hover:text-yellow-400">Back to Admin Dashboard</a>
+        <h1 class="text-3xl font-extrabold gradient-text mt-1">Ruthko Follow-Up Tasks</h1>
+        <p class="text-zinc-400 text-sm mt-1">Manage calls, emails, proposals, document requests, sponsor follow-up, and event confirmations.</p>
+        <p id="taskConnectionStatus" class="text-xs text-yellow-400 mt-2">Checking task database.</p>
+      </div>
+      <div class="flex flex-col md:flex-row md:items-center gap-3">
+        <span class="text-xs text-zinc-400" data-admin-email>admin@ruthko.com</span>
+        <a href="event-operations.html" class="px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-700 font-bold text-sm">Event Ops</a>
+        <a href="crm.html" class="px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-700 font-bold text-sm">CRM</a>
+        <a href="campaigns.html" class="px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-700 font-bold text-sm">Campaigns</a>
+        <a href="intake.html" class="px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-700 font-bold text-sm">Open Intake</a>
+        <button onclick="ruthkoLogout()" class="px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-700 font-bold text-sm">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-8">
+    <section class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+      <article class="glass p-5 rounded-2xl border border-zinc-800"><p class="text-sm text-zinc-400">Open Tasks</p><h2 id="statOpenTasks" class="text-3xl font-bold mt-2">0</h2></article>
+      <article class="glass p-5 rounded-2xl border border-zinc-800"><p class="text-sm text-zinc-400">Due Today</p><h2 id="statDueToday" class="text-3xl font-bold mt-2">0</h2></article>
+      <article class="glass p-5 rounded-2xl border border-zinc-800"><p class="text-sm text-zinc-400">Overdue</p><h2 id="statOverdue" class="text-3xl font-bold mt-2">0</h2></article>
+      <article class="glass p-5 rounded-2xl border border-zinc-800"><p class="text-sm text-zinc-400">High Priority</p><h2 id="statHighPriority" class="text-3xl font-bold mt-2">0</h2></article>
+    </section>
+
+    <section class="glass p-6 rounded-2xl border border-zinc-800 mb-8">
+      <div class="flex items-center justify-between gap-4 mb-5">
+        <div>
+          <h2 class="text-2xl font-bold">Add Follow-Up Task</h2>
+          <p class="text-zinc-400 text-sm mt-1">Create a task from a call, WhatsApp chat, sponsor lead, employer request, candidate review, or event guest.</p>
+        </div>
+        <p id="taskMessage" class="text-green-400 text-sm font-bold"></p>
+      </div>
+      <form id="taskForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <select id="leadSelect" name="lead_id" class="bg-black border border-zinc-800 rounded-xl p-3">
+          <option value="">No linked lead</option>
+        </select>
+        <input name="title" placeholder="Task title" required class="bg-black border border-zinc-800 rounded-xl p-3" />
+        <select name="task_type" class="bg-black border border-zinc-800 rounded-xl p-3">
+          <option value="Call">Call</option>
+          <option value="Email">Email</option>
+          <option value="Proposal">Proposal</option>
+          <option value="Review">Review</option>
+          <option value="Admin">Admin</option>
+          <option value="Follow-up">Follow-up</option>
+        </select>
+        <select name="priority" class="bg-black border border-zinc-800 rounded-xl p-3">
+          <option value="High">High</option>
+          <option value="Medium" selected>Medium</option>
+          <option value="Low">Low</option>
+        </select>
+        <input type="date" name="due_date" class="bg-black border border-zinc-800 rounded-xl p-3" />
+        <input name="owner" placeholder="Owner" value="Ruthko Admin" class="bg-black border border-zinc-800 rounded-xl p-3" />
+        <textarea name="notes" placeholder="Task notes" class="md:col-span-3 bg-black border border-zinc-800 rounded-xl p-3 h-24"></textarea>
+        <button type="submit" class="btn-primary px-6 py-3 rounded-xl font-bold md:w-fit">Save Task</button>
+      </form>
+    </section>
+
+    <section class="glass rounded-2xl border border-zinc-800 overflow-hidden">
+      <div class="p-5 border-b border-zinc-800 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-bold">Task Board</h2>
+          <p class="text-zinc-400 text-sm mt-1">Search, filter, mark done, snooze, and export follow-up tasks.</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 w-full lg:w-auto">
+          <input id="taskSearchInput" placeholder="Search tasks" class="sm:col-span-2 bg-black border border-zinc-800 rounded-xl p-3 text-sm" />
+          <select id="priorityFilter" class="bg-black border border-zinc-800 rounded-xl p-3 text-sm">
+            <option value="">All Priority</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+          <select id="taskStatusFilter" class="bg-black border border-zinc-800 rounded-xl p-3 text-sm">
+            <option value="">All Status</option>
+            <option value="Open">Open</option>
+            <option value="Snoozed">Snoozed</option>
+            <option value="Done">Done</option>
+          </select>
+        </div>
+      </div>
+      <div class="p-5 border-b border-zinc-800 flex justify-end">
+        <button id="exportTasksButton" class="px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-700 font-bold text-sm">Export Tasks CSV</button>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left">
+          <thead class="bg-zinc-950 text-zinc-400 text-xs uppercase">
+            <tr>
+              <th class="p-4">Task</th>
+              <th class="p-4">Lead</th>
+              <th class="p-4">Type</th>
+              <th class="p-4">Priority</th>
+              <th class="p-4">Due</th>
+              <th class="p-4">Status</th>
+              <th class="p-4 text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody id="tasksTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/ruthko-tasks.js"></script>
+  <script>if (window.lucide) lucide.createIcons();</script>
+</body>
+</html>

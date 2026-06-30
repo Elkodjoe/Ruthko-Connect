@@ -1,0 +1,22 @@
+AUTO-REPLY FLOW MAP
+
+Employer form:
+intake.html -> js/intake-crm.js -> Supabase leads/employers/intake_submissions -> notify-lead.js -> send-auto-reply.js -> thank-you.html
+
+Candidate form:
+intake.html -> js/intake-crm.js -> Supabase leads/candidates/intake_submissions -> notify-lead.js -> send-auto-reply.js -> thank-you.html
+
+Sponsor form:
+intake.html -> js/intake-crm.js -> Supabase leads/sponsors/intake_submissions -> notify-lead.js -> send-auto-reply.js -> thank-you.html
+
+Vendor form:
+intake.html -> js/intake-crm.js -> Supabase leads/vendors/intake_submissions -> notify-lead.js -> send-auto-reply.js -> thank-you.html
+
+Event RSVP form:
+intake.html -> js/intake-crm.js -> Supabase leads/event_registrations/intake_submissions -> notify-lead.js -> send-auto-reply.js -> thank-you.html
+
+Admin receives:
+New lead notification email.
+
+Submitter receives:
+Confirmation email with next steps based on form type.

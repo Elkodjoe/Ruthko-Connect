@@ -1,0 +1,1 @@
+Phase 12: wire the professional CRM interface directly to Supabase tables for leads, tasks, activity, automations, contacts, deals, sponsors, vendors, events, and campaigns. Add role-based admin permissions and production records.

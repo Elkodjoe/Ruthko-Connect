@@ -1,0 +1,63 @@
+NEXT STEP: PHASE 4 CRM DATABASE
+
+Build this after Stripe links are connected.
+
+Phase 4 should add:
+1. Supabase database
+2. Leads table
+3. Sponsors table
+4. Vendors table
+5. Events table
+6. Payments table
+7. Admin login
+8. Search and filter leads
+9. Status updates
+10. Export CSV
+
+Suggested tables:
+leads
+- id
+- created_at
+- name
+- organization
+- email
+- phone
+- lead_type
+- status
+- notes
+
+sponsors
+- id
+- organization
+- package
+- amount
+- payment_status
+- benefits_status
+- contact_person
+- email
+- phone
+
+vendors
+- id
+- business_name
+- booth_type
+- payment_status
+- event_name
+- contact_person
+- email
+- phone
+
+payments
+- id
+- payer_name
+- payment_type
+- amount
+- status
+- stripe_payment_link
+- created_at
+
+Deployment path:
+GitHub first.
+Netlify second.
+Supabase third.
+Stripe final test.
