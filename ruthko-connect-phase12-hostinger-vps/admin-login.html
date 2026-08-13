@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Admin Login | Ruthko Connect</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: Inter, sans-serif; }
+    body { background: #0a0a0a; color: #fff; }
+    .glass { background: rgba(255,255,255,0.06); backdrop-filter: blur(10px); }
+    .gradient-text { background: linear-gradient(to right, #facc15, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .btn-primary { background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%); color: #000; }
+    .btn-primary:hover { filter: brightness(1.08); }
+    .input-field { width: 100%; background: #000; border: 1px solid #27272a; border-radius: 0.75rem; padding: 0.75rem 1rem; color: #fff; outline: none; transition: border-color .2s; }
+    .input-field:focus { border-color: #facc15; }
+    .role-pill { display: inline-block; padding: 0.15rem 0.6rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 700; }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center px-6 py-12">
+
+  <main class="w-full max-w-md">
+
+    <!-- Logo + brand -->
+    <div class="text-center mb-8">
+      <img src="images/logo.png" alt="Ruthko Logo" class="w-16 h-16 mx-auto rounded-2xl object-cover mb-4"
+           onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';" />
+      <div id="logoFallback" class="hidden w-16 h-16 mx-auto rounded-2xl bg-yellow-500 text-black items-center justify-center font-extrabold text-2xl mb-4">R</div>
+      <h1 class="text-3xl font-extrabold gradient-text">Ruthko Connect</h1>
+      <p class="text-zinc-400 mt-1 text-sm">Admin Portal</p>
+    </div>
+
+    <!-- Login card -->
+    <section class="glass border border-zinc-800 rounded-3xl p-8 shadow-2xl">
+      <h2 class="text-xl font-bold mb-6">Sign in to your account</h2>
+
+      <form id="adminLoginForm" onsubmit="handleAdminLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-sm font-bold text-zinc-300 mb-2" for="email">Email address</label>
+          <input id="email" type="email" required placeholder="admin@ruthkojobs.com" class="input-field" autocomplete="email" />
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-zinc-300 mb-2" for="password">Password</label>
+          <input id="password" type="password" required placeholder="Enter your password" class="input-field" autocomplete="current-password" />
+        </div>
+
+        <button id="loginBtn" type="submit"
+          class="btn-primary w-full py-3 rounded-xl font-extrabold text-base mt-2 transition-all">
+          Sign In
+        </button>
+
+        <p id="loginMessage" class="text-sm text-center min-h-[1.25rem]"></p>
+      </form>
+
+      <!-- Sample mode notice -->
+      <div id="sampleNotice" class="hidden mt-5 p-4 rounded-2xl bg-zinc-950 border border-zinc-800 text-sm text-zinc-400">
+        <p class="font-bold text-yellow-400 mb-1">Local sample mode</p>
+        <p>Any email and password work in sample mode. All roles are set to Owner. Connect Supabase to enable real role management.</p>
+      </div>
+    </section>
+
+    <!-- Role legend -->
+    <div class="mt-6 glass border border-zinc-800 rounded-2xl p-5">
+      <p class="text-xs font-bold text-zinc-400 uppercase tracking-wide mb-3">Access levels</p>
+      <div class="space-y-2 text-sm text-zinc-300">
+        <div class="flex items-center gap-3">
+          <span class="role-pill bg-yellow-500 text-black">Owner</span>
+          <span>Full access including role management and owner settings</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="role-pill bg-blue-500 text-white">Admin</span>
+          <span>Full access except owner-only settings</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="role-pill bg-green-500 text-white">Editor</span>
+          <span>Content, events, jobs, sponsors, campaigns</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="role-pill bg-zinc-500 text-white">Viewer</span>
+          <span>Read-only access to dashboard and reports</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back to public site -->
+    <div class="mt-6 text-center text-sm">
+      <a href="index.html" class="text-zinc-500 hover:text-yellow-400 transition-colors">← Back to public site</a>
+      <span class="text-zinc-700 mx-3">·</span>
+      <a href="login.html" class="text-zinc-500 hover:text-yellow-400 transition-colors">Classic login</a>
+    </div>
+
+  </main>
+
+  <script src="js/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // Show sample mode notice if applicable
+    document.addEventListener('DOMContentLoaded', function () {
+      if (typeof window.ruthkoIsSampleMode === 'function' && window.ruthkoIsSampleMode()) {
+        document.getElementById('sampleNotice').classList.remove('hidden');
+      }
+
+      // Pre-fill redirect param if present
+      var params = new URLSearchParams(window.location.search);
+      var redirect = params.get('redirect');
+      if (redirect) {
+        document.getElementById('loginMessage').textContent = 'Please sign in to continue.';
+        document.getElementById('loginMessage').style.color = '#a1a1aa';
+      }
+
+      // Redirect if already logged in
+      if (typeof window.ruthkoRedirectIfLoggedIn === 'function') {
+        window.ruthkoRedirectIfLoggedIn();
+      }
+    });
+
+    async function handleAdminLogin(event) {
+      event.preventDefault();
+      var btn = document.getElementById('loginBtn');
+      var msg = document.getElementById('loginMessage');
+      var email = document.getElementById('email').value.trim();
+      var password = document.getElementById('password').value;
+
+      btn.disabled = true;
+      btn.textContent = 'Signing in…';
+      msg.textContent = '';
+      msg.style.color = '';
+
+      try {
+        // Use existing ruthkoLogin if available for backward compat
+        if (typeof window.ruthkoLogin === 'function') {
+          // ruthkoLogin reads #email and #password directly and submits form
+          // We call the native submit flow
+          await window.ruthkoLogin(event);
+          // If we get here without redirect, it means ruthkoLogin showed its own message
+          // Restore button
+          btn.disabled = false;
+          btn.textContent = 'Sign In';
+          return;
+        }
+
+        // Fallback: manual login
+        var client = typeof window.getRuthkoSupabaseClient === 'function' ? window.getRuthkoSupabaseClient() : null;
+        if (!client) {
+          // Sample mode fallback
+          localStorage.setItem('ruthko_admin_demo_session', JSON.stringify({ email: email, ts: Date.now() }));
+          var params = new URLSearchParams(window.location.search);
+          window.location.href = params.get('redirect') || 'admin.html';
+          return;
+        }
+
+        var res = await client.auth.signInWithPassword({ email: email, password: password });
+        if (res.error) throw res.error;
+
+        var params = new URLSearchParams(window.location.search);
+        window.location.href = params.get('redirect') || 'admin.html';
+      } catch (err) {
+        msg.textContent = err.message || 'Sign in failed. Check your credentials.';
+        msg.style.color = '#f87171';
+        btn.disabled = false;
+        btn.textContent = 'Sign In';
+      }
+    }
+  </script>
+</body>
+</html>
