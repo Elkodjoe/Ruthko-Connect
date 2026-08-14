@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apply for Jobs — Ruthko Connect</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: Inter, sans-serif; }
+    body { background: #0a0a0a; color: #fff; }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+    .gradient-text { background: linear-gradient(to right, #facc15, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .btn-primary { background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%); color: #000; }
+    .btn-primary:hover { filter: brightness(1.08); }
+    .field { width: 100%; background: #000; border: 1px solid #27272a; border-radius: 0.75rem; padding: 0.85rem; color: #fff; }
+    .field:focus { outline: none; border-color: rgba(250,204,21,.7); }
+    select.field option { background: #111; }
+  </style>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/form-validation.js"></script>
+  <script src="js/crm-intake-service.js"></script>
+  <script src="js/public-forms.js"></script>
+</head>
+<body class="min-h-screen">
+  <header class="border-b border-zinc-800 bg-black/80 sticky top-0 z-40">
+    <div class="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="images/logo.png" alt="Ruthko Logo" class="w-10 h-10 rounded-xl object-cover" onerror="this.style.display='none';" />
+        <h1 class="font-extrabold text-lg gradient-text">Ruthko Connect</h1>
+      </a>
+      <nav class="hidden md:flex items-center gap-4 text-sm text-zinc-300">
+        <a href="index.html" class="hover:text-yellow-400">Home</a>
+        <a href="jobs.html" class="hover:text-yellow-400">Jobs</a>
+        <a href="intake.html" class="hover:text-yellow-400">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-5 py-10">
+    <div class="mb-8">
+      <p class="text-yellow-400 font-bold uppercase tracking-wide text-sm">Job Seeker Application</p>
+      <h2 class="text-4xl font-extrabold mt-2">Apply for Work with Ruthko</h2>
+      <p class="text-zinc-400 mt-3">Fill out this form and a Ruthko recruiter will review your application and reach out soon.</p>
+    </div>
+
+    <form id="applyForm" class="glass border border-zinc-800 rounded-3xl p-6 space-y-6">
+
+      <fieldset class="space-y-4">
+        <legend class="text-base font-bold text-yellow-400 pb-1">Personal Information</legend>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input name="first_name" placeholder="First name *" required class="field" />
+          <input name="last_name" placeholder="Last name *" required class="field" />
+          <input name="email" type="email" placeholder="Email address *" required class="field" />
+          <input name="phone" placeholder="Phone number" class="field" />
+          <input name="city" placeholder="City" class="field" />
+          <input name="state" placeholder="State / Province" class="field" />
+          <input name="country" placeholder="Country" class="field" />
+          <select name="preferred_language" class="field">
+            <option value="en">English</option>
+            <option value="fr">French</option>
+            <option value="es">Spanish</option>
+          </select>
+        </div>
+      </fieldset>
+
+      <fieldset class="space-y-4">
+        <legend class="text-base font-bold text-yellow-400 pb-1">Work Preferences</legend>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <select name="desired_job_type" class="field">
+            <option value="">Desired job type</option>
+            <option value="Full-time">Full-time</option>
+            <option value="Part-time">Part-time</option>
+            <option value="Contract">Contract</option>
+            <option value="Temporary">Temporary</option>
+            <option value="Seasonal">Seasonal</option>
+          </select>
+          <select name="experience_level" class="field">
+            <option value="">Experience level</option>
+            <option value="Entry">Entry level</option>
+            <option value="Mid">Mid level (2–5 years)</option>
+            <option value="Senior">Senior (5+ years)</option>
+            <option value="Executive">Executive</option>
+          </select>
+          <select name="work_authorization" class="field">
+            <option value="">Work authorization</option>
+            <option value="US Citizen">US Citizen</option>
+            <option value="Permanent Resident">Permanent Resident</option>
+            <option value="Work Visa">Work Visa</option>
+            <option value="Need Sponsorship">Need Sponsorship</option>
+            <option value="Other">Other / Outside USA</option>
+          </select>
+          <input name="preferred_location" placeholder="Preferred work location" class="field" />
+          <input name="availability_date" type="date" class="field" title="Available start date" />
+          <input name="pay_expectation" placeholder="Pay expectation (e.g. $18/hr)" class="field" />
+          <input name="skills" placeholder="Key skills (comma-separated)" class="field md:col-span-2" />
+          <input name="certifications" placeholder="Certifications (comma-separated)" class="field md:col-span-2" />
+          <input name="resume_link" placeholder="Resume / portfolio link (Google Drive, LinkedIn, etc.)" class="field md:col-span-2" />
+        </div>
+      </fieldset>
+
+      <fieldset class="space-y-4">
+        <legend class="text-base font-bold text-yellow-400 pb-1">Your Message</legend>
+        <textarea name="message" placeholder="Tell us about yourself, your goals, and the kind of role you are looking for." class="field h-28"></textarea>
+      </fieldset>
+
+      <label class="flex items-start gap-3 text-sm text-zinc-300">
+        <input type="checkbox" name="consent_given" class="mt-1 shrink-0" />
+        <span>I consent to Ruthko Connect storing and using my information to match me with job opportunities and contact me about relevant positions. *</span>
+      </label>
+
+      <button type="submit" class="btn-primary w-full py-3 rounded-xl font-bold text-base">Submit Application</button>
+    </form>
+
+    <div id="successPanel" class="hidden glass border border-green-700 rounded-3xl p-8 text-center mt-4">
+      <div class="text-5xl mb-4">✅</div>
+      <h2 class="text-2xl font-bold text-green-400 mb-2">Application Received!</h2>
+      <p class="text-zinc-300">Thank you for applying. A Ruthko recruiter will review your application and reach out soon.</p>
+      <a href="jobs.html" class="inline-block mt-6 btn-primary px-6 py-3 rounded-xl font-bold text-sm">Browse Open Positions</a>
+    </div>
+  </main>
+
+  <script>
+    if (window.lucide) lucide.createIcons();
+    document.getElementById('applyForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var fv = window.ruthkoFormValidation;
+      var pf = window.ruthkoPublicForms;
+      fv.clearErrors(this);
+      var result = fv.validate(this, {
+        required: ['first_name', 'last_name', 'email'],
+        optional: ['phone','city','state','country','preferred_language','desired_job_type','experience_level','work_authorization','preferred_location','availability_date','pay_expectation','skills','certifications','resume_link','message'],
+        requireConsent: true,
+        labels: { first_name: 'First name', last_name: 'Last name', email: 'Email address' }
+      });
+      if (result.errors.length) { fv.showErrors(this, result.errors); return; }
+      var d = result.data;
+      var submission = {
+        submission_type: 'job_seeker',
+        status: 'new',
+        first_name: d.first_name,
+        last_name: d.last_name,
+        email: d.email,
+        phone: d.phone || '',
+        city: d.city || '',
+        state: d.state || '',
+        country: d.country || '',
+        preferred_language: d.preferred_language || 'en',
+        message: d.message || '',
+        consent_given: true,
+        source_page: pf.getSourcePage(),
+        details_json: {
+          desired_job_type: d.desired_job_type || '',
+          experience_level: d.experience_level || '',
+          work_authorization: d.work_authorization || '',
+          preferred_location: d.preferred_location || '',
+          availability_date: d.availability_date || '',
+          pay_expectation: d.pay_expectation || '',
+          skills: d.skills || '',
+          certifications: d.certifications || '',
+          resume_link: d.resume_link || ''
+        }
+      };
+      await pf.submit(this, submission, {
+        success: { title: 'Application Received!', message: 'Thank you for applying. A Ruthko recruiter will review your application and reach out soon.' }
+      });
+    });
+  </script>
+</body>
+</html>
