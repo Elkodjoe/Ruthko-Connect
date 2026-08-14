@@ -1,3 +1,5 @@
+const { checkAdminAuthorized } = require('./_lib/require-admin');
+
 const RESEND_ENDPOINT = 'https://api.resend.com/emails';
 
 function jsonResponse(statusCode, body) {
@@ -82,6 +84,11 @@ async function sendOne(apiKey, from, replyTo, campaign, recipient) {
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return jsonResponse(200, { ok: true });
   if (event.httpMethod !== 'POST') return jsonResponse(405, { error: 'Method not allowed' });
+
+  // Previously unauthenticated: any caller could relay up to 100 emails through
+  // Ruthko's sender identity to an arbitrary caller-supplied recipient list.
+  const auth = await checkAdminAuthorized(event);
+  if (!auth.authorized) return jsonResponse(auth.statusCode || 401, { ok: false, error: auth.error || 'Not authorized' });
 
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RUTHKO_CAMPAIGN_FROM || process.env.RUTHKO_AUTOREPLY_FROM || 'Ruthko Connect <onboarding@resend.dev>';

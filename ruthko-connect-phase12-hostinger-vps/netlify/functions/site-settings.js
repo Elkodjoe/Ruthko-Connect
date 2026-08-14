@@ -104,13 +104,7 @@ async function getStore() {
   return { settings, media: media || [], emailTemplates: emailTemplates && emailTemplates.length ? emailTemplates : DEFAULT_EMAILS, social: social || [], source: 'supabase' };
 }
 
-function adminAuthorized(event) {
-  const requiredToken = process.env.ADMIN_SETTINGS_TOKEN;
-  if (!requiredToken) return true;
-  const headers = event.headers || {};
-  const supplied = headers['x-admin-settings-token'] || headers['X-Admin-Settings-Token'];
-  return supplied === requiredToken;
-}
+const { checkAdminAuthorized } = require('./_lib/require-admin');
 
 async function saveToSupabase(payload) {
   if (payload.settings) {
@@ -161,7 +155,8 @@ exports.handler = async function handler(event) {
     }
 
     if (event.httpMethod !== 'POST') return json(405, { ok: false, error: 'Method not allowed' });
-    if (!adminAuthorized(event)) return json(401, { ok: false, error: 'Admin settings token required' });
+    const auth = await checkAdminAuthorized(event);
+    if (!auth.authorized) return json(auth.statusCode || 401, { ok: false, error: auth.error || 'Not authorized' });
 
     const payload = JSON.parse(event.body || '{}');
     if (hasSupabase()) await saveToSupabase(payload);

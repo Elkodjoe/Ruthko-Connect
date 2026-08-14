@@ -14,6 +14,34 @@ const RuthkoCampaigns = (() => {
     return window.getRuthkoSupabaseClient ? window.getRuthkoSupabaseClient() : null;
   }
 
+  // Shared with js/content-manager.js — same key, same token, so entering it
+  // once on either admin page covers both. send-campaign.js now requires this
+  // (or a real Supabase admin session) instead of accepting any caller.
+  const ADMIN_TOKEN_KEY = 'ruthko_admin_settings_token_v1';
+  function getAdminToken() { return localStorage.getItem(ADMIN_TOKEN_KEY) || ''; }
+  function setAdminToken(value) { value ? localStorage.setItem(ADMIN_TOKEN_KEY, value) : localStorage.removeItem(ADMIN_TOKEN_KEY); }
+
+  async function postCampaign(campaign, recipients) {
+    const token = getAdminToken();
+    const response = await fetch('/.netlify/functions/send-campaign', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...(token ? { 'x-admin-settings-token': token } : {}) },
+      body: JSON.stringify({ campaign, recipients })
+    });
+
+    if (response.status === 401) {
+      const entered = prompt('Enter the Admin Settings Token from your VPS .env file.');
+      if (entered) {
+        setAdminToken(entered.trim());
+        return postCampaign(campaign, recipients);
+      }
+    }
+
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(result.error || 'Campaign send failed');
+    return result;
+  }
+
   function text(value) {
     return String(value || '').trim();
   }
@@ -261,13 +289,7 @@ const RuthkoCampaigns = (() => {
         message.className = 'text-sm font-bold text-yellow-400';
       }
 
-      const response = await fetch('/.netlify/functions/send-campaign', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ campaign, recipients: currentSegment })
-      });
-      const result = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(result.error || 'Campaign send failed');
+      const result = await postCampaign(campaign, currentSegment);
 
       campaign.status = 'Sent';
       campaign.sent_at = new Date().toISOString();
