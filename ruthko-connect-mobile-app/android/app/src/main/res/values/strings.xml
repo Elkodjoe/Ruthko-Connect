@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Ruthko Connect</string>
+    <string name="title_activity_main">Ruthko Connect</string>
+    <string name="package_name">com.ruthkoconnect.mobile</string>
+    <string name="custom_url_scheme">com.ruthkoconnect.mobile</string>
+</resources>

@@ -1,0 +1,16 @@
+{
+  "name": "ruthko-connect-mobile",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ruthko Connect mobile app — a thin Capacitor shell over the live site (ruthkojobs.com), so it's always the same live, synced data as the web dashboard and desktop app.",
+  "scripts": {
+    "sync": "cap sync"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/core": "^7.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.0.0"
+  }
+}

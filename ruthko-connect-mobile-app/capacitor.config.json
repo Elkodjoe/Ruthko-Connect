@@ -1,0 +1,12 @@
+{
+  "appId": "com.ruthkoconnect.mobile",
+  "appName": "Ruthko Connect",
+  "webDir": "www",
+  "server": {
+    "url": "https://ruthkojobs.com",
+    "cleartext": false
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}

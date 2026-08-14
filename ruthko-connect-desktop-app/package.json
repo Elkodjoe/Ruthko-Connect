@@ -1,0 +1,33 @@
+{
+  "name": "ruthko-connect-desktop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ruthko Connect desktop app — a thin Electron shell over the live site (ruthkojobs.com), so admin console, employer portal, and public pages are always the same live, synced data as the web dashboard.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^43.0.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.ruthkoconnect.desktop",
+    "productName": "Ruthko Connect",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main.js",
+      "preload.js"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}
