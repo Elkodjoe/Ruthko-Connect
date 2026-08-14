@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en" class="auth-checking">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Ruthko Connect | Media Library</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: Inter, sans-serif; }
+    body { background: #0a0a0a; color: #fff; }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+    .glass-hover { transition: all .2s ease; }
+    .glass-hover:hover { background: rgba(255,255,255,0.08); }
+    .gradient-text { background: linear-gradient(to right, #facc15, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .btn-primary { background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%); color: #000; }
+    .btn-primary:hover { filter: brightness(1.08); }
+    .btn-secondary { background: rgba(255,255,255,0.1); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.15); }
+    .nav-active { background: rgba(39,39,42,0.9); color: #facc15; }
+    .auth-checking body { visibility: hidden; }
+    input, select, textarea { outline: none; }
+    .media-card { transition: all .15s ease; }
+    .media-card:hover { transform: translateY(-2px); border-color: rgba(250,204,21,.4) !important; }
+    .dropzone { border: 2px dashed #3f3f46; transition: border-color .2s; }
+    .dropzone.drag-over { border-color: #facc15; background: rgba(250,204,21,.05); }
+    .progress-bar { height: 4px; background: rgba(255,255,255,.1); border-radius: 2px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(135deg, #facc15, #f59e0b); width: 0%; transition: width .3s ease; }
+    .badge { display: inline-block; padding: .15rem .5rem; border-radius: 9999px; font-size: .68rem; font-weight: 700; }
+    .modal-overlay { position: fixed; inset: 0; z-index: 9998; background: rgba(0,0,0,.8); display: none; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .field { width: 100%; background: #000; border: 1px solid #27272a; border-radius: .75rem; padding: .75rem 1rem; color: #fff; font-size: .9rem; }
+    .field:focus { border-color: rgba(250,204,21,.6); }
+  </style>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script src="js/admin-auth.js"></script>
+  <script src="js/admin-roles.js"></script>
+  <script src="js/admin-guard.js"></script>
+  <script src="js/admin-audit-log.js"></script>
+  <script src="js/media-upload-service.js"></script>
+  <script src="js/admin-media-library.js"></script>
+  <script src="js/media-picker.js"></script>
+</head>
+<body class="min-h-screen bg-black text-white" data-page="media">
+
+  <!-- Sidebar -->
+  <aside class="fixed left-0 top-0 z-50 h-full w-16 md:w-60 bg-black border-r border-zinc-800 flex flex-col">
+    <div class="p-3 md:p-5 flex items-center gap-3 border-b border-zinc-900">
+      <img src="images/logo.png" alt="Ruthko Logo" class="w-10 h-10 rounded-xl object-contain bg-white p-1 shrink-0" onerror="this.style.display='none';" />
+      <div class="hidden md:block">
+        <h1 class="font-bold text-base gradient-text">Ruthko Connect</h1>
+        <p class="text-xs text-zinc-400">Admin Console</p>
+      </div>
+    </div>
+    <nav class="flex-1 px-2 py-3 space-y-1 overflow-y-auto">
+      <a href="admin.html" data-page="admin" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="layout-dashboard" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Dashboard</span></a>
+      <a href="content-manager.html" data-page="content-manager" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="zap" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Quick Change</span></a>
+      <a href="ai-studio.html" data-page="ai" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="sparkles" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">AI Studio</span></a>
+      <a href="media-library.html" data-page="media" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="image" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Media Library</span></a>
+      <a href="event-operations.html" data-page="event-ops" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="calendar-check" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Event Ops</span></a>
+      <a href="reports.html" data-page="reports" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="bar-chart-3" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Reports</span></a>
+      <a href="crm.html" data-page="crm" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="database" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">CRM & Sales</span></a>
+      <a href="tasks.html" data-page="tasks" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="list-checks" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Tasks</span></a>
+      <a href="campaigns.html" data-page="campaigns" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="send" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Campaigns</span></a>
+      <a href="jobs.html" data-page="jobs" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="briefcase" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Jobs</span></a>
+      <a href="events.html" data-page="events" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="calendar" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Events</span></a>
+      <a href="partners.html" data-page="partners" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="users" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Partners</span></a>
+      <a href="sponsors.html" data-page="sponsors" class="nav-link w-full p-3 rounded-xl flex items-center gap-3 glass-hover transition text-sm"><i data-lucide="crown" class="w-5 h-5 shrink-0"></i><span class="hidden md:inline font-medium">Sponsors</span></a>
+    </nav>
+    <div class="p-3 border-t border-zinc-800 space-y-2">
+      <a href="index.html" class="hidden md:block text-center text-xs font-bold btn-secondary rounded-xl py-2">Public Site</a>
+      <a href="intake.html" class="hidden md:block text-center text-xs font-bold btn-primary rounded-xl py-2">Intake</a>
+      <button onclick="ruthkoLogout()" class="block md:hidden w-full text-center text-xs bg-zinc-900 border border-zinc-700 font-bold rounded-xl py-2">Exit</button>
+    </div>
+  </aside>
+
+  <main class="ml-16 md:ml-60 min-h-screen">
+
+    <!-- Header -->
+    <header class="h-16 border-b border-zinc-800 bg-black/70 backdrop-blur-md flex items-center justify-between px-6 sticky top-0 z-40">
+      <h1 class="text-xl font-bold">Media Library</h1>
+      <div class="flex items-center gap-3">
+        <span id="mediaSourceBadge" class="text-xs font-mono hidden"></span>
+        <label id="uploadBtnWrap" for="mediaFileInput" class="btn-primary px-4 py-2 rounded-xl font-bold text-sm cursor-pointer flex items-center gap-2" data-requires-permission="saveContent">
+          <i data-lucide="upload" class="w-4 h-4"></i>
+          <span class="hidden md:inline">Upload</span>
+        </label>
+        <input id="mediaFileInput" type="file" class="hidden" multiple accept=".jpg,.jpeg,.png,.webp,.gif,.svg,.pdf,.doc,.docx" onchange="handleFileSelect(event)" />
+        <button onclick="ruthkoLogout()" class="px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-700 font-bold text-sm">Logout</button>
+      </div>
+    </header>
+
+    <section class="p-6">
+
+      <!-- Page header -->
+      <div class="mb-6">
+        <p class="text-yellow-400 font-bold uppercase tracking-wide text-sm">Admin Media</p>
+        <h2 class="text-3xl font-extrabold mt-2">Media Library</h2>
+        <p class="text-zinc-400 mt-2 max-w-2xl">Upload, organize, and reuse images, flyers, banners, logos, and documents across the public site.</p>
+      </div>
+
+      <!-- Upload zone -->
+      <div id="dropZone" class="dropzone rounded-2xl p-8 mb-6 text-center cursor-pointer" onclick="document.getElementById('mediaFileInput').click()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)" data-requires-permission="saveContent">
+        <i data-lucide="upload-cloud" class="w-10 h-10 mx-auto text-zinc-600 mb-3"></i>
+        <p class="font-bold text-zinc-400">Drag and drop files here or <span class="text-yellow-400">click to browse</span></p>
+        <p class="text-xs text-zinc-600 mt-2">JPG, PNG, WebP, GIF, SVG, PDF, DOC, DOCX — max 20 MB each</p>
+        <div id="uploadProgress" class="hidden mt-4 max-w-xs mx-auto">
+          <p id="uploadStatusText" class="text-sm text-zinc-400 mb-2">Uploading…</p>
+          <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+        </div>
+      </div>
+
+      <!-- Upload category selector (shown before upload) -->
+      <div id="uploadMeta" class="hidden glass border border-zinc-800 rounded-2xl p-4 mb-6">
+        <h3 class="font-bold mb-3">Set upload details</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="text-xs font-bold text-zinc-400 block mb-1">Category</label>
+            <select id="uploadCategory" class="field">
+              <option>general</option><option>logo</option><option>banner</option>
+              <option>event flyer</option><option>sponsor logo</option><option>partner logo</option>
+              <option>team photo</option><option>job document</option><option>report</option>
+              <option>social graphic</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-bold text-zinc-400 block mb-1">Title</label>
+            <input id="uploadTitle" type="text" placeholder="Optional title" class="field" />
+          </div>
+          <div>
+            <label class="text-xs font-bold text-zinc-400 block mb-1">Alt text</label>
+            <input id="uploadAltText" type="text" placeholder="Describe the image" class="field" />
+          </div>
+        </div>
+        <div class="flex gap-3 mt-4">
+          <button id="confirmUploadBtn" onclick="confirmUpload()" class="btn-primary px-5 py-2 rounded-xl font-bold text-sm">Upload Now</button>
+          <button onclick="cancelUpload()" class="btn-secondary px-5 py-2 rounded-xl font-bold text-sm">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="glass border border-zinc-800 rounded-2xl p-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <input id="filterSearch" type="text" placeholder="Search title, filename…" oninput="applyFilters()"
+            class="bg-black border border-zinc-800 rounded-xl px-3 py-2 text-sm text-white placeholder-zinc-600 focus:border-yellow-500 md:col-span-2" />
+          <select id="filterCategory" onchange="applyFilters()" class="bg-black border border-zinc-800 rounded-xl px-3 py-2 text-sm text-white focus:border-yellow-500">
+            <option value="">All categories</option>
+            <option>logo</option><option>banner</option><option>event flyer</option>
+            <option>sponsor logo</option><option>partner logo</option><option>team photo</option>
+            <option>job document</option><option>report</option><option>social graphic</option><option>general</option>
+          </select>
+          <select id="filterType" onchange="applyFilters()" class="bg-black border border-zinc-800 rounded-xl px-3 py-2 text-sm text-white focus:border-yellow-500">
+            <option value="">All types</option>
+            <option value="image">Images</option>
+            <option value="pdf">PDF</option>
+            <option value="document">Documents</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div class="flex items-center justify-between mb-4">
+        <p id="mediaCount" class="text-sm text-zinc-400 font-mono">Loading…</p>
+        <div class="flex gap-2">
+          <button onclick="setView('grid')" id="viewGrid" class="btn-secondary px-3 py-1.5 rounded-lg text-sm"><i data-lucide="grid-3x3" class="w-4 h-4"></i></button>
+          <button onclick="setView('list')" id="viewList" class="btn-secondary px-3 py-1.5 rounded-lg text-sm"><i data-lucide="list" class="w-4 h-4"></i></button>
+        </div>
+      </div>
+
+      <!-- Media grid -->
+      <div id="mediaGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4 mb-8">
+        <div class="col-span-full text-center py-16 text-zinc-500">Loading media library…</div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Edit modal -->
+  <div id="editModal" class="modal-overlay" onclick="if(event.target===this)closeEditModal()">
+    <div class="glass border border-zinc-800 rounded-2xl p-6 w-full max-w-md mx-4">
+      <h3 class="font-bold text-lg mb-4">Edit Media Details</h3>
+      <input type="hidden" id="editAssetId" />
+      <div class="space-y-4">
+        <div>
+          <label class="text-xs font-bold text-zinc-400 block mb-1">Title</label>
+          <input id="editTitle" type="text" class="field" placeholder="Media title" />
+        </div>
+        <div>
+          <label class="text-xs font-bold text-zinc-400 block mb-1">Alt text</label>
+          <input id="editAltText" type="text" class="field" placeholder="Describe the image for accessibility" />
+        </div>
+        <div>
+          <label class="text-xs font-bold text-zinc-400 block mb-1">Category</label>
+          <select id="editCategory" class="field">
+            <option>general</option><option>logo</option><option>banner</option>
+            <option>event flyer</option><option>sponsor logo</option><option>partner logo</option>
+            <option>team photo</option><option>job document</option><option>report</option>
+            <option>social graphic</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-bold text-zinc-400 block mb-1">Description</label>
+          <textarea id="editDescription" rows="2" class="field" placeholder="Optional description"></textarea>
+        </div>
+      </div>
+      <p id="editStatus" class="text-xs mt-3 min-h-[1rem]"></p>
+      <div class="flex gap-3 mt-4">
+        <button onclick="saveEdit()" class="btn-primary px-5 py-2 rounded-xl font-bold text-sm">Save</button>
+        <button onclick="closeEditModal()" class="btn-secondary px-5 py-2 rounded-xl font-bold text-sm">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── State ─────────────────────────────────────────────────────────────────
+    var allAssets = [];
+    var filteredAssets = [];
+    var currentRole = null;
+    var pendingFiles = [];
+    var currentView = 'grid';
+
+    // ── Nav highlight ─────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', function () {
+      var page = document.body.dataset.page;
+      document.querySelectorAll('.nav-link').forEach(function (a) {
+        if (a.dataset.page === page) a.classList.add('nav-active');
+      });
+      if (window.lucide) lucide.createIcons();
+      loadMedia();
+    });
+
+    document.addEventListener('ruthko:role-ready', function (e) {
+      currentRole = (e.detail && e.detail.role) || null;
+      // Hide upload for viewer
+      if (currentRole === 'viewer') {
+        var wrap = document.getElementById('uploadBtnWrap');
+        if (wrap) wrap.style.display = 'none';
+        var dz = document.getElementById('dropZone');
+        if (dz) { dz.style.pointerEvents = 'none'; dz.style.opacity = '.5'; }
+      }
+    });
+
+    // ── Load media ────────────────────────────────────────────────────────────
+    async function loadMedia() {
+      if (!window.ruthkoMediaLibrary) return;
+      var result = await window.ruthkoMediaLibrary.load({ limit: 500 });
+      allAssets = result.data || [];
+      var badge = document.getElementById('mediaSourceBadge');
+      if (badge) {
+        badge.textContent = result.source === 'supabase' ? 'Supabase' : 'Local';
+        badge.className = 'text-xs font-mono ' + (result.source === 'supabase' ? 'text-green-400' : 'text-yellow-400');
+        badge.classList.remove('hidden');
+      }
+      applyFilters();
+    }
+
+    // ── Filters ───────────────────────────────────────────────────────────────
+    function applyFilters() {
+      var search = (document.getElementById('filterSearch').value || '').toLowerCase();
+      var cat = document.getElementById('filterCategory').value;
+      var type = document.getElementById('filterType').value;
+      filteredAssets = allAssets.filter(function (a) {
+        if (cat && a.category !== cat) return false;
+        if (type && a.media_type !== type) return false;
+        if (search) {
+          var hay = [(a.title || ''), (a.file_name || ''), (a.alt_text || ''), (a.category || '')].join(' ').toLowerCase();
+          if (hay.indexOf(search) === -1) return false;
+        }
+        return true;
+      });
+      renderGrid(filteredAssets);
+      var cnt = document.getElementById('mediaCount');
+      if (cnt) cnt.textContent = filteredAssets.length + ' of ' + allAssets.length + ' files';
+    }
+
+    // ── View toggle ───────────────────────────────────────────────────────────
+    function setView(v) {
+      currentView = v;
+      var grid = document.getElementById('mediaGrid');
+      if (v === 'list') {
+        grid.className = 'grid grid-cols-1 gap-2 mb-8';
+      } else {
+        grid.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4 mb-8';
+      }
+      renderGrid(filteredAssets);
+    }
+
+    // ── Render grid ───────────────────────────────────────────────────────────
+    function isImg(a) { return a.media_type === 'image' || (a.mime_type || '').startsWith('image/'); }
+    function fmtSize(b) { if (!b) return ''; if (b < 1024) return b + ' B'; if (b < 1048576) return Math.round(b/1024) + ' KB'; return (b/1048576).toFixed(1) + ' MB'; }
+    function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+    function catColor(cat) {
+      var map = { logo:'bg-yellow-500/20 text-yellow-400', banner:'bg-blue-500/20 text-blue-400', 'event flyer':'bg-purple-500/20 text-purple-400', 'sponsor logo':'bg-orange-500/20 text-orange-400', 'partner logo':'bg-green-500/20 text-green-400', 'social graphic':'bg-pink-500/20 text-pink-400' };
+      return map[cat] || 'bg-zinc-700/50 text-zinc-400';
+    }
+
+    function canDelete() { return currentRole === 'owner' || currentRole === 'admin'; }
+
+    function cardHtml(a) {
+      if (currentView === 'list') {
+        return '<div class="glass border border-zinc-800 rounded-xl p-3 flex items-center gap-4 media-card">' +
+          '<div class="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-zinc-900">' +
+            (isImg(a) ? '<img src="' + esc(a.file_url) + '" alt="" class="w-full h-full object-cover" />' : '<div class="w-full h-full flex items-center justify-center text-2xl">' + (a.media_type==='pdf'?'📄':'📎') + '</div>') +
+          '</div>' +
+          '<div class="flex-1 min-w-0">' +
+            '<p class="font-bold text-sm truncate">' + esc(a.title || a.file_name) + '</p>' +
+            '<p class="text-xs text-zinc-500">' + esc(a.category) + ' · ' + fmtSize(a.file_size) + '</p>' +
+          '</div>' +
+          '<div class="flex gap-2 flex-shrink-0">' +
+            '<button onclick="copyUrl(\'' + esc(a.id) + '\')" class="btn-secondary p-2 rounded-lg text-xs" title="Copy URL"><i data-lucide="copy" class="w-4 h-4"></i></button>' +
+            '<button onclick="openEdit(\'' + esc(a.id) + '\')" class="btn-secondary p-2 rounded-lg text-xs" title="Edit"><i data-lucide="pencil" class="w-4 h-4"></i></button>' +
+            (canDelete() ? '<button onclick="deleteAsset(\'' + esc(a.id) + '\',\'' + esc(a.file_path) + '\')" class="p-2 rounded-lg text-xs bg-red-900/30 text-red-400 hover:bg-red-900/60" title="Delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>' : '') +
+          '</div>' +
+        '</div>';
+      }
+
+      return '<div class="glass border border-zinc-800 rounded-2xl overflow-hidden media-card">' +
+        '<div class="h-32 bg-zinc-900 relative">' +
+          (isImg(a) ? '<img src="' + esc(a.file_url) + '" alt="' + esc(a.alt_text||'') + '" class="w-full h-full object-cover" onerror="this.parentNode.innerHTML=\'<div class=\\\"w-full h-full flex items-center justify-center text-3xl\\\">🖼️</div>\'" />' :
+            '<div class="w-full h-full flex items-center justify-center text-4xl">' + (a.media_type==='pdf'?'📄':'📎') + '</div>') +
+          '<span class="badge absolute top-2 left-2 ' + catColor(a.category) + '">' + esc(a.category || '') + '</span>' +
+        '</div>' +
+        '<div class="p-3">' +
+          '<p class="font-bold text-sm truncate">' + esc(a.title || a.file_name) + '</p>' +
+          '<p class="text-xs text-zinc-500 mt-0.5">' + fmtSize(a.file_size) + '</p>' +
+          '<div class="flex gap-1.5 mt-3">' +
+            '<button onclick="copyUrl(\'' + esc(a.id) + '\')" class="btn-secondary flex-1 py-1.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1" title="Copy URL"><i data-lucide="copy" class="w-3 h-3"></i><span class="hidden md:inline">Copy URL</span></button>' +
+            '<button onclick="openEdit(\'' + esc(a.id) + '\')" class="btn-secondary px-2 py-1.5 rounded-lg text-xs" title="Edit"><i data-lucide="pencil" class="w-3 h-3"></i></button>' +
+            (canDelete() ? '<button onclick="deleteAsset(\'' + esc(a.id) + '\',\'' + esc(a.file_path) + '\')" class="px-2 py-1.5 rounded-lg text-xs bg-red-900/30 text-red-400" title="Delete"><i data-lucide="trash-2" class="w-3 h-3"></i></button>' : '') +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }
+
+    function renderGrid(assets) {
+      var grid = document.getElementById('mediaGrid');
+      if (!assets.length) {
+        grid.innerHTML = '<div class="col-span-full text-center py-16 text-zinc-500"><p class="text-4xl mb-3">📁</p><p class="font-bold">No media found</p><p class="text-sm mt-1">Upload files using the button above or drag them here.</p></div>';
+        return;
+      }
+      grid.innerHTML = assets.map(cardHtml).join('');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // ── Drag and drop ─────────────────────────────────────────────────────────
+    function handleDragOver(e) { e.preventDefault(); document.getElementById('dropZone').classList.add('drag-over'); }
+    function handleDragLeave(e) { document.getElementById('dropZone').classList.remove('drag-over'); }
+    function handleDrop(e) {
+      e.preventDefault();
+      document.getElementById('dropZone').classList.remove('drag-over');
+      if (currentRole === 'viewer') return;
+      var files = Array.from(e.dataTransfer.files || []);
+      if (files.length) showUploadMeta(files);
+    }
+    function handleFileSelect(e) {
+      if (currentRole === 'viewer') return;
+      var files = Array.from(e.target.files || []);
+      if (files.length) showUploadMeta(files);
+      e.target.value = '';
+    }
+
+    function showUploadMeta(files) {
+      pendingFiles = files;
+      document.getElementById('uploadMeta').classList.remove('hidden');
+      var title = files.length === 1 ? files[0].name.replace(/\.[^.]+$/, '').replace(/[_-]/g, ' ') : files.length + ' files';
+      document.getElementById('uploadTitle').value = title;
+    }
+    function cancelUpload() {
+      pendingFiles = [];
+      document.getElementById('uploadMeta').classList.add('hidden');
+    }
+
+    async function confirmUpload() {
+      if (!pendingFiles.length || !window.ruthkoMediaLibrary) return;
+      var btn = document.getElementById('confirmUploadBtn');
+      btn.disabled = true;
+      btn.textContent = 'Uploading…';
+      var cat = document.getElementById('uploadCategory').value;
+      var title = document.getElementById('uploadTitle').value;
+      var alt = document.getElementById('uploadAltText').value;
+
+      document.getElementById('uploadProgress').classList.remove('hidden');
+      var fill = document.getElementById('progressFill');
+      var statusText = document.getElementById('uploadStatusText');
+
+      var errors = [];
+      for (var i = 0; i < pendingFiles.length; i++) {
+        var file = pendingFiles[i];
+        statusText.textContent = 'Uploading ' + (i+1) + ' of ' + pendingFiles.length + ': ' + file.name;
+        fill.style.width = Math.round(((i) / pendingFiles.length) * 100) + '%';
+        var result = await window.ruthkoMediaLibrary.uploadAndSave(file, { category: cat, title: title || file.name, altText: alt });
+        if (result.ok) {
+          saveLocalAsset(result.data);
+        } else {
+          errors.push(file.name + ': ' + result.error);
+        }
+      }
+
+      fill.style.width = '100%';
+      statusText.textContent = errors.length ? 'Done with ' + errors.length + ' error(s).' : 'Upload complete!';
+      setTimeout(function () {
+        document.getElementById('uploadProgress').classList.add('hidden');
+        fill.style.width = '0%';
+      }, 2000);
+
+      if (errors.length) alert('Upload errors:\n' + errors.join('\n'));
+      pendingFiles = [];
+      document.getElementById('uploadMeta').classList.add('hidden');
+      btn.disabled = false;
+      btn.textContent = 'Upload Now';
+      loadMedia();
+    }
+
+    function saveLocalAsset(asset) {
+      if (!asset) return;
+      var found = allAssets.findIndex(function (a) { return a.id === asset.id; });
+      if (found >= 0) allAssets[found] = asset; else allAssets.unshift(asset);
+    }
+
+    // ── Copy URL ──────────────────────────────────────────────────────────────
+    function copyUrl(id) {
+      var asset = allAssets.find(function (a) { return String(a.id) === String(id); });
+      if (!asset) return;
+      try {
+        navigator.clipboard.writeText(asset.file_url).then(function () {
+          if (typeof window.ruthkoAuditLog === 'object') {
+            window.ruthkoAuditLog.log('media_copy_url', { entityType: 'media', entityLabel: asset.title || asset.file_name });
+          }
+        });
+        // Brief visual feedback
+        var card = event.currentTarget;
+        if (card) { card.textContent = '✓'; setTimeout(function () { loadMedia(); }, 1200); }
+      } catch (_) { prompt('Copy this URL:', asset.file_url); }
+    }
+
+    // ── Edit modal ────────────────────────────────────────────────────────────
+    function openEdit(id) {
+      var asset = allAssets.find(function (a) { return String(a.id) === String(id); });
+      if (!asset) return;
+      document.getElementById('editAssetId').value = id;
+      document.getElementById('editTitle').value = asset.title || '';
+      document.getElementById('editAltText').value = asset.alt_text || '';
+      document.getElementById('editCategory').value = asset.category || 'general';
+      document.getElementById('editDescription').value = asset.description || '';
+      document.getElementById('editStatus').textContent = '';
+      document.getElementById('editModal').classList.add('open');
+    }
+    function closeEditModal() { document.getElementById('editModal').classList.remove('open'); }
+
+    async function saveEdit() {
+      if (!window.ruthkoMediaLibrary) return;
+      var id = document.getElementById('editAssetId').value;
+      var changes = {
+        title: document.getElementById('editTitle').value,
+        alt_text: document.getElementById('editAltText').value,
+        category: document.getElementById('editCategory').value,
+        description: document.getElementById('editDescription').value,
+      };
+      var statusEl = document.getElementById('editStatus');
+      statusEl.textContent = 'Saving…'; statusEl.style.color = '#a1a1aa';
+      var result = await window.ruthkoMediaLibrary.update(id, changes);
+      if (result.ok) {
+        statusEl.textContent = 'Saved ' + (result.source === 'supabase' ? 'to Supabase ✓' : 'locally'); statusEl.style.color = '#4ade80';
+        saveLocalAsset(Object.assign(allAssets.find(function(a){return a.id===id;})||{id:id}, changes));
+        applyFilters();
+        setTimeout(closeEditModal, 900);
+      } else {
+        statusEl.textContent = 'Save failed'; statusEl.style.color = '#f87171';
+      }
+    }
+
+    // ── Delete ────────────────────────────────────────────────────────────────
+    async function deleteAsset(id, filePath) {
+      if (!canDelete()) { alert('Only owners and admins can delete media.'); return; }
+      if (!confirm('Delete this file? This cannot be undone.')) return;
+      if (!window.ruthkoMediaLibrary) return;
+      var result = await window.ruthkoMediaLibrary.delete(id, filePath);
+      if (result.ok) {
+        allAssets = allAssets.filter(function (a) { return String(a.id) !== String(id); });
+        applyFilters();
+      } else {
+        alert('Delete failed: ' + (result.error || 'Unknown error'));
+      }
+    }
+  </script>
+</body>
+</html>
