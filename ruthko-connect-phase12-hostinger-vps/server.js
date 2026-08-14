@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const rateLimit = require('express-rate-limit');
 
 const app = express();
@@ -117,7 +118,12 @@ app.use((req, res, next) => {
 
   if (segments.length === 1) {
     const ext = path.extname(topSegment).toLowerCase();
-    if (ext === '' || ext === '.html') return next();
+    if (ext === '.html') return next();
+    // Extension-less "pretty URL" (e.g. /admin -> admin.html) — only allowed
+    // when a real page file backs it, not for any bare top-level name (this
+    // is what let _redirects, a Netlify config file with no extension,
+    // through and serve its actual contents instead of 404ing).
+    if (ext === '' && fs.existsSync(path.join(PUBLIC_DIR, `${topSegment}.html`))) return next();
   }
 
   return res.status(404).end();
